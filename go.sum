@@ -74,10 +74,6 @@ github.com/bkaradzic/go-lz4 v1.0.0/go.mod h1:0YdlkowM3VswSROI7qDxhRvJ3sLhlFrRRwj
 github.com/blakesmith/ar v0.0.0-20150311145944-8bd4349a67f2 h1:oMCHnXa6CCCafdPDbMh/lWRhRByN0VFLvv+g+ayx1SI=
 github.com/blakesmith/ar v0.0.0-20150311145944-8bd4349a67f2/go.mod h1:PkYb9DJNAwrSvRx5DYA+gUcOIgTGVMNkfSCbZM8cWpI=
 github.com/bmizerany/assert v0.0.0-20160611221934-b7ed37b82869/go.mod h1:Ekp36dRnpXw/yCqJaO+ZrUyxD+3VXMFFr56k5XYrpB4=
-github.com/brocaar/chirpstack-api/go/v3 v3.12.5 h1:sLV+zSZLUPnNCo2mf+gsw0ektbSiSHDvDn+RGs3ucgA=
-github.com/brocaar/chirpstack-api/go/v3 v3.12.5/go.mod h1:v8AWP19nOJK4rwJsr1+weDfpUc4UNLbRh8Eygn4Oh00=
-github.com/brocaar/lorawan v0.0.0-20220715134808-3b283dda1534 h1:vqq/suBJc3KWCDOfJFEMx3t83cBdjldR5yLGps/3DWo=
-github.com/brocaar/lorawan v0.0.0-20220715134808-3b283dda1534/go.mod h1:Vlf3gOwizqX4y3snWe/i2EqRT83HvYuwBjRu39PevW0=
 github.com/caarlos0/ctrlc v1.0.0 h1:2DtF8GSIcajgffDFJzyG15vO+1PuBWOMUdFut7NnXhw=
 github.com/caarlos0/ctrlc v1.0.0/go.mod h1:CdXpj4rmq0q/1Eb44M9zi2nKB0QraNKuRGYGrrHhcQw=
 github.com/campoy/unique v0.0.0-20180121183637-88950e537e7e h1:V9a67dfYqPLAvzk5hMQOXYJlZ4SLIXgyKIE+ZiHzgGQ=
@@ -473,6 +469,10 @@ github.com/prometheus/procfs v0.8.0 h1:ODq8ZFEaYeCaZOJlZZdJA2AbQR98dSHSM1KW/You5
 github.com/prometheus/procfs v0.8.0/go.mod h1:z7EfXMXOkbkqb9IINtpCn86r/to3BnA0uaxHdg830/4=
 github.com/prometheus/tsdb v0.7.1/go.mod h1:qhTCs0VvXwvX/y3TZrWD7rabWM+ijKTux40TwIPHuXU=
 github.com/remyoudompheng/bigfft v0.0.0-20190728182440-6a916e37a237/go.mod h1:qqbHyh8v60DhA7CoWK5oRCqLrMHRGoxYCSS9EjAz6Eo=
+github.com/rissw/chirpstack-api/go/v3 v3.0.0-20230227101953-9c3c2bff996b h1:LoNfBjxDoMVl72miNP4hYwk6s4GyxCUZO9ifCHD/nrA=
+github.com/rissw/chirpstack-api/go/v3 v3.0.0-20230227101953-9c3c2bff996b/go.mod h1:v8AWP19nOJK4rwJsr1+weDfpUc4UNLbRh8Eygn4Oh00=
+github.com/rissw/lorawan v0.0.0-20230227095355-4013341f5078 h1:GhZrqwexHeu5eFXT3CrxaJUDCDsdxt0X0lqLVFM/F8M=
+github.com/rissw/lorawan v0.0.0-20230227095355-4013341f5078/go.mod h1:Vlf3gOwizqX4y3snWe/i2EqRT83HvYuwBjRu39PevW0=
 github.com/robertkrimen/otto v0.0.0-20191217063420-37f8e9a2460c h1:3xoaT4/crdgX7KSnwryQVhSMN067lJ2jUSAmlcFPwbM=
 github.com/robertkrimen/otto v0.0.0-20191217063420-37f8e9a2460c/go.mod h1:xvqspoSXJTIpemEonrMDFq6XzwHYYgToXWj5eRX1OtY=
 github.com/rogpeppe/fastuuid v0.0.0-20150106093220-6724a57986af/go.mod h1:XWv6SoW27p1b0cqNHllgS5HIMJraePCO15w5zCzIWYg=

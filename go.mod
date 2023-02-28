@@ -113,3 +113,7 @@ require (
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200313102051-9f266ea9e77c // indirect
 )
+
+replace github.com/brocaar/chirpstack-api/go/v3 v3.12.5 => github.com/rissw/chirpstack-api/go/v3 v3.0.0-20230227101953-9c3c2bff996b
+
+replace github.com/brocaar/lorawan v0.0.0-20220715134808-3b283dda1534 => github.com/rissw/lorawan v0.0.0-20230227095355-4013341f5078
