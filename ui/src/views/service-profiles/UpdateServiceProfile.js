@@ -1,13 +1,18 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import ServiceProfileStore from "../../stores/ServiceProfileStore";
 import ServiceProfileForm from "./ServiceProfileForm";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UpdateServiceProfileJS", key);
+};
 
 class UpdateServiceProfile extends Component {
   constructor() {
@@ -16,19 +21,21 @@ class UpdateServiceProfile extends Component {
   }
 
   onSubmit(serviceProfile) {
-    ServiceProfileStore.update(serviceProfile, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/service-profiles`);
+    ServiceProfileStore.update(serviceProfile, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/service-profiles`
+      );
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <ServiceProfileForm
-                submitLabel="Update service-profile"
+                submitLabel={t("Update service-profile")}
                 object={this.props.serviceProfile}
                 onSubmit={this.onSubmit}
                 match={this.props.match}

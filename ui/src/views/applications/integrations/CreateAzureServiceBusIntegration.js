@@ -1,31 +1,41 @@
 import React, { Component } from "react";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 
 import ApplicationStore from "../../../stores/ApplicationStore";
 import AzureServiceBusIntegrationForm from "./AzureServiceBusIntegrationForm";
 
+import { translate } from "../../../helpers/translate";
+
+const t = (key) => {
+  return translate("CreateAzureServiceBusIntegrationJS", key);
+};
 
 class CreateAzureServiceBusIntegration extends Component {
   onSubmit = (integration) => {
     let integr = integration;
     integr.applicationID = this.props.match.params.applicationID;
 
-    ApplicationStore.createAzureServiceBusIntegration(integr, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/integrations`);
+    ApplicationStore.createAzureServiceBusIntegration(integr, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/integrations`
+      );
     });
-  } 
+  };
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
-            <CardHeader title="Add Azure Service-Bus integration" />
+            <CardHeader title={t("Add_Azure_Service_Bus_integration")} />
             <CardContent>
-              <AzureServiceBusIntegrationForm submitLabel="Add integration" onSubmit={this.onSubmit} />
+              <AzureServiceBusIntegrationForm
+                submitLabel={t("Add_integration")}
+                onSubmit={this.onSubmit}
+              />
             </CardContent>
           </Card>
         </Grid>

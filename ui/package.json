@@ -11,6 +11,8 @@
     "chartjs-chart-matrix": "^1.0.2",
     "classnames": "^2.2.6",
     "codemirror": "^5.58.2",
+    "devextreme": "^23.2.4",
+    "devextreme-react": "^23.2.4",
     "flux": "^3.1.3",
     "js-file-download": "^0.4.11",
     "leaflet": "^1.6.0",
@@ -38,8 +40,8 @@
   },
   "scripts": {
     "analyze": "source-map-explorer build/static/js/main.*",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-scripts --openssl-legacy-provider start",
+    "build": "react-scripts --openssl-legacy-provider build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   },
@@ -49,5 +51,9 @@
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "devDependencies": {
+    "devextreme-cldr-data": "^1.0.3",
+    "globalize": "^1.7.0"
+  }
 }

@@ -2,47 +2,52 @@ import React from "react";
 
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 import FormHelperText from "@material-ui/core/FormHelperText";
 
 import FormComponent from "../../../classes/FormComponent";
 import Form from "../../../components/Form";
 import AutocompleteSelect from "../../../components/AutocompleteSelect";
 
+import { translate } from "../../../helpers/translate";
+
+const t = (key) => {
+  return translate("AWSSNSIntegrationFormJS", key);
+};
 
 class AWSSNSIntegrationForm extends FormComponent {
   getMarshalerOptions = (search, callbackFunc) => {
     const marshalerOptions = [
-      {value: "JSON", label: "JSON"},
-      {value: "PROTOBUF", label: "Protocol Buffers"},
-      {value: "JSON_V3", label: "JSON (legacy, will be deprecated)"},
+      { value: "JSON", label: t("JSON") },
+      { value: "PROTOBUF", label: t("ProtocolBuffers") },
+      { value: "JSON_V3", label: t("JSONLegacy") },
     ];
 
     callbackFunc(marshalerOptions);
-  }
+  };
 
   render() {
     if (this.state.object === undefined) {
       return null;
     }
 
-    return(
+    return (
       <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <FormControl fullWidth margin="normal">
-          <FormLabel required>Payload marshaler</FormLabel>
+          <FormLabel required>{t("PayloadMarshaler")}</FormLabel>
           <AutocompleteSelect
             id="marshaler"
-            label="Select payload marshaler"
+            label={t("marshalerLabel")}
             value={this.state.object.marshaler || ""}
             onChange={this.onChange}
             getOptions={this.getMarshalerOptions}
             required
           />
-          <FormHelperText>This defines how the payload will be encoded.</FormHelperText>
+          <FormHelperText>{t("marshalerHelper")}</FormHelperText>
         </FormControl>
         <TextField
           id="region"
-          label="AWS region"
+          label={t("regionLabel")}
           value={this.state.object.region || ""}
           onChange={this.onChange}
           margin="normal"
@@ -51,7 +56,7 @@ class AWSSNSIntegrationForm extends FormComponent {
         />
         <TextField
           id="accessKeyID"
-          label="AWS Access Key ID"
+          label={t("accessKeyIDLabel")}
           value={this.state.object.accessKeyID || ""}
           onChange={this.onChange}
           margin="normal"
@@ -60,7 +65,7 @@ class AWSSNSIntegrationForm extends FormComponent {
         />
         <TextField
           id="secretAccessKey"
-          label="AWS Secret Access Key"
+          label={t("secretAccessKeyLabel")}
           value={this.state.object.secretAccessKey || ""}
           onChange={this.onChange}
           margin="normal"
@@ -70,7 +75,7 @@ class AWSSNSIntegrationForm extends FormComponent {
         />
         <TextField
           id="topicARN"
-          label="AWS SNS topic ARN"
+          label={t("topicARNLabel")}
           value={this.state.object.topicARN || ""}
           onChange={this.onChange}
           margin="normal"
@@ -81,6 +86,5 @@ class AWSSNSIntegrationForm extends FormComponent {
     );
   }
 }
-
 
 export default AWSSNSIntegrationForm;

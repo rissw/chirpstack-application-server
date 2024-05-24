@@ -1,10 +1,10 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 
 import TitleBar from "../../components/TitleBar";
 import TitleBarTitle from "../../components/TitleBarTitle";
@@ -12,21 +12,23 @@ import UserStore from "../../stores/UserStore";
 import FormComponent from "../../classes/FormComponent";
 import Form from "../../components/Form";
 
+import { translate } from "../../helpers/translate";
 
-class PasswordForm  extends FormComponent {
+const t = (key) => {
+  return translate("ChangeUserPasswordJS", key);
+};
+
+class PasswordForm extends FormComponent {
   render() {
     if (this.state.object === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
-      <Form
-        submitLabel={this.props.submitLabel}
-        onSubmit={this.onSubmit}
-      >
+    return (
+      <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <TextField
           id="password"
-          label="Password"
+          label={t("Password")}
           type="password"
           margin="normal"
           value={this.state.object.password || ""}
@@ -39,7 +41,6 @@ class PasswordForm  extends FormComponent {
   }
 }
 
-
 class ChangeUserPassword extends Component {
   constructor() {
     super();
@@ -49,7 +50,7 @@ class ChangeUserPassword extends Component {
   }
 
   componentDidMount() {
-    UserStore.get(this.props.match.params.userID, resp => {
+    UserStore.get(this.props.match.params.userID, (resp) => {
       this.setState({
         user: resp,
       });
@@ -57,31 +58,35 @@ class ChangeUserPassword extends Component {
   }
 
   onSubmit(password) {
-    UserStore.updatePassword(this.props.match.params.userID, password.password, resp => {
-      this.props.history.push("/");
-    });
+    UserStore.updatePassword(
+      this.props.match.params.userID,
+      password.password,
+      (resp) => {
+        this.props.history.push("/");
+      }
+    );
   }
 
   render() {
     if (this.state.user === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar>
-          <TitleBarTitle title="Users" />
+          <TitleBarTitle title={t("Users")} />
           <TitleBarTitle title="/" />
           <TitleBarTitle title={this.state.user.user.email} />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Change password" />
+          <TitleBarTitle title={t("ChangePassword")} />
         </TitleBar>
 
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <PasswordForm
-                submitLabel="Update password"
+                submitLabel={t("UpdatePassword")}
                 onSubmit={this.onSubmit}
               />
             </CardContent>

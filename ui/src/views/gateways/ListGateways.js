@@ -20,6 +20,11 @@ import GatewayStore from "../../stores/GatewayStore";
 
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ListGatewaysJS", key);
+};
 
 class GatewayRow extends Component {
   constructor() {
@@ -32,7 +37,7 @@ class GatewayRow extends Component {
     const start = moment().subtract(29, "days").toISOString();
     const end = moment().toISOString();
 
-    GatewayStore.getStats(this.props.gateway.id, start, end, resp => {
+    GatewayStore.getStats(this.props.gateway.id, start, end, (resp) => {
       let stats = {
         labels: [],
         datasets: [
@@ -45,7 +50,9 @@ class GatewayRow extends Component {
 
       for (const row of resp.result) {
         stats.labels.push(row.timestamp);
-        stats.datasets[0].data.push(row.rxPacketsReceivedOK + row.txPacketsEmitted);
+        stats.datasets[0].data.push(
+          row.rxPacketsReceivedOK + row.txPacketsEmitted
+        );
       }
 
       this.setState({
@@ -81,25 +88,30 @@ class GatewayRow extends Component {
       lastseen = moment(this.props.gateway.lastSeenAt).fromNow();
     }
 
-    return(
+    return (
       <TableRow hover>
-          <TableCell>{lastseen}</TableCell>
-          <TableCellLink to={`/organizations/${this.props.gateway.organizationID}/gateways/${this.props.gateway.id}`}>{this.props.gateway.name}</TableCellLink>
-          <TableCell>{this.props.gateway.id}</TableCell>
-          <TableCell>{this.props.gateway.networkServerName}</TableCell>
-          <TableCell>
-            {this.state.stats && <Bar
+        <TableCell>{lastseen}</TableCell>
+        <TableCellLink
+          to={`/organizations/${this.props.gateway.organizationID}/gateways/${this.props.gateway.id}`}
+        >
+          {this.props.gateway.name}
+        </TableCellLink>
+        <TableCell>{this.props.gateway.id}</TableCell>
+        <TableCell>{this.props.gateway.networkServerName}</TableCell>
+        <TableCell>
+          {this.state.stats && (
+            <Bar
               width={380}
               height={23}
               data={this.state.stats}
               options={options}
-            />}
-          </TableCell>
+            />
+          )}
+        </TableCell>
       </TableRow>
     );
   }
 }
-
 
 const styles = {
   chart: {
@@ -112,46 +124,52 @@ const styles = {
   },
 };
 
-
-
 class ListGateways extends Component {
   getPage = (limit, offset, callbackFunc) => {
-    GatewayStore.list("", this.props.match.params.organizationID, limit, offset, callbackFunc);
-  }
+    GatewayStore.list(
+      "",
+      this.props.match.params.organizationID,
+      limit,
+      offset,
+      callbackFunc
+    );
+  };
 
   getRow = (obj) => {
-    return(
-      <GatewayRow key={obj.id} gateway={obj} />
-    );
-  }
+    return <GatewayRow key={obj.id} gateway={obj} />;
+  };
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
-            <GatewayAdmin organizationID={this.props.match.params.organizationID}>
+            <GatewayAdmin
+              organizationID={this.props.match.params.organizationID}
+            >
               <TitleBarButton
                 key={1}
-                label="Create"
+                label={t("Create")}
                 icon={<Plus />}
                 to={`/organizations/${this.props.match.params.organizationID}/gateways/create`}
               />
             </GatewayAdmin>
           }
         >
-        <TitleBarTitle title="Gateways" />
+          <TitleBarTitle title={t("Gateways")} />
         </TitleBar>
 
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
-                <TableCell>Last seen</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Gateway ID</TableCell>
-                <TableCell>Network server</TableCell>
-                <TableCell className={this.props.classes.chart}>Gateway activity (30d)</TableCell>
+                <TableCell>{t("LastSeen")}</TableCell>
+                <TableCell>{t("Name")}</TableCell>
+                <TableCell>{t("GatewayID")}</TableCell>
+                <TableCell>{t("NetworkServer")}</TableCell>
+                <TableCell className={this.props.classes.chart}>
+                  {t("GatewayActivity")} ({t("30d")})
+                </TableCell>
               </TableRow>
             }
             getPage={this.getPage}

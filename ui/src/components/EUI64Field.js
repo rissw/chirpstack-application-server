@@ -1,21 +1,22 @@
 import React, { Component } from "react";
 
 import TextField from "@material-ui/core/TextField";
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
-import Tooltip from '@material-ui/core/Tooltip';
+import Tooltip from "@material-ui/core/Tooltip";
 
 import Refresh from "mdi-material-ui/Refresh";
 
 import MaskedInput from "react-text-mask";
 
+import { formatMessage as translate } from "devextreme/localization";
 
 class EUI64HEXMask extends Component {
   render() {
     const { inputRef, ...other } = this.props;
 
-    return(
+    return (
       <MaskedInput
         {...other}
         ref={(ref) => {
@@ -24,25 +25,25 @@ class EUI64HEXMask extends Component {
         mask={[
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
         ]}
@@ -50,7 +51,6 @@ class EUI64HEXMask extends Component {
     );
   }
 }
-
 
 class EUI64Field extends Component {
   constructor() {
@@ -73,14 +73,14 @@ class EUI64Field extends Component {
         value: bytes.reverse().join(" "),
       });
     }
-  }
+  };
 
   randomKey = () => {
     let cryptoObj = window.crypto || window.msCrypto;
     let b = new Uint8Array(8);
     cryptoObj.getRandomValues(b);
 
-    let key = Buffer.from(b).toString('hex');
+    let key = Buffer.from(b).toString("hex");
     this.setState({
       value: key,
     });
@@ -100,7 +100,7 @@ class EUI64Field extends Component {
         id: this.props.id,
       },
     });
-  }
+  };
 
   onChange = (e) => {
     this.setState({
@@ -123,7 +123,7 @@ class EUI64Field extends Component {
         id: this.props.id,
       },
     });
-  }
+  };
 
   componentDidMount() {
     this.setState({
@@ -132,29 +132,33 @@ class EUI64Field extends Component {
   }
 
   render() {
-    return(
+    return (
       <TextField
         type="text"
         InputProps={{
           inputComponent: EUI64HEXMask,
-          endAdornment: <InputAdornment position="end">
-            <Tooltip title="Toggle the byte order of the input. Some devices use LSB.">
-              <Button
-                aria-label="Toggle byte order"
-                onClick={this.toggleByteOrder}
-              >
-                {this.state.msb ? "MSB": "LSB"}
-              </Button>
-            </Tooltip>
-            {this.props.random && !this.props.disabled && <Tooltip title="Generate random ID.">
-              <IconButton
-                aria-label="Generate random key"
-                onClick={this.randomKey}
-              >
-                <Refresh />
-              </IconButton>
-             </Tooltip>}
-          </InputAdornment>
+          endAdornment: (
+            <InputAdornment position="end">
+              <Tooltip title={translate("toggleByteOrder")}>
+                <Button
+                  aria-label="Toggle byte order"
+                  onClick={this.toggleByteOrder}
+                >
+                  {this.state.msb ? "MSB" : "LSB"}
+                </Button>
+              </Tooltip>
+              {this.props.random && !this.props.disabled && (
+                <Tooltip title={translate("generateRandomID")}>
+                  <IconButton
+                    aria-label="Generate random key"
+                    onClick={this.randomKey}
+                  >
+                    <Refresh />
+                  </IconButton>
+                </Tooltip>
+              )}
+            </InputAdornment>
+          ),
         }}
         {...this.props}
         onChange={this.onChange}

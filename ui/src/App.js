@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import {Router} from "react-router-dom";
-import { Route, Switch } from 'react-router-dom';
+import { Router } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import classNames from "classnames";
 
 import CssBaseline from "@material-ui/core/CssBaseline";
 import { MuiThemeProvider, withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 
 import history from "./history";
 import theme from "./theme";
@@ -80,7 +80,6 @@ import CreateAdminAPIKey from "./views/api-keys/CreateAdminAPIKey";
 import ListOrganizationAPIKeys from "./views/api-keys/ListOrganizationAPIKeys";
 import CreateOrganizationAPIKey from "./views/api-keys/CreateOrganizationAPIKey";
 
-
 const drawerWidth = 270;
 
 const styles = {
@@ -92,7 +91,7 @@ const styles = {
   },
   paper: {
     padding: theme.spacing(2),
-    textAlign: 'center',
+    textAlign: "center",
     color: theme.palette.text.secondary,
   },
   main: {
@@ -103,13 +102,12 @@ const styles = {
   },
 
   mainDrawerOpen: {
-    paddingLeft: drawerWidth + (2 * 24),
+    paddingLeft: drawerWidth + 2 * 24,
   },
   footerDrawerOpen: {
     paddingLeft: drawerWidth,
   },
 };
-
 
 class App extends Component {
   constructor() {
@@ -148,8 +146,14 @@ class App extends Component {
     let sideNav = null;
 
     if (this.state.user !== null) {
-      topNav = <TopNav setDrawerOpen={this.setDrawerOpen} drawerOpen={this.state.drawerOpen} user={this.state.user} />;
-      sideNav = <SideNav open={this.state.drawerOpen} user={this.state.user} />
+      topNav = (
+        <TopNav
+          setDrawerOpen={this.setDrawerOpen}
+          drawerOpen={this.state.drawerOpen}
+          user={this.state.user}
+        />
+      );
+      sideNav = <SideNav open={this.state.drawerOpen} user={this.state.user} />;
     }
 
     return (
@@ -160,65 +164,201 @@ class App extends Component {
             <div className={this.props.classes.root}>
               {topNav}
               {sideNav}
-              <div className={classNames(this.props.classes.main, this.state.drawerOpen && this.props.classes.mainDrawerOpen)}>
+              <div
+                className={classNames(
+                  this.props.classes.main,
+                  this.state.drawerOpen && this.props.classes.mainDrawerOpen
+                )}
+              >
                 <Grid container spacing={4}>
                   <Switch>
                     <Route exact path="/" component={OrganizationRedirect} />
                     <Route exact path="/login" component={Login} />
                     <Route exact path="/users" component={ListUsers} />
                     <Route exact path="/users/create" component={CreateUser} />
-                    <Route exact path="/users/:userID(\d+)" component={UserLayout} />
-                    <Route exact path="/users/:userID(\d+)/password" component={ChangeUserPassword} />
+                    <Route
+                      exact
+                      path="/users/:userID(\d+)"
+                      component={UserLayout}
+                    />
+                    <Route
+                      exact
+                      path="/users/:userID(\d+)/password"
+                      component={ChangeUserPassword}
+                    />
                     <Route exact path="/dashboard" component={Dashboard} />
 
-                    <Route exact path="/network-servers" component={ListNetworkServers} />
-                    <Route exact path="/network-servers/create" component={CreateNetworkServer} />
-                    <Route path="/network-servers/:networkServerID" component={NetworkServerLayout} />
+                    <Route
+                      exact
+                      path="/network-servers"
+                      component={ListNetworkServers}
+                    />
+                    <Route
+                      exact
+                      path="/network-servers/create"
+                      component={CreateNetworkServer}
+                    />
+                    <Route
+                      path="/network-servers/:networkServerID"
+                      component={NetworkServerLayout}
+                    />
 
-                    <Route exact path="/gateway-profiles" component={ListGatewayProfiles} />
-                    <Route exact path="/gateway-profiles/create" component={CreateGatewayProfile} />
-                    <Route path="/gateway-profiles/:gatewayProfileID([\w-]{36})" component={GatewayProfileLayout} />
+                    <Route
+                      exact
+                      path="/gateway-profiles"
+                      component={ListGatewayProfiles}
+                    />
+                    <Route
+                      exact
+                      path="/gateway-profiles/create"
+                      component={CreateGatewayProfile}
+                    />
+                    <Route
+                      path="/gateway-profiles/:gatewayProfileID([\w-]{36})"
+                      component={GatewayProfileLayout}
+                    />
 
-                    <Route exact path="/api-keys" component={ListAdminAPIKeys} />
-                    <Route exact path="/api-keys/create" component={CreateAdminAPIKey} />
+                    <Route
+                      exact
+                      path="/api-keys"
+                      component={ListAdminAPIKeys}
+                    />
+                    <Route
+                      exact
+                      path="/api-keys/create"
+                      component={CreateAdminAPIKey}
+                    />
 
-                    <Route exact path="/organizations/:organizationID(\d+)/api-keys" component={ListOrganizationAPIKeys} />
-                    <Route exact path="/organizations/:organizationID(\d+)/api-keys/create" component={CreateOrganizationAPIKey} />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/api-keys"
+                      component={ListOrganizationAPIKeys}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/api-keys/create"
+                      component={CreateOrganizationAPIKey}
+                    />
 
-                    <Route exact path="/organizations/:organizationID(\d+)/service-profiles" component={ListServiceProfiles} />
-                    <Route exact path="/organizations/:organizationID(\d+)/service-profiles/create" component={CreateServiceProfile} />
-                    <Route path="/organizations/:organizationID(\d+)/service-profiles/:serviceProfileID([\w-]{36})" component={ServiceProfileLayout} />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/service-profiles"
+                      component={ListServiceProfiles}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/service-profiles/create"
+                      component={CreateServiceProfile}
+                    />
+                    <Route
+                      path="/organizations/:organizationID(\d+)/service-profiles/:serviceProfileID([\w-]{36})"
+                      component={ServiceProfileLayout}
+                    />
 
-                    <Route exact path="/organizations/:organizationID(\d+)/device-profiles" component={ListDeviceProfiles} />
-                    <Route exact path="/organizations/:organizationID(\d+)/device-profiles/create" component={CreateDeviceProfile} />
-                    <Route path="/organizations/:organizationID(\d+)/device-profiles/:deviceProfileID([\w-]{36})" component={DeviceProfileLayout} />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/device-profiles"
+                      component={ListDeviceProfiles}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/device-profiles/create"
+                      component={CreateDeviceProfile}
+                    />
+                    <Route
+                      path="/organizations/:organizationID(\d+)/device-profiles/:deviceProfileID([\w-]{36})"
+                      component={DeviceProfileLayout}
+                    />
 
-                    <Route exact path="/organizations/:organizationID(\d+)/gateways/create" component={CreateGateway} />
-                    <Route path="/organizations/:organizationID(\d+)/gateways/:gatewayID([\w]{16})" component={GatewayLayout} />
-                    <Route path="/organizations/:organizationID(\d+)/gateways" component={ListGateways} />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/gateways/create"
+                      component={CreateGateway}
+                    />
+                    <Route
+                      path="/organizations/:organizationID(\d+)/gateways/:gatewayID([\w]{16})"
+                      component={GatewayLayout}
+                    />
+                    <Route
+                      path="/organizations/:organizationID(\d+)/gateways"
+                      component={ListGateways}
+                    />
 
-                    <Route exact path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)/multicast-groups/create" component={CreateMulticastGroup} />
-                    <Route path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)/multicast-groups/:multicastGroupID([\w-]{36})" component={MulticastGroupLayout} />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)/multicast-groups/create"
+                      component={CreateMulticastGroup}
+                    />
+                    <Route
+                      path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)/multicast-groups/:multicastGroupID([\w-]{36})"
+                      component={MulticastGroupLayout}
+                    />
 
-                    <Route exact path="/organizations/:organizationID(\d+)/applications" component={ListApplications} />
-                    <Route exact path="/organizations/:organizationID(\d+)/applications/create" component={CreateApplication} />
-                    <Route exact path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)/devices/create" component={CreateDevice} />
-                    <Route path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)/devices/:devEUI([\w]{16})" component={DeviceLayout} />
-                    <Route path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)" component={ApplicationLayout} />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/applications"
+                      component={ListApplications}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/applications/create"
+                      component={CreateApplication}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)/devices/create"
+                      component={CreateDevice}
+                    />
+                    <Route
+                      path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)/devices/:devEUI([\w]{16})"
+                      component={DeviceLayout}
+                    />
+                    <Route
+                      path="/organizations/:organizationID(\d+)/applications/:applicationID(\d+)"
+                      component={ApplicationLayout}
+                    />
 
-
-                    <Route exact path="/organizations" component={ListOrganizations} />
-                    <Route exact path="/organizations/create" component={CreateOrganization} />
-                    <Route exact path="/organizations/:organizationID(\d+)/users" component={ListOrganizationUsers} />
-                    <Route exact path="/organizations/:organizationID(\d+)/users/create" component={CreateOrganizationUser} />
-                    <Route exact path="/organizations/:organizationID(\d+)/users/:userID(\d+)" component={OrganizationUserLayout} />
-                    <Route path="/organizations/:organizationID(\d+)" component={OrganizationLayout} />
+                    <Route
+                      exact
+                      path="/organizations"
+                      component={ListOrganizations}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/create"
+                      component={CreateOrganization}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/users"
+                      component={ListOrganizationUsers}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/users/create"
+                      component={CreateOrganizationUser}
+                    />
+                    <Route
+                      exact
+                      path="/organizations/:organizationID(\d+)/users/:userID(\d+)"
+                      component={OrganizationUserLayout}
+                    />
+                    <Route
+                      path="/organizations/:organizationID(\d+)"
+                      component={OrganizationLayout}
+                    />
 
                     <Route exact path="/search" component={Search} />
                   </Switch>
                 </Grid>
               </div>
-              <div className={this.state.drawerOpen ? this.props.classes.footerDrawerOpen : ""}>
+              <div
+                className={
+                  this.state.drawerOpen
+                    ? this.props.classes.footerDrawerOpen
+                    : ""
+                }
+              >
                 <Footer />
               </div>
             </div>

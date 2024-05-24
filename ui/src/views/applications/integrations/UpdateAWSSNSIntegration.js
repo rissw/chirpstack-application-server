@@ -1,12 +1,17 @@
 import React, { Component } from "react";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 
 import ApplicationStore from "../../../stores/ApplicationStore";
 import AWSSNSIntegrationForm from "./AWSSNSIntegrationForm";
 
+import { translate } from "../../../helpers/translate";
+
+const t = (key) => {
+  return translate("UpdateAWSSNSIntegrationJS", key);
+};
 
 class UpdateAWSSNSIntegration extends Component {
   constructor() {
@@ -19,17 +24,22 @@ class UpdateAWSSNSIntegration extends Component {
     let integr = integration;
     integr.applicationID = this.props.match.params.applicationID;
 
-    ApplicationStore.updateAWSSNSIntegration(integr, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/integrations`);
+    ApplicationStore.updateAWSSNSIntegration(integr, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/integrations`
+      );
     });
-  } 
+  };
 
   componentDidMount() {
-    ApplicationStore.getAWSSNSIntegration(this.props.match.params.applicationID, (resp) => {
-      this.setState({
-        object: resp.integration,
-      });
-    });
+    ApplicationStore.getAWSSNSIntegration(
+      this.props.match.params.applicationID,
+      (resp) => {
+        this.setState({
+          object: resp.integration,
+        });
+      }
+    );
   }
 
   render() {
@@ -37,13 +47,17 @@ class UpdateAWSSNSIntegration extends Component {
       return null;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
-            <CardHeader title="Update AWS SNS integration" />
+            <CardHeader title={t("Title")} />
             <CardContent>
-              <AWSSNSIntegrationForm submitLabel="Update integration" onSubmit={this.onSubmit} object={this.state.object} />
+              <AWSSNSIntegrationForm
+                submitLabel={t("SubmitLabel")}
+                onSubmit={this.onSubmit}
+                object={this.state.object}
+              />
             </CardContent>
           </Card>
         </Grid>

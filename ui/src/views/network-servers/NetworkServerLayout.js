@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 
 import Delete from "mdi-material-ui/Delete";
 
@@ -12,6 +12,7 @@ import TitleBarButton from "../../components/TitleBarButton";
 import NetworkServerStore from "../../stores/NetworkServerStore";
 import UpdateNetworkServer from "./UpdateNetworkServer";
 
+import { formatMessage as translate } from "devextreme/localization";
 
 class NetworkServerLayout extends Component {
   constructor() {
@@ -31,7 +32,9 @@ class NetworkServerLayout extends Component {
   }
 
   deleteNetworkServer() {
-    if (window.confirm("Are you sure you want to delete this network-server?")) {
+    if (
+      window.confirm("Are you sure you want to delete this network-server?")
+    ) {
       NetworkServerStore.delete(this.props.match.params.networkServerID, () => {
         this.props.history.push("/network-servers");
       });
@@ -40,29 +43,36 @@ class NetworkServerLayout extends Component {
 
   render() {
     if (this.state.networkServer === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={[
             <TitleBarButton
               key={1}
               icon={<Delete />}
-              label="Delete"
+              label={translate("delete")}
               color="secondary"
               onClick={this.deleteNetworkServer}
             />,
           ]}
         >
-          <TitleBarTitle to="/network-servers" title="Network-servers" />
+          <TitleBarTitle
+            to="/network-servers"
+            title={translate("networkServers")}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title={`${this.state.networkServer.networkServer.name} (${this.state.networkServer.region} @ ${this.state.networkServer.version})`} />
+          <TitleBarTitle
+            title={`${this.state.networkServer.networkServer.name} (${this.state.networkServer.region} @ ${this.state.networkServer.version})`}
+          />
         </TitleBar>
 
         <Grid item xs={12}>
-          <UpdateNetworkServer networkServer={this.state.networkServer.networkServer} />
+          <UpdateNetworkServer
+            networkServer={this.state.networkServer.networkServer}
+          />
         </Grid>
       </Grid>
     );

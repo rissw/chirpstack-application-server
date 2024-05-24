@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 
 import { CardContent } from "@material-ui/core";
 
@@ -11,6 +11,11 @@ import TitleBarTitle from "../../components/TitleBarTitle";
 import OrganizationForm from "./OrganizationForm";
 import OrganizationStore from "../../stores/OrganizationStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("CreateOrganizationJS", key);
+};
 
 class CreateOrganization extends Component {
   constructor() {
@@ -19,24 +24,24 @@ class CreateOrganization extends Component {
   }
 
   onSubmit(organization) {
-    OrganizationStore.create(organization, resp => {
+    OrganizationStore.create(organization, (resp) => {
       this.props.history.push("/organizations");
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar>
-          <TitleBarTitle title="Organizations" to="/organizations" />
+          <TitleBarTitle title={t("Organizations")} to="/organizations" />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Create" />
+          <TitleBarTitle title={t("Create")} />
         </TitleBar>
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <OrganizationForm
-                submitLabel="Create organization"
+                submitLabel={t("CreateOrganization")}
                 onSubmit={this.onSubmit}
               />
             </CardContent>

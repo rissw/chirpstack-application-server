@@ -2,13 +2,13 @@ import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Drawer from '@material-ui/core/Drawer';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import Drawer from "@material-ui/core/Drawer";
+import List from "@material-ui/core/List";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 
-import Divider from '@material-ui/core/Divider';
+import Divider from "@material-ui/core/Divider";
 import Domain from "mdi-material-ui/Domain";
 import Home from "mdi-material-ui/Home";
 import Account from "mdi-material-ui/Account";
@@ -23,9 +23,9 @@ import AutocompleteSelect from "./AutocompleteSelect";
 import SessionStore from "../stores/SessionStore";
 import OrganizationStore from "../stores/OrganizationStore";
 import Admin from "./Admin";
+import { formatMessage as translate } from "devextreme/localization";
 
 import theme from "../theme";
-
 
 const styles = {
   drawerPaper: {
@@ -51,16 +51,16 @@ class SideNav extends Component {
       cacheCounter: 0,
     };
 
-
     this.onChange = this.onChange.bind(this);
     this.getOrganizationOption = this.getOrganizationOption.bind(this);
     this.getOrganizationOptions = this.getOrganizationOptions.bind(this);
-    this.getOrganizationFromLocation = this.getOrganizationFromLocation.bind(this);
+    this.getOrganizationFromLocation =
+      this.getOrganizationFromLocation.bind(this);
   }
 
   componentDidMount() {
     SessionStore.on("organization.change", () => {
-      OrganizationStore.get(SessionStore.getOrganizationID(), resp => {
+      OrganizationStore.get(SessionStore.getOrganizationID(), (resp) => {
         this.setState({
           organization: resp.organization,
         });
@@ -74,7 +74,10 @@ class SideNav extends Component {
     });
 
     OrganizationStore.on("change", (org) => {
-      if (this.state.organization !== null && this.state.organization.id === org.id) {
+      if (
+        this.state.organization !== null &&
+        this.state.organization.id === org.id
+      ) {
         this.setState({
           organization: org,
         });
@@ -85,8 +88,11 @@ class SideNav extends Component {
       });
     });
 
-    OrganizationStore.on("delete", id => {
-      if (this.state.organization !== null && this.state.organization.id === id) {
+    OrganizationStore.on("delete", (id) => {
+      if (
+        this.state.organization !== null &&
+        this.state.organization.id === id
+      ) {
         this.setState({
           organization: null,
         });
@@ -98,7 +104,7 @@ class SideNav extends Component {
     });
 
     if (SessionStore.getOrganizationID() !== null) {
-      OrganizationStore.get(SessionStore.getOrganizationID(), resp => {
+      OrganizationStore.get(SessionStore.getOrganizationID(), (resp) => {
         this.setState({
           organization: resp.organization,
         });
@@ -124,20 +130,29 @@ class SideNav extends Component {
     const organizationRe = /\/organizations\/(\d+)/g;
     const match = organizationRe.exec(this.props.history.location.pathname);
 
-    if (match !== null && (this.state.organization === null || this.state.organization.id !== match[1])) {
+    if (
+      match !== null &&
+      (this.state.organization === null ||
+        this.state.organization.id !== match[1])
+    ) {
       SessionStore.setOrganizationID(match[1]);
     }
   }
 
   getOrganizationOption(id, callbackFunc) {
-    OrganizationStore.get(id, resp => {
-      callbackFunc({label: resp.organization.name, value: resp.organization.id});
+    OrganizationStore.get(id, (resp) => {
+      callbackFunc({
+        label: resp.organization.name,
+        value: resp.organization.id,
+      });
     });
   }
 
   getOrganizationOptions(search, callbackFunc) {
-    OrganizationStore.list(search, 10, 0, resp => {
-      const options = resp.result.map((o, i) => {return {label: o.name, value: o.id}});
+    OrganizationStore.list(search, 10, 0, (resp) => {
+      const options = resp.result.map((o, i) => {
+        return { label: o.name, value: o.id };
+      });
       callbackFunc(options, resp.totalCount);
     });
   }
@@ -148,12 +163,12 @@ class SideNav extends Component {
       organizationID = this.state.organization.id;
     }
 
-    return(
+    return (
       <Drawer
         variant="persistent"
         anchor="left"
         open={this.props.open}
-        classes={{paper: this.props.classes.drawerPaper}}
+        classes={{ paper: this.props.classes.drawerPaper }}
       >
         <Admin>
           <List>
@@ -161,37 +176,37 @@ class SideNav extends Component {
               <ListItemIcon>
                 <Home />
               </ListItemIcon>
-              <ListItemText primary="Dashboard" />
+              <ListItemText primary={translate("dashboard")} />
             </ListItem>
             <ListItem button component={Link} to="/network-servers">
               <ListItemIcon>
                 <Server />
               </ListItemIcon>
-              <ListItemText primary="Network-servers" />
+              <ListItemText primary={translate("networkServers")} />
             </ListItem>
             <ListItem button component={Link} to="/gateway-profiles">
               <ListItemIcon>
                 <RadioTower />
               </ListItemIcon>
-              <ListItemText primary="Gateway-profiles" />
+              <ListItemText primary={translate("gatewayProfiles")} />
             </ListItem>
             <ListItem button component={Link} to="/organizations">
-            <ListItemIcon>
+              <ListItemIcon>
                 <Domain />
               </ListItemIcon>
-              <ListItemText primary="Organizations" />
+              <ListItemText primary={translate("organizations")} />
             </ListItem>
             <ListItem button component={Link} to="/users">
               <ListItemIcon>
                 <Account />
               </ListItemIcon>
-              <ListItemText primary="All users" />
+              <ListItemText primary={translate("allUsers")} />
             </ListItem>
             <ListItem button component={Link} to="/api-keys">
               <ListItemIcon>
                 <KeyVariant />
               </ListItemIcon>
-              <ListItemText primary="API keys" />
+              <ListItemText primary={translate("apiKeys")} />
             </ListItem>
           </List>
           <Divider />
@@ -210,52 +225,84 @@ class SideNav extends Component {
           />
         </div>
 
-        {this.state.organization && <List>
-          <ListItem button component={Link} to={`/organizations/${this.state.organization.id}`}>
-            <ListItemIcon>
-              <Home />
-            </ListItemIcon>
-            <ListItemText primary="Org. dashboard" />
-          </ListItem>
-          <Admin organizationID={this.state.organization.id}>
-            <ListItem button component={Link} to={`/organizations/${this.state.organization.id}/users`}>
+        {this.state.organization && (
+          <List>
+            <ListItem
+              button
+              component={Link}
+              to={`/organizations/${this.state.organization.id}`}
+            >
               <ListItemIcon>
-                <Account />
+                <Home />
               </ListItemIcon>
-              <ListItemText primary="Org. users" />
+              <ListItemText primary={translate("orgDashboard")} />
             </ListItem>
-            <ListItem button component={Link} to={`/organizations/${this.state.organization.id}/api-keys`}>
+            <Admin organizationID={this.state.organization.id}>
+              <ListItem
+                button
+                component={Link}
+                to={`/organizations/${this.state.organization.id}/users`}
+              >
+                <ListItemIcon>
+                  <Account />
+                </ListItemIcon>
+                <ListItemText primary={translate("orgUsers")} />
+              </ListItem>
+              <ListItem
+                button
+                component={Link}
+                to={`/organizations/${this.state.organization.id}/api-keys`}
+              >
+                <ListItemIcon>
+                  <KeyVariant />
+                </ListItemIcon>
+                <ListItemText primary={translate("orgApiKeys")} />
+              </ListItem>
+            </Admin>
+            <ListItem
+              button
+              component={Link}
+              to={`/organizations/${this.state.organization.id}/service-profiles`}
+            >
               <ListItemIcon>
-                <KeyVariant />
+                <AccountDetails />
               </ListItemIcon>
-              <ListItemText primary="Org. API keys" />
+              <ListItemText primary={translate("serviceProfiles")} />
             </ListItem>
-          </Admin>
-          <ListItem button component={Link} to={`/organizations/${this.state.organization.id}/service-profiles`}>
-            <ListItemIcon>
-              <AccountDetails />
-            </ListItemIcon>
-            <ListItemText primary="Service-profiles" />
-          </ListItem>
-          <ListItem button component={Link} to={`/organizations/${this.state.organization.id}/device-profiles`}>
-            <ListItemIcon>
-              <Tune />
-            </ListItemIcon>
-            <ListItemText primary="Device-profiles" />
-          </ListItem>
-          {this.state.organization.canHaveGateways && <ListItem button component={Link} to={`/organizations/${this.state.organization.id}/gateways`}>
-            <ListItemIcon>
-              <RadioTower />
-            </ListItemIcon>
-            <ListItemText primary="Gateways" />
-          </ListItem>}
-          <ListItem button component={Link} to={`/organizations/${this.state.organization.id}/applications`}>
-            <ListItemIcon>
-              <Apps />
-            </ListItemIcon>
-            <ListItemText primary="Applications" />
-          </ListItem>
-        </List>}
+            <ListItem
+              button
+              component={Link}
+              to={`/organizations/${this.state.organization.id}/device-profiles`}
+            >
+              <ListItemIcon>
+                <Tune />
+              </ListItemIcon>
+              <ListItemText primary={translate("deviceProfiles")} />
+            </ListItem>
+            {this.state.organization.canHaveGateways && (
+              <ListItem
+                button
+                component={Link}
+                to={`/organizations/${this.state.organization.id}/gateways`}
+              >
+                <ListItemIcon>
+                  <RadioTower />
+                </ListItemIcon>
+                <ListItemText primary={translate("gateways")} />
+              </ListItem>
+            )}
+            <ListItem
+              button
+              component={Link}
+              to={`/organizations/${this.state.organization.id}/applications`}
+            >
+              <ListItemIcon>
+                <Apps />
+              </ListItemIcon>
+              <ListItemText primary={translate("applications")} />
+            </ListItem>
+          </List>
+        )}
       </Drawer>
     );
   }

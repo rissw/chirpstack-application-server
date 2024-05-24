@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Route, Switch, Link, withRouter } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Grid from "@material-ui/core/Grid";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 import Delete from "mdi-material-ui/Delete";
 
@@ -20,6 +20,11 @@ import UpdateMulticastGroup from "./UpdateMulticastGroup";
 import theme from "../../theme";
 import ListMulticastGroupDevices from "./ListMulticastGroupDevices";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("MulticastGroupLayoutJS", key);
+};
 
 const styles = {
   tabs: {
@@ -28,7 +33,6 @@ const styles = {
     overflow: "visible",
   },
 };
-
 
 class MulticastGroupLayout extends Component {
   constructor() {
@@ -45,22 +49,24 @@ class MulticastGroupLayout extends Component {
   }
 
   componentDidMount() {
-    ApplicationStore.get(this.props.match.params.applicationID, resp => {
+    ApplicationStore.get(this.props.match.params.applicationID, (resp) => {
       this.setState({
         application: resp,
       });
     });
 
-    MulticastGroupStore.get(this.props.match.params.multicastGroupID, resp => {
-      this.setState({
-        multicastGroup: resp,
-      });
-    });
+    MulticastGroupStore.get(
+      this.props.match.params.multicastGroupID,
+      (resp) => {
+        this.setState({
+          multicastGroup: resp,
+        });
+      }
+    );
 
     SessionStore.on("change", this.setIsAdmin);
     this.setIsAdmin();
   }
-
 
   componentWillUnmount() {
     SessionStore.removeListener("change", this.setIsAdmin);
@@ -75,7 +81,11 @@ class MulticastGroupLayout extends Component {
 
   setIsAdmin() {
     this.setState({
-      admin: SessionStore.isAdmin() || SessionStore.isOrganizationDeviceAdmin(this.props.match.params.organizationID),
+      admin:
+        SessionStore.isAdmin() ||
+        SessionStore.isOrganizationDeviceAdmin(
+          this.props.match.params.organizationID
+        ),
     });
   }
 
@@ -98,25 +108,35 @@ class MulticastGroupLayout extends Component {
   }
 
   deleteMulticastGroup() {
-    if (window.confirm("Are you sure you want to delete this multicast-group?")) {
-      MulticastGroupStore.delete(this.props.match.params.multicastGroupID, resp => {
-        this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups`);
-      });
+    if (window.confirm(t("DeleteConfirmation"))) {
+      MulticastGroupStore.delete(
+        this.props.match.params.multicastGroupID,
+        (resp) => {
+          this.props.history.push(
+            `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups`
+          );
+        }
+      );
     }
   }
 
   render() {
-    if (this.state.application === undefined || this.state.multicastGroup === undefined) {
+    if (
+      this.state.application === undefined ||
+      this.state.multicastGroup === undefined
+    ) {
       return null;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
-      <TitleBar
+        <TitleBar
           buttons={
-            <DeviceAdmin organizationID={this.props.match.params.organizationID}>
+            <DeviceAdmin
+              organizationID={this.props.match.params.organizationID}
+            >
               <TitleBarButton
-                label="Delete"
+                label={t("Delete")}
                 icon={<Delete />}
                 color="secondary"
                 onClick={this.deleteMulticastGroup}
@@ -124,13 +144,24 @@ class MulticastGroupLayout extends Component {
             </DeviceAdmin>
           }
         >
-          <TitleBarTitle title="Applications" to={`/organizations/${this.props.match.params.organizationID}/applications`} />
+          <TitleBarTitle
+            title={t("Applications")}
+            to={`/organizations/${this.props.match.params.organizationID}/applications`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title={this.state.application.application.name} to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`} />
+          <TitleBarTitle
+            title={this.state.application.application.name}
+            to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Multicast groups" to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups`} />
+          <TitleBarTitle
+            title={t("MulticastGroups")}
+            to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title={this.state.multicastGroup.multicastGroup.name} />
+          <TitleBarTitle
+            title={this.state.multicastGroup.multicastGroup.name}
+          />
         </TitleBar>
 
         <Grid item xs={12}>
@@ -140,15 +171,43 @@ class MulticastGroupLayout extends Component {
             indicatorColor="primary"
             className={this.props.classes.tabs}
           >
-            <Tab label="Devices" component={Link} to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${this.props.match.params.multicastGroupID}`} />
-            {this.state.admin && <Tab label="Configuration" component={Link} to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${this.props.match.params.multicastGroupID}/edit`} />}
+            <Tab
+              label={t("Devices")}
+              component={Link}
+              to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${this.props.match.params.multicastGroupID}`}
+            />
+            {this.state.admin && (
+              <Tab
+                label={t("Configuration")}
+                component={Link}
+                to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${this.props.match.params.multicastGroupID}/edit`}
+              />
+            )}
           </Tabs>
         </Grid>
 
         <Grid item xs={12}>
           <Switch>
-            <Route exact path={`${this.props.match.path}/edit`} render={props => <UpdateMulticastGroup multicastGroup={this.state.multicastGroup.multicastGroup} {...props} />} />
-            <Route exact path={`${this.props.match.path}`} render={props => <ListMulticastGroupDevices multicastGroup={this.state.multicastGroup.multicastGroup} {...props} />} />
+            <Route
+              exact
+              path={`${this.props.match.path}/edit`}
+              render={(props) => (
+                <UpdateMulticastGroup
+                  multicastGroup={this.state.multicastGroup.multicastGroup}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={`${this.props.match.path}`}
+              render={(props) => (
+                <ListMulticastGroupDevices
+                  multicastGroup={this.state.multicastGroup.multicastGroup}
+                  {...props}
+                />
+              )}
+            />
           </Switch>
         </Grid>
       </Grid>

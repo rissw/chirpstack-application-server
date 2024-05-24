@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 
 import Delete from "mdi-material-ui/Delete";
 
@@ -11,6 +11,11 @@ import TitleBarButton from "../../components/TitleBarButton";
 import GatewayProfileStore from "../../stores/GatewayProfileStore";
 import UpdateGatewayProfile from "./UpdateGatewayProfile";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("GatewayProfileLayoutJS", key);
+};
 
 class GatewayProfileLayout extends Component {
   constructor() {
@@ -22,46 +27,56 @@ class GatewayProfileLayout extends Component {
   }
 
   componentDidMount() {
-    GatewayProfileStore.get(this.props.match.params.gatewayProfileID, resp => {
-      this.setState({
-        gatewayProfile: resp,
-      });
-    });
+    GatewayProfileStore.get(
+      this.props.match.params.gatewayProfileID,
+      (resp) => {
+        this.setState({
+          gatewayProfile: resp,
+        });
+      }
+    );
   }
 
   deleteGatewayProfile() {
-    if (window.confirm("Are you sure you want to delete this gateway-profile?")) {
-      GatewayProfileStore.delete(this.props.match.params.gatewayProfileID, () => {
-        this.props.history.push("/gateway-profiles");
-      });
+    if (window.confirm(t("DeleteGatewayProfileConfirmation"))) {
+      GatewayProfileStore.delete(
+        this.props.match.params.gatewayProfileID,
+        () => {
+          this.props.history.push("/gateway-profiles");
+        }
+      );
     }
   }
 
   render() {
     if (this.state.gatewayProfile === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={[
             <TitleBarButton
               key={1}
-              label="Delete"
+              label={t("Delete")}
               icon={<Delete />}
               color="secondary"
               onClick={this.deleteGatewayProfile}
             />,
           ]}
         >
-          <TitleBarTitle to="/gateway-profiles" title="Gateway-profiles" />
+          <TitleBarTitle to="/gateway-profiles" title={t("GatewayProfiles")} />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title={this.state.gatewayProfile.gatewayProfile.name} />
+          <TitleBarTitle
+            title={this.state.gatewayProfile.gatewayProfile.name}
+          />
         </TitleBar>
 
         <Grid item xs={12}>
-          <UpdateGatewayProfile gatewayProfile={this.state.gatewayProfile.gatewayProfile} />
+          <UpdateGatewayProfile
+            gatewayProfile={this.state.gatewayProfile.gatewayProfile}
+          />
         </Grid>
       </Grid>
     );

@@ -10,8 +10,8 @@ import TableHead from "@material-ui/core/TableHead";
 import TableRow from "@material-ui/core/TableRow";
 import TableCell from "@material-ui/core/TableCell";
 import TableBody from "@material-ui/core/TableBody";
-import Button from '@material-ui/core/Button';
-import { withStyles } from '@material-ui/core/styles';
+import Button from "@material-ui/core/Button";
+import { withStyles } from "@material-ui/core/styles";
 
 import Refresh from "mdi-material-ui/Refresh";
 import Delete from "mdi-material-ui/Delete";
@@ -28,6 +28,11 @@ import MulticastGroupStore from "../../stores/MulticastGroupStore";
 
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("DeviceDetailsJS", key);
+};
 
 const styles = {
   link: {
@@ -40,32 +45,43 @@ const styles = {
   },
 };
 
-
-
 class DetailsCard extends Component {
   render() {
-    const multicastGroups = this.props.multicastGroups.map((mg, i) => <div><Link className={this.props.classes.link} to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${mg.id}`}>{ mg.name }</Link></div>);
+    const multicastGroups = this.props.multicastGroups.map((mg, i) => (
+      <div>
+        <Link
+          className={this.props.classes.link}
+          to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${mg.id}`}
+        >
+          {mg.name}
+        </Link>
+      </div>
+    ));
 
-    return(
+    return (
       <Card>
-        <CardHeader title="Details" />
+        <CardHeader title={t("Details")} />
         <CardContent>
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell>Name</TableCell>
+                <TableCell>{t("name")}</TableCell>
                 <TableCell>{this.props.device.device.name}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Description</TableCell>
+                <TableCell>{t("description")}</TableCell>
                 <TableCell>{this.props.device.device.description}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>Device-profile</TableCell>
-                <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/device-profiles/${this.props.deviceProfile.deviceProfile.id}`}>{this.props.deviceProfile.deviceProfile.name}</TableCellLink>
+                <TableCell>{t("deviceProfile")}</TableCell>
+                <TableCellLink
+                  to={`/organizations/${this.props.match.params.organizationID}/device-profiles/${this.props.deviceProfile.deviceProfile.id}`}
+                >
+                  {this.props.deviceProfile.deviceProfile.name}
+                </TableCellLink>
               </TableRow>
               <TableRow>
-                <TableCell>Multicast groups</TableCell>
+                <TableCell>{t("multicastGroups")}</TableCell>
                 <TableCell>{multicastGroups}</TableCell>
               </TableRow>
             </TableBody>
@@ -77,7 +93,6 @@ class DetailsCard extends Component {
 }
 
 DetailsCard = withStyles(styles)(DetailsCard);
-
 
 class StatusCard extends Component {
   render() {
@@ -92,19 +107,19 @@ class StatusCard extends Component {
       state = "disabled";
     }
 
-    return(
+    return (
       <Card>
-        <CardHeader title="Status" />
+        <CardHeader title={t("status")} />
         <CardContent>
           <Table>
             <TableBody>
               <TableRow>
-                <TableCell>Last seen at</TableCell>
+                <TableCell>{t("lastSeenAt")}</TableCell>
                 <TableCell>{lastSeenAt}</TableCell>
               </TableRow>
               <TableRow>
-                <TableCell>State</TableCell>
-                <TableCell>{state}</TableCell>
+                <TableCell>{t("state")}</TableCell>
+                <TableCell>{t(state)}</TableCell>
               </TableRow>
             </TableBody>
           </Table>
@@ -127,20 +142,20 @@ class EnqueueCard extends Component {
     let qi = queueItem;
     qi.devEUI = this.props.match.params.devEUI;
 
-    DeviceQueueStore.enqueue(qi, resp => {
+    DeviceQueueStore.enqueue(qi, (resp) => {
       this.setState({
         object: {},
       });
     });
-  }
+  };
 
   render() {
-    return(
+    return (
       <Card>
-        <CardHeader title="Enqueue downlink payload" />
+        <CardHeader title={t("enqueueDownlinkPayload")} />
         <CardContent>
           <DeviceQueueItemForm
-            submitLabel="Enqueue payload"
+            submitLabel={t("enqueuePayload")}
             onSubmit={this.onSubmit}
             object={this.state.object}
           />
@@ -152,7 +167,6 @@ class EnqueueCard extends Component {
 
 EnqueueCard = withRouter(EnqueueCard);
 
-
 class QueueCardRow extends Component {
   render() {
     let confirmed = "no";
@@ -160,17 +174,16 @@ class QueueCardRow extends Component {
       confirmed = "yes";
     }
 
-    return(
+    return (
       <TableRow>
         <TableCell>{this.props.item.fCnt}</TableCell>
         <TableCell>{this.props.item.fPort}</TableCell>
-        <TableCell>{confirmed}</TableCell>
+        <TableCell>{t(confirmed)}</TableCell>
         <TableCell>{this.props.item.data}</TableCell>
       </TableRow>
     );
   }
 }
-
 
 class QueueCard extends Component {
   constructor() {
@@ -192,45 +205,52 @@ class QueueCard extends Component {
   }
 
   getQueue = () => {
-    DeviceQueueStore.list(this.props.match.params.devEUI, resp => {
+    DeviceQueueStore.list(this.props.match.params.devEUI, (resp) => {
       this.setState({
         deviceQueueItems: resp.deviceQueueItems,
       });
     });
-  }
+  };
 
   flushQueue = () => {
-    if (window.confirm("Are you sure you want to flush the device queue?")) {
-      DeviceQueueStore.flush(this.props.match.params.devEUI, resp => {
+    if (window.confirm(t("flushConfirmation"))) {
+      DeviceQueueStore.flush(this.props.match.params.devEUI, (resp) => {
         this.getQueue();
       });
     }
-  }
+  };
 
   render() {
-    const rows = this.state.deviceQueueItems.map((item, i) => <QueueCardRow key={i} item={item}/>);
+    const rows = this.state.deviceQueueItems.map((item, i) => (
+      <QueueCardRow key={i} item={item} />
+    ));
 
-    return(
+    return (
       <Card>
-        <CardHeader title="Downlink queue" action={
-          <div>
-            <Button onClick={this.getQueue}><Refresh /></Button>
-            <Button onClick={this.flushQueue} color="secondary"><Delete /></Button>
-          </div>
-        } />
+        <CardHeader
+          title={t("downlinkQueue")}
+          action={
+            <div>
+              <Button onClick={this.getQueue}>
+                <Refresh />
+              </Button>
+              <Button onClick={this.flushQueue} color="secondary">
+                <Delete />
+              </Button>
+            </div>
+          }
+        />
         <CardContent>
           <Table>
             <TableHead>
               <TableRow>
-                <TableCell>FCnt</TableCell>
-                <TableCell>FPort</TableCell>
-                <TableCell>Confirmed</TableCell>
-                <TableCell>Base64 encoded payload</TableCell>
+                <TableCell>{t("FCnt")}</TableCell>
+                <TableCell>{t("FPort")}</TableCell>
+                <TableCell>{t("Confirmed")}</TableCell>
+                <TableCell>{t("base64EncodedPayload")}</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {rows}
-            </TableBody>
+            <TableBody>{rows}</TableBody>
           </Table>
         </CardContent>
       </Card>
@@ -239,7 +259,6 @@ class QueueCard extends Component {
 }
 
 QueueCard = withRouter(QueueCard);
-
 
 class DeviceDetails extends Component {
   constructor() {
@@ -268,7 +287,7 @@ class DeviceDetails extends Component {
       return;
     }
 
-    DeviceStore.getActivation(this.props.device.device.devEUI, resp => {
+    DeviceStore.getActivation(this.props.device.device.devEUI, (resp) => {
       if (resp === null) {
         this.setState({
           activated: false,
@@ -282,23 +301,31 @@ class DeviceDetails extends Component {
   };
 
   setMulticastGroups = () => {
-    MulticastGroupStore.list("", 0, "", this.props.device.device.devEUI, 999, 0, resp => {
-      this.setState({
-        multicastGroups: resp.result,
-      });
-    });
-  }
+    MulticastGroupStore.list(
+      "",
+      0,
+      "",
+      this.props.device.device.devEUI,
+      999,
+      0,
+      (resp) => {
+        this.setState({
+          multicastGroups: resp.result,
+        });
+      }
+    );
+  };
 
   loadStats = () => {
     const end = moment().toISOString();
     const start = moment().subtract(30, "days").toISOString();
 
-    DeviceStore.getStats(this.props.match.params.devEUI, start, end, resp => {
+    DeviceStore.getStats(this.props.match.params.devEUI, start, end, (resp) => {
       let statsUp = {
         labels: [],
         datasets: [
           {
-            label: "uplink",
+            label: t("uplink"),
             borderColor: "rgba(33, 150, 243, 1)",
             backgroundColor: "rgba(0, 0, 0, 0)",
             lineTension: 0,
@@ -307,14 +334,14 @@ class DeviceDetails extends Component {
           },
         ],
       };
-      
+
       let statsUpFreq = [];
 
       let statsGwRssi = {
         labels: [],
         datasets: [
           {
-            label: "rssi (reported by gateways)",
+            label: t("rssi"),
             borderColor: "rgba(33, 150, 243, 1)",
             backgroundColor: "rgba(0, 0, 0, 0)",
             lineTension: 0,
@@ -328,7 +355,7 @@ class DeviceDetails extends Component {
         labels: [],
         datasets: [
           {
-            label: "snr (reported by gateways)",
+            label: t("snr"),
             borderColor: "rgba(33, 150, 243, 1)",
             backgroundColor: "rgba(0, 0, 0, 0)",
             lineTension: 0,
@@ -377,7 +404,11 @@ class DeviceDetails extends Component {
           }
 
           // fill gaps with 0s
-          for (let i = statsErrorsSet[k].length; i < statsErrors.labels.length - 1; i++) {
+          for (
+            let i = statsErrorsSet[k].length;
+            i < statsErrors.labels.length - 1;
+            i++
+          ) {
             statsErrorsSet[k].push(0);
           }
 
@@ -391,7 +422,11 @@ class DeviceDetails extends Component {
           }
 
           // fill gaps with 0s
-          for (let i = statsUpDrSet[k].length; i < statsUpDr.labels.length - 1; i++) {
+          for (
+            let i = statsUpDrSet[k].length;
+            i < statsUpDr.labels.length - 1;
+            i++
+          ) {
             statsUpDrSet[k].push(0);
           }
 
@@ -399,7 +434,23 @@ class DeviceDetails extends Component {
         });
       }
 
-      let backgroundColors = ['#8bc34a', '#ff5722', '#ff9800', '#ffc107', '#ffeb3b', '#cddc39', '#4caf50', '#009688', '#00bcd4', '#03a9f4', '#2196f3', '#3f51b5', '#673ab7', '#9c27b0', '#e91e63'];
+      let backgroundColors = [
+        "#8bc34a",
+        "#ff5722",
+        "#ff9800",
+        "#ffc107",
+        "#ffeb3b",
+        "#cddc39",
+        "#4caf50",
+        "#009688",
+        "#00bcd4",
+        "#03a9f4",
+        "#2196f3",
+        "#3f51b5",
+        "#673ab7",
+        "#9c27b0",
+        "#e91e63",
+      ];
 
       Object.entries(statsErrorsSet).forEach(([k, v]) => {
         statsErrors.datasets.push({
@@ -409,7 +460,23 @@ class DeviceDetails extends Component {
         });
       });
 
-      backgroundColors = ['#8bc34a', '#ff5722', '#ff9800', '#ffc107', '#ffeb3b', '#cddc39', '#4caf50', '#009688', '#00bcd4', '#03a9f4', '#2196f3', '#3f51b5', '#673ab7', '#9c27b0', '#e91e63'];
+      backgroundColors = [
+        "#8bc34a",
+        "#ff5722",
+        "#ff9800",
+        "#ffc107",
+        "#ffeb3b",
+        "#cddc39",
+        "#4caf50",
+        "#009688",
+        "#00bcd4",
+        "#03a9f4",
+        "#2196f3",
+        "#3f51b5",
+        "#673ab7",
+        "#9c27b0",
+        "#e91e63",
+      ];
 
       Object.entries(statsUpDrSet).forEach(([k, v]) => {
         statsUpDr.datasets.push({
@@ -428,7 +495,7 @@ class DeviceDetails extends Component {
         statsUpDr: statsUpDr,
       });
     });
-  }
+  };
 
   render() {
     if (this.state.statsUp === undefined) {
@@ -471,25 +538,34 @@ class DeviceDetails extends Component {
       },
     };
 
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={6}>
-          <DetailsCard multicastGroups={this.state.multicastGroups} device={this.props.device} deviceProfile={this.props.deviceProfile} match={this.props.match} />
+          <DetailsCard
+            multicastGroups={this.state.multicastGroups}
+            device={this.props.device}
+            deviceProfile={this.props.deviceProfile}
+            match={this.props.match}
+          />
         </Grid>
         <Grid item xs={6}>
           <StatusCard device={this.props.device} />
         </Grid>
         <Grid item xs={6}>
           <Card>
-            <CardHeader title="Received" />
+            <CardHeader title={t("received")} />
             <CardContent className={this.props.classes.chart}>
-              <Line height={75} options={statsOptions} data={this.state.statsUp} />
+              <Line
+                height={75}
+                options={statsOptions}
+                data={this.state.statsUp}
+              />
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={6}>
           <Card>
-            <CardHeader title="Errors" />
+            <CardHeader title={t("errors")} />
             <CardContent className={this.props.classes.chart}>
               <Bar data={this.state.statsErrors} options={barOptions} />
             </CardContent>
@@ -497,42 +573,58 @@ class DeviceDetails extends Component {
         </Grid>
         <Grid item xs={6}>
           <Card>
-            <CardHeader title="SNR" />
+            <CardHeader title={t("SNR")} />
             <CardContent className={this.props.classes.chart}>
-              <Line height={75} options={statsOptions} data={this.state.statsGwSnr} />
+              <Line
+                height={75}
+                options={statsOptions}
+                data={this.state.statsGwSnr}
+              />
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={6}>
           <Card>
-            <CardHeader title="RSSI" />
+            <CardHeader title={t("RSSI")} />
             <CardContent className={this.props.classes.chart}>
-              <Line height={75} options={statsOptions} data={this.state.statsGwRssi} />
+              <Line
+                height={75}
+                options={statsOptions}
+                data={this.state.statsGwRssi}
+              />
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={6}>
           <Card>
-            <CardHeader title="Received / frequency" />
+            <CardHeader title={`${t("Received")} / ${t("frequency")}`} />
             <CardContent className={this.props.classes.chart}>
-              <Heatmap data={this.state.statsUpFreq} fromColor="rgb(227, 242, 253)" toColor="rgb(33, 150, 243, 1)" />
+              <Heatmap
+                data={this.state.statsUpFreq}
+                fromColor="rgb(227, 242, 253)"
+                toColor="rgb(33, 150, 243, 1)"
+              />
             </CardContent>
           </Card>
         </Grid>
         <Grid item xs={6}>
           <Card>
-            <CardHeader title="Received / DR" />
+            <CardHeader title={`${t("Received")} / ${t("DR")}`} />
             <CardContent className={this.props.classes.chart}>
               <Bar data={this.state.statsUpDr} options={barOptions} />
             </CardContent>
           </Card>
         </Grid>
-        {this.state.activated && <Grid item xs={12}>
-          <EnqueueCard />
-        </Grid>}
-        {this.state.activated &&<Grid item xs={12}>
-          <QueueCard />
-        </Grid>}
+        {this.state.activated && (
+          <Grid item xs={12}>
+            <EnqueueCard />
+          </Grid>
+        )}
+        {this.state.activated && (
+          <Grid item xs={12}>
+            <QueueCard />
+          </Grid>
+        )}
       </Grid>
     );
   }

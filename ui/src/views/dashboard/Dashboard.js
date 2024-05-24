@@ -2,26 +2,26 @@ import React, { Component } from "react";
 import { Link } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
-import CardContent from '@material-ui/core/CardContent';
-import CardHeader from '@material-ui/core/CardHeader';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
+import CardContent from "@material-ui/core/CardContent";
+import CardHeader from "@material-ui/core/CardHeader";
 
 import TitleBar from "../../components/TitleBar";
 import TitleBarTitle from "../../components/TitleBarTitle";
 
 import moment from "moment";
-import { Map, Marker, Popup } from 'react-leaflet';
+import { Map, Marker, Popup } from "react-leaflet";
 import MarkerClusterGroup from "react-leaflet-markercluster";
 import L from "leaflet";
-import { Doughnut } from 'react-chartjs-2';
+import { Doughnut } from "react-chartjs-2";
 import "leaflet.awesome-markers";
 
 import MapTileLayer from "../../components/MapTileLayer";
 import GatewayStore from "../../stores/GatewayStore";
 import InternalStore from "../../stores/InternalStore";
 import theme from "../../theme";
-
+import { formatMessage as translate } from "devextreme/localization";
 
 const styles = {
   doughtnutChart: {
@@ -31,7 +31,6 @@ const styles = {
     display: "block",
   },
 };
-
 
 class ListGatewaysMap extends Component {
   constructor() {
@@ -55,21 +54,19 @@ class ListGatewaysMap extends Component {
   }
 
   loadData = () => {
-    GatewayStore.list("", 0, 9999, 0, resp => {
+    GatewayStore.list("", 0, 9999, 0, (resp) => {
       this.setState({
         items: resp.result,
       });
     });
-  }
+  };
 
   render() {
     if (this.state.items === null || this.state.items.length === 0) {
-      return(
+      return (
         <Card>
-          <CardHeader title="Gateways" />
-            <CardContent>
-              No data available.
-            </CardContent>
+          <CardHeader title={translate("activeGateways")} />
+          <CardContent>{translate("noDataAvailable")}</CardContent>
         </Card>
       );
     }
@@ -77,7 +74,6 @@ class ListGatewaysMap extends Component {
     const style = {
       height: 600,
     };
-
 
     let bounds = [];
     let markers = [];
@@ -110,10 +106,10 @@ class ListGatewaysMap extends Component {
 
       if (item.lastSeenAt === undefined || item.lastSeenAt === null) {
         marker = grayMarker;
-        lastSeen = "Never seen online";
+        lastSeen = translate("neverSeenOnline");
       } else {
         const ts = moment(item.lastSeenAt);
-        if (ts.isBefore(moment().subtract(5, 'minutes'))) {
+        if (ts.isBefore(moment().subtract(5, "minutes"))) {
           marker = redMarker;
         }
 
@@ -123,41 +119,63 @@ class ListGatewaysMap extends Component {
       markers.push(
         <Marker position={position} key={`gw-${item.id}`} icon={marker}>
           <Popup>
-            <Link to={`/organizations/${item.organizationID}/gateways/${item.id}`}>{item.name}</Link><br />
-            {item.id}<br /><br />
+            <Link
+              to={`/organizations/${item.organizationID}/gateways/${item.id}`}
+            >
+              {item.name}
+            </Link>
+            <br />
+            {item.id}
+            <br />
+            <br />
             {lastSeen}
           </Popup>
         </Marker>
       );
     }
 
-    return(
+    return (
       <Card>
-        <CardHeader title="Gateways" />
-          <CardContent>
-            <Map bounds={bounds} maxZoom={19} style={style} animate={true} scrollWheelZoom={false}>
-              <MapTileLayer />
-              <MarkerClusterGroup>
-                {markers}
-              </MarkerClusterGroup>
-            </Map>
-          </CardContent>
+        <CardHeader title={translate("gateways")} />
+        <CardContent>
+          <Map
+            bounds={bounds}
+            maxZoom={19}
+            style={style}
+            animate={true}
+            scrollWheelZoom={false}
+          >
+            <MapTileLayer />
+            <MarkerClusterGroup>{markers}</MarkerClusterGroup>
+          </Map>
+        </CardContent>
       </Card>
     );
   }
 }
 
-
 class DevicesActiveInactive extends Component {
   render() {
     let data = null;
 
-    if (this.props.summary !== null && (this.props.summary.activeCount !== 0 || this.props.summary.inactiveCount !== 0)) {
+    if (
+      this.props.summary !== null &&
+      (this.props.summary.activeCount !== 0 ||
+        this.props.summary.inactiveCount !== 0)
+    ) {
       data = {
-        labels: ["Never seen", "Inactive", "Active"],
+        labels: [
+          translate("neverSeen"),
+          translate("inactive"),
+          translate("active"),
+        ],
         datasets: [
           {
-            data: [this.props.summary.neverSeenCount, this.props.summary.inactiveCount, this.props.summary.activeCount],
+            data: [
+              this.props.summary.neverSeenCount,
+              this.props.summary.inactiveCount,
+              this.props.summary.activeCount,
+            ],
             backgroundColor: [
               theme.palette.warning.main,
               theme.palette.error.main,
@@ -172,12 +190,18 @@ class DevicesActiveInactive extends Component {
       animation: false,
     };
 
-    return(
+    return (
       <Card>
-        <CardHeader title="Active devices" />
+        <CardHeader title={translate("activeDevices")} />
         <CardContent>
-          {data && <Doughnut data={data} options={options} className={this.props.classes.doughtnutChart} />}
-          {!data && <div>No data available.</div>}
+          {data && (
+            <Doughnut
+              data={data}
+              options={options}
+              className={this.props.classes.doughtnutChart}
+            />
+          )}
+          {!data && <div>{translate("noDataAvailable")}</div>}
         </CardContent>
       </Card>
     );
@@ -186,17 +210,28 @@ class DevicesActiveInactive extends Component {
 
 DevicesActiveInactive = withStyles(styles)(DevicesActiveInactive);
 
-
 class GatewaysActiveInactive extends Component {
   render() {
     let data = null;
 
-    if (this.props.summary !== null && (this.props.summary.activeCount !== 0 || this.props.summary.inactiveCount !== 0)) {
+    if (
+      this.props.summary !== null &&
+      (this.props.summary.activeCount !== 0 ||
+        this.props.summary.inactiveCount !== 0)
+    ) {
       data = {
-        labels: ["Never seen", "Inactive", "Active"],
+        labels: [
+          translate("neverSeen"),
+          translate("inactive"),
+          translate("active"),
+        ],
         datasets: [
           {
-            data: [this.props.summary.neverSeenCount, this.props.summary.inactiveCount, this.props.summary.activeCount],
+            data: [
+              this.props.summary.neverSeenCount,
+              this.props.summary.inactiveCount,
+              this.props.summary.activeCount,
+            ],
             backgroundColor: [
               theme.palette.warning.main,
               theme.palette.error.main,
@@ -211,13 +246,18 @@ class GatewaysActiveInactive extends Component {
       animation: false,
     };
 
-
-    return(
+    return (
       <Card>
-        <CardHeader title="Active gateways" />
+        <CardHeader title={translate("activeGateways")} />
         <CardContent>
-          {data && <Doughnut data={data} options={options} className={this.props.classes.doughtnutChart} />}
-          {!data && <div>No data available.</div>}
+          {data && (
+            <Doughnut
+              data={data}
+              options={options}
+              className={this.props.classes.doughtnutChart}
+            />
+          )}
+          {!data && <div>{translate("noDataAvailable")}</div>}
         </CardContent>
       </Card>
     );
@@ -226,16 +266,34 @@ class GatewaysActiveInactive extends Component {
 
 GatewaysActiveInactive = withStyles(styles)(GatewaysActiveInactive);
 
-
 class DevicesDataRates extends Component {
   getColor = (dr) => {
-    return ['#ff5722', '#ff9800', '#ffc107', '#ffeb3b', '#cddc39', '#8bc34a', '#4caf50', '#009688', '#00bcd4', '#03a9f4', '#2196f3', '#3f51b5', '#673ab7', '#9c27b0', '#e91e63'][dr];
-  }
+    return [
+      "#ff5722",
+      "#ff9800",
+      "#ffc107",
+      "#ffeb3b",
+      "#cddc39",
+      "#8bc34a",
+      "#4caf50",
+      "#009688",
+      "#00bcd4",
+      "#03a9f4",
+      "#2196f3",
+      "#3f51b5",
+      "#673ab7",
+      "#9c27b0",
+      "#e91e63",
+    ][dr];
+  };
 
   render() {
     let data = null;
 
-    if (this.props.summary !== null && Object.keys(this.props.summary.drCount).length !== 0) {
+    if (
+      this.props.summary !== null &&
+      Object.keys(this.props.summary.drCount).length !== 0
+    ) {
       data = {
         labels: [],
         datasets: [
@@ -252,17 +310,23 @@ class DevicesDataRates extends Component {
         data.datasets[0].backgroundColor.push(this.getColor(dr));
       }
     }
-    
+
     const options = {
       animation: false,
     };
 
-    return(
+    return (
       <Card>
-        <CardHeader title="Device data-rate usage" />
+        <CardHeader title={translate("deviceDataRateUsage")} />
         <CardContent>
-          {data && <Doughnut data={data} options={options} className={this.props.classes.doughtnutChart} />}
-          {!data && <div>No data available.</div>}
+          {data && (
+            <Doughnut
+              data={data}
+              options={options}
+              className={this.props.classes.doughtnutChart}
+            />
+          )}
+          {!data && <div>{translate("noDataAvailable")}</div>}
         </CardContent>
       </Card>
     );
@@ -270,7 +334,6 @@ class DevicesDataRates extends Component {
 }
 
 DevicesDataRates = withStyles(styles)(DevicesDataRates);
-
 
 class Dashboard extends Component {
   constructor() {
@@ -283,13 +346,13 @@ class Dashboard extends Component {
   }
 
   componentDidMount() {
-    InternalStore.getDevicesSummary(0, resp => {
+    InternalStore.getDevicesSummary(0, (resp) => {
       this.setState({
         devicesSummary: resp,
       });
     });
 
-    InternalStore.getGatewaysSummary(0, resp => {
+    InternalStore.getGatewaysSummary(0, (resp) => {
       this.setState({
         gatewaysSummary: resp,
       });
@@ -297,10 +360,10 @@ class Dashboard extends Component {
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar>
-          <TitleBarTitle title="Dashboard" />
+          <TitleBarTitle title={translate("dashboard")} />
         </TitleBar>
 
         <Grid item xs={12}>
@@ -326,6 +389,5 @@ class Dashboard extends Component {
     );
   }
 }
-
 
 export default Dashboard;

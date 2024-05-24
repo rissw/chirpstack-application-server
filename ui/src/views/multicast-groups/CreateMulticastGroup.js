@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import TitleBar from "../../components/TitleBar";
@@ -14,13 +14,17 @@ import MulticastGroupForm from "./MulticastGroupForm";
 import ApplicationStore from "../../stores/ApplicationStore";
 import MulticastGroupStore from "../../stores/MulticastGroupStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("CreateMulticastGroupJS", key);
+};
 
 const styles = {
   card: {
     overflow: "visible",
   },
 };
-
 
 class CreateMulticastGroup extends Component {
   constructor() {
@@ -32,7 +36,7 @@ class CreateMulticastGroup extends Component {
   }
 
   componentDidMount() {
-    ApplicationStore.get(this.props.match.params.applicationID, resp => {
+    ApplicationStore.get(this.props.match.params.applicationID, (resp) => {
       this.setState({
         application: resp,
       });
@@ -43,33 +47,41 @@ class CreateMulticastGroup extends Component {
     let mg = multicastGroup;
     mg.applicationID = this.props.match.params.applicationID;
 
-    MulticastGroupStore.create(mg, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups`);
+    MulticastGroupStore.create(mg, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups`
+      );
     });
-  }
+  };
 
   render() {
     if (this.state.application === undefined) {
       return null;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar>
-          <TitleBarTitle title="Applications" to="/applications" />
+          <TitleBarTitle title={t("Applications")} to="/applications" />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title={this.state.application.application.name} to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`} />
+          <TitleBarTitle
+            title={this.state.application.application.name}
+            to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Multicast groups" to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups`} />
+          <TitleBarTitle
+            title={t("MulticastGroups")}
+            to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Create" />
+          <TitleBarTitle title={t("Create")} />
         </TitleBar>
 
         <Grid item xs={12}>
           <Card className={this.props.classes.card}>
             <CardContent>
               <MulticastGroupForm
-                submitLabel="Create multicast-group"
+                submitLabel={t("CreateMulticastGroup")}
                 onSubmit={this.onSubmit}
                 match={this.props.match}
               />

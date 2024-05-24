@@ -1,29 +1,31 @@
 import React from "react";
 
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
-import Checkbox from '@material-ui/core/Checkbox';
+import Checkbox from "@material-ui/core/Checkbox";
 
 import FormComponent from "../../classes/FormComponent";
 import FormControl from "../../components/FormControl";
 import Form from "../../components/Form";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UserFormJS", key);
+};
 
 class UserForm extends FormComponent {
   render() {
     if (this.state.object === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
-      <Form
-        submitLabel={this.props.submitLabel}
-        onSubmit={this.onSubmit}
-      >
+    return (
+      <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <TextField
           id="email"
-          label="E-mail address"
+          label={t("Email")}
           margin="normal"
           type="email"
           value={this.state.object.email || ""}
@@ -33,8 +35,8 @@ class UserForm extends FormComponent {
         />
         <TextField
           id="note"
-          label="Optional note"
-          helperText="Optional note, e.g. a phone number, address, comment..."
+          label={t("noteLabel")}
+          helperText={t("noteHelper")}
           margin="normal"
           value={this.state.object.note || ""}
           onChange={this.onChange}
@@ -42,20 +44,22 @@ class UserForm extends FormComponent {
           fullWidth
           multiline
         />
-        {this.state.object.id === undefined && <TextField
-          id="password"
-          label="Password"
-          type="password"
-          margin="normal"
-          value={this.state.object.password || ""}
-          onChange={this.onChange}
-          required
-          fullWidth
-        />}
-        <FormControl label="Permissions">
+        {this.state.object.id === undefined && (
+          <TextField
+            id="password"
+            label={t("Password")}
+            type="password"
+            margin="normal"
+            value={this.state.object.password || ""}
+            onChange={this.onChange}
+            required
+            fullWidth
+          />
+        )}
+        <FormControl label={t("Permissions")}>
           <FormGroup>
             <FormControlLabel
-              label="Is active"
+              label={t("IsActive")}
               control={
                 <Checkbox
                   id="isActive"
@@ -66,7 +70,7 @@ class UserForm extends FormComponent {
               }
             />
             <FormControlLabel
-              label="Is global admin"
+              label={t("IsGlobalAdmin")}
               control={
                 <Checkbox
                   id="isAdmin"

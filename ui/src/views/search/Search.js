@@ -12,6 +12,11 @@ import DataTable from "../../components/DataTable";
 import SessionStore from "../../stores/SessionStore";
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("SearchJS", key);
+};
 
 const styles = {
   link: {
@@ -24,14 +29,30 @@ const styles = {
   },
 };
 
-
 class ApplicationResult extends Component {
   render() {
-    return(
+    return (
       <TableRow hover>
-        <TableCell className={this.props.classes.type}>application</TableCell>
-        <TableCell><Link className={this.props.classes.link} to={`/organizations/${this.props.result.organizationID}/applications/${this.props.result.applicationID}`}>{this.props.result.applicationName}</Link></TableCell>
-        <TableCell>organization: <Link className={this.props.classes.link} to={`/organizations/${this.props.result.organizationID}`}>{this.props.result.organizationName}</Link></TableCell>
+        <TableCell className={this.props.classes.type}>
+          {t("application")}
+        </TableCell>
+        <TableCell>
+          <Link
+            className={this.props.classes.link}
+            to={`/organizations/${this.props.result.organizationID}/applications/${this.props.result.applicationID}`}
+          >
+            {this.props.result.applicationName}
+          </Link>
+        </TableCell>
+        <TableCell>
+          {t("organization")}:{" "}
+          <Link
+            className={this.props.classes.link}
+            to={`/organizations/${this.props.result.organizationID}`}
+          >
+            {this.props.result.organizationName}
+          </Link>
+        </TableCell>
         <TableCell>{this.props.result.applicationID}</TableCell>
       </TableRow>
     );
@@ -40,13 +61,21 @@ class ApplicationResult extends Component {
 
 ApplicationResult = withStyles(styles)(ApplicationResult);
 
-
 class OrganizationResult extends Component {
   render() {
-    return(
+    return (
       <TableRow hover>
-        <TableCell className={this.props.classes.type}>organization</TableCell>
-        <TableCell><Link className={this.props.classes.link} to={`/organizations/${this.props.result.organizationID}`}>{this.props.result.organizationName}</Link></TableCell>
+        <TableCell className={this.props.classes.type}>
+          {t("organization")}
+        </TableCell>
+        <TableCell>
+          <Link
+            className={this.props.classes.link}
+            to={`/organizations/${this.props.result.organizationID}`}
+          >
+            {this.props.result.organizationName}
+          </Link>
+        </TableCell>
         <TableCell></TableCell>
         <TableCell>{this.props.result.organizationID}</TableCell>
       </TableRow>
@@ -58,11 +87,33 @@ OrganizationResult = withStyles(styles)(OrganizationResult);
 
 class DeviceResult extends Component {
   render() {
-    return(
+    return (
       <TableRow hover>
-        <TableCell className={this.props.classes.type}>device</TableCell>
-        <TableCell><Link className={this.props.classes.link} to={`/organizations/${this.props.result.organizationID}/applications/${this.props.result.applicationID}/devices/${this.props.result.deviceDevEUI}`}>{this.props.result.deviceName}</Link></TableCell>
-        <TableCell>organization: <Link className={this.props.classes.link} to={`/organizations/${this.props.result.organizationID}`}>{this.props.result.organizationName}</Link>, application: <Link className={this.props.classes.link} to={`/organizations/${this.props.result.organizationID}/applications/${this.props.result.applicationID}`}>{this.props.result.applicationName}</Link></TableCell>
+        <TableCell className={this.props.classes.type}>{t("device")}</TableCell>
+        <TableCell>
+          <Link
+            className={this.props.classes.link}
+            to={`/organizations/${this.props.result.organizationID}/applications/${this.props.result.applicationID}/devices/${this.props.result.deviceDevEUI}`}
+          >
+            {this.props.result.deviceName}
+          </Link>
+        </TableCell>
+        <TableCell>
+          {t("organization")}:{" "}
+          <Link
+            className={this.props.classes.link}
+            to={`/organizations/${this.props.result.organizationID}`}
+          >
+            {this.props.result.organizationName}
+          </Link>
+          , application:{" "}
+          <Link
+            className={this.props.classes.link}
+            to={`/organizations/${this.props.result.organizationID}/applications/${this.props.result.applicationID}`}
+          >
+            {this.props.result.applicationName}
+          </Link>
+        </TableCell>
         <TableCell>{this.props.result.deviceDevEUI}</TableCell>
       </TableRow>
     );
@@ -73,11 +124,28 @@ DeviceResult = withStyles(styles)(DeviceResult);
 
 class GatewayResult extends Component {
   render() {
-    return(
+    return (
       <TableRow hover>
-        <TableCell className={this.props.classes.type}>gateway</TableCell>
-        <TableCell><Link className={this.props.classes.link} to={`/organizations/${this.props.result.organizationID}/gateways/${this.props.result.gatewayMAC}`}>{this.props.result.gatewayName}</Link></TableCell>
-        <TableCell>organization: <Link className={this.props.classes.link} to={`/organizations/${this.props.result.organizationID}`}>{this.props.result.organizationName}</Link></TableCell>
+        <TableCell className={this.props.classes.type}>
+          {t("gateway")}
+        </TableCell>
+        <TableCell>
+          <Link
+            className={this.props.classes.link}
+            to={`/organizations/${this.props.result.organizationID}/gateways/${this.props.result.gatewayMAC}`}
+          >
+            {this.props.result.gatewayName}
+          </Link>
+        </TableCell>
+        <TableCell>
+          {t("organization")}:{" "}
+          <Link
+            className={this.props.classes.link}
+            to={`/organizations/${this.props.result.organizationID}`}
+          >
+            {this.props.result.organizationName}
+          </Link>
+        </TableCell>
         <TableCell>{this.props.result.gatewayMAC}</TableCell>
       </TableRow>
     );
@@ -85,7 +153,6 @@ class GatewayResult extends Component {
 }
 
 GatewayResult = withStyles(styles)(GatewayResult);
-
 
 class Search extends Component {
   constructor() {
@@ -96,14 +163,14 @@ class Search extends Component {
 
   getPage(limit, offset, callbackFunc) {
     const query = new URLSearchParams(this.props.location.search);
-    const search = (query.get("search") === null) ? "" : query.get("search");
+    const search = query.get("search") === null ? "" : query.get("search");
 
     if (search === "") {
-      callbackFunc({result: [], totalCount: 0});
+      callbackFunc({ result: [], totalCount: 0 });
       return;
     }
 
-    SessionStore.globalSearch(search, limit, offset, resp => {
+    SessionStore.globalSearch(search, limit, offset, (resp) => {
       let r = resp;
       r.totalCount = r.result.length;
       callbackFunc(r);
@@ -113,32 +180,32 @@ class Search extends Component {
   getRow(obj) {
     switch (obj.kind) {
       case "application":
-        return <ApplicationResult result={obj} />
+        return <ApplicationResult result={obj} />;
       case "organization":
-        return <OrganizationResult result={obj} />
+        return <OrganizationResult result={obj} />;
       case "device":
-        return <DeviceResult result={obj} />
+        return <DeviceResult result={obj} />;
       case "gateway":
-        return <GatewayResult result={obj} />
+        return <GatewayResult result={obj} />;
       default:
         break;
     }
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar>
-          <TitleBarTitle title="Search" />
+          <TitleBarTitle title={t("Search")} />
         </TitleBar>
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
-                <TableCell>Kind</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>{t("Kind")}</TableCell>
+                <TableCell>{t("Name")}</TableCell>
                 <TableCell></TableCell>
-                <TableCell>ID</TableCell>
+                <TableCell>{t("ID")}</TableCell>
               </TableRow>
             }
             getPage={this.getPage}

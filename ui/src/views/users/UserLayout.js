@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 
 import Delete from "mdi-material-ui/Delete";
 import KeyVariant from "mdi-material-ui/KeyVariant";
@@ -12,18 +12,22 @@ import TitleBarButton from "../../components/TitleBarButton";
 import UserStore from "../../stores/UserStore";
 import UpdateUser from "./UpdateUser";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UserLayoutJS", key);
+};
 
 class UserLayout extends Component {
   constructor() {
     super();
-    this.state = {
-    };
+    this.state = {};
 
     this.deleteUser = this.deleteUser.bind(this);
   }
 
   componentDidMount() {
-    UserStore.get(this.props.match.params.userID, resp => {
+    UserStore.get(this.props.match.params.userID, (resp) => {
       this.setState({
         user: resp,
       });
@@ -31,7 +35,7 @@ class UserLayout extends Component {
   }
 
   deleteUser() {
-    if (window.confirm("Are you sure you want to delete this user?")) {
+    if (window.confirm(t("DeleteConfirmation"))) {
       UserStore.delete(this.props.match.params.userID, () => {
         this.props.history.push("/users");
       });
@@ -40,29 +44,29 @@ class UserLayout extends Component {
 
   render() {
     if (this.state.user === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={[
             <TitleBarButton
               key={1}
-              label="Change password"
+              label={t("ChangePassword")}
               icon={<KeyVariant />}
               to={`/users/${this.props.match.params.userID}/password`}
             />,
             <TitleBarButton
               key={2}
-              label="Delete"
+              label={t("Delete")}
               icon={<Delete />}
               color="secondary"
               onClick={this.deleteUser}
             />,
           ]}
         >
-          <TitleBarTitle to="/users" title="Users" />
+          <TitleBarTitle to="/users" title={t("Users")} />
           <TitleBarTitle title="/" />
           <TitleBarTitle title={this.state.user.user.email} />
         </TitleBar>

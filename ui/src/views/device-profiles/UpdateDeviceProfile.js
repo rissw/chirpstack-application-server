@@ -1,21 +1,21 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import DeviceProfileStore from "../../stores/DeviceProfileStore";
 import DeviceProfileForm from "./DeviceProfileForm";
 
+import { formatMessage as translate } from "devextreme/localization";
 
 const styles = {
   card: {
     overflow: "visible",
   },
 };
-
 
 class UpdateDeviceProfile extends Component {
   constructor() {
@@ -24,19 +24,21 @@ class UpdateDeviceProfile extends Component {
   }
 
   onSubmit(deviceProfile) {
-    DeviceProfileStore.update(deviceProfile, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/device-profiles`);
+    DeviceProfileStore.update(deviceProfile, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/device-profiles`
+      );
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card className={this.props.classes.card}>
             <CardContent>
               <DeviceProfileForm
-                submitLabel="Update device-profile"
+                submitLabel={translate("updateDeviceProfile")}
                 object={this.props.deviceProfile}
                 onSubmit={this.onSubmit}
                 match={this.props.match}

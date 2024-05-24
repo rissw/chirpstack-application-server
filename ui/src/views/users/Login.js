@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import TextField from '@material-ui/core/TextField';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
+import Grid from "@material-ui/core/Grid";
+import TextField from "@material-ui/core/TextField";
+import Card from "@material-ui/core/Card";
+import CardHeader from "@material-ui/core/CardHeader";
+import CardContent from "@material-ui/core/CardContent";
 import Typography from "@material-ui/core/Typography";
 import Button from "@material-ui/core/Button";
 import { withStyles } from "@material-ui/core/styles";
@@ -18,6 +18,14 @@ import SessionStore from "../../stores/SessionStore";
 import InternalStore from "../../stores/InternalStore";
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+import Logo from "../../images/Logo";
+
+const t = (key) => {
+  console.log("LOGIN TRANSLATE: ", translate("LoginJS", key));
+  return translate("LoginJS", key);
+};
 
 const styles = {
   textField: {
@@ -31,21 +39,17 @@ const styles = {
   },
 };
 
-
 class LoginForm extends FormComponent {
   render() {
     if (this.state.object === undefined) {
       return null;
     }
 
-    return(
-      <Form
-        submitLabel={this.props.submitLabel}
-        onSubmit={this.onSubmit}
-      >
+    return (
+      <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <TextField
           id="email"
-          label="Username / email"
+          label={`${t("Username")} / ${t("email")}`}
           margin="normal"
           value={this.state.object.email || ""}
           onChange={this.onChange}
@@ -54,7 +58,7 @@ class LoginForm extends FormComponent {
         />
         <TextField
           id="password"
-          label="Password"
+          label={t("Password")}
           type="password"
           margin="normal"
           value={this.state.object.password || ""}
@@ -69,14 +73,15 @@ class LoginForm extends FormComponent {
 
 class OpenIDConnectLogin extends Component {
   render() {
-    return(
+    return (
       <div>
-        <a href={this.props.loginUrl}><Button variant="outlined">{this.props.loginLabel}</Button></a>
+        <a href={this.props.loginUrl}>
+          <Button variant="outlined">{this.props.loginLabel}</Button>
+        </a>
       </div>
     );
   }
 }
-
 
 class Login extends Component {
   constructor() {
@@ -96,7 +101,7 @@ class Login extends Component {
   componentDidMount() {
     SessionStore.logout(true, () => {});
 
-    InternalStore.settings(resp => {
+    InternalStore.settings((resp) => {
       this.setState({
         loaded: true,
         registration: resp.branding.registration,
@@ -109,7 +114,7 @@ class Login extends Component {
     // callback from openid provider
     if (this.props.location.search !== "") {
       let query = queryString.parse(this.props.location.search);
-  
+
       SessionStore.openidConnectLogin(query.code, query.state, () => {
         this.props.history.push("/");
       });
@@ -127,27 +132,41 @@ class Login extends Component {
       return null;
     }
 
-    return(
+    return (
       <Grid container justify="center">
         <Grid item xs={6} lg={4}>
           <Card>
-            <CardHeader
-              title="ChirpStack Login"
-            />
+            {/* <CardHeader title={t("ChirpStackLogin")} /> */}
+            <div
+              style={{
+                display: "flex",
+                width: "100%",
+                justifyContent: "center",
+                marginTop: "16px",
+              }}
+            >
+              <Logo width="450" height="52" color="#2596BE" />
+            </div>
             <CardContent>
-              {!this.state.oidcEnabled && <LoginForm
-                submitLabel="Login"
-                onSubmit={this.onSubmit}
-              />}
+              {!this.state.oidcEnabled && (
+                <LoginForm submitLabel={t("Login")} onSubmit={this.onSubmit} />
+              )}
 
-              {this.state.oidcEnabled && <OpenIDConnectLogin
-                loginUrl={this.state.oidcLoginUrl}
-                loginLabel={this.state.oidcLoginLabel}
-              />}
+              {this.state.oidcEnabled && (
+                <OpenIDConnectLogin
+                  loginUrl={this.state.oidcLoginUrl}
+                  loginLabel={this.state.oidcLoginLabel}
+                />
+              )}
             </CardContent>
-            {this.state.registration !== "" && <CardContent>
-              <Typography className={this.props.classes.link} dangerouslySetInnerHTML={{__html: this.state.registration}}></Typography>
-             </CardContent>}
+            {this.state.registration !== "" && (
+              <CardContent>
+                <Typography
+                  className={this.props.classes.link}
+                  dangerouslySetInnerHTML={{ __html: this.state.registration }}
+                ></Typography>
+              </CardContent>
+            )}
           </Card>
         </Grid>
       </Grid>

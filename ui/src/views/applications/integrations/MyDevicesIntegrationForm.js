@@ -2,19 +2,31 @@ import React from "react";
 
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 
 import FormComponent from "../../../classes/FormComponent";
 import Form from "../../../components/Form";
 import AutocompleteSelect from "../../../components/AutocompleteSelect";
 
+import { translate } from "../../../helpers/translate";
+
+const t = (key) => {
+  return translate("MyDevicesIntegrationFormJS", key);
+};
 
 class MyDevicesIntegrationForm extends FormComponent {
   getEndpointOptions(search, callbackFunc) {
     const endpointOptions = [
-      {value: "https://lora.mydevices.com/v1/networks/chirpstackio/uplink", label: "Cayenne"},
-      {value: "https://lora.iotinabox.com/v1/networks/iotinabox.chirpstackio/uplink", label: "IoT in a Box"},
-      {value: "custom", label: "Custom endpoint URL"},
+      {
+        value: "https://lora.mydevices.com/v1/networks/chirpstackio/uplink",
+        label: t("Cayenne"),
+      },
+      {
+        value:
+          "https://lora.iotinabox.com/v1/networks/iotinabox.chirpstackio/uplink",
+        label: t("IoTBox"),
+      },
+      { value: "custom", label: t("CustomEndpointURL") },
     ];
 
     callbackFunc(endpointOptions);
@@ -32,7 +44,7 @@ class MyDevicesIntegrationForm extends FormComponent {
     this.setState({
       object: object,
     });
-  }
+  };
 
   render() {
     if (this.state.object === undefined) {
@@ -52,35 +64,36 @@ class MyDevicesIntegrationForm extends FormComponent {
       }
     });
 
-    return(
+    return (
       <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <FormControl fullWidth margin="normal">
-          <FormLabel>myDevices endpoint</FormLabel>
+          <FormLabel>{t("Title")}</FormLabel>
           <AutocompleteSelect
             id="_endpoint"
-            label="Select myDevices endpoint"
+            label={t("_endpointLabel")}
             value={endpointSelect || ""}
             getOptions={this.getEndpointOptions}
             onChange={this.endpointChange}
           />
         </FormControl>
-        {endpointSelect === "custom" && <FormControl fullWidth margin="normal">
-          <FormLabel>myDevices integration configuration</FormLabel>
-          <TextField
-            id="endpoint"
-            label="myDevices API endpoint"
-            placeholder="http://host:port"
-            value={this.state.object.endpoint || ""}
-            onChange={this.onChange}
-            margin="normal"
-            required
-            fullWidth
-          />
-        </FormControl>}
+        {endpointSelect === "custom" && (
+          <FormControl fullWidth margin="normal">
+            <FormLabel>{t("Title1")}</FormLabel>
+            <TextField
+              id="endpoint"
+              label={t("endpointLabel")}
+              placeholder="http://host:port"
+              value={this.state.object.endpoint || ""}
+              onChange={this.onChange}
+              margin="normal"
+              required
+              fullWidth
+            />
+          </FormControl>
+        )}
       </Form>
     );
   }
 }
-
 
 export default MyDevicesIntegrationForm;

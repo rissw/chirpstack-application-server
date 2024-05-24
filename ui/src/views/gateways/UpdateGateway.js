@@ -1,13 +1,18 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import GatewayStore from "../../stores/GatewayStore";
 import GatewayForm from "./GatewayForm";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UpdateGatewayJS", key);
+};
 
 class UpdateGateway extends Component {
   constructor() {
@@ -16,19 +21,21 @@ class UpdateGateway extends Component {
   }
 
   onSubmit(gateway) {
-    GatewayStore.update(gateway, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/gateways`);
+    GatewayStore.update(gateway, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/gateways`
+      );
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <GatewayForm
-                submitLabel="Update gateway"
+                submitLabel={t("UpdateGateway")}
                 object={this.props.gateway}
                 onSubmit={this.onSubmit}
                 update={true}

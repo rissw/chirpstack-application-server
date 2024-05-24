@@ -2,14 +2,15 @@ import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
-import IconButton from '@material-ui/core/IconButton';
-import TextField from '@material-ui/core/TextField';
+import IconButton from "@material-ui/core/IconButton";
+import TextField from "@material-ui/core/TextField";
 
 import Delete from "mdi-material-ui/Delete";
 
 import FormComponent from "../classes/FormComponent";
 import theme from "../theme";
 
+import { formatMessage as translate } from "devextreme/localization";
 
 const kvStyles = {
   formLabel: {
@@ -20,7 +21,6 @@ const kvStyles = {
   },
 };
 
-
 class KVForm extends FormComponent {
   onChange(e) {
     super.onChange(e);
@@ -30,19 +30,19 @@ class KVForm extends FormComponent {
   onDelete = (e) => {
     e.preventDefault();
     this.props.onDelete(this.props.index);
-  }
+  };
 
   render() {
     if (this.state.object === undefined) {
       return null;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={4}>
           <TextField
             id="key"
-            label="Name"
+            label={translate("name")}
             margin="normal"
             value={this.state.object.key || ""}
             onChange={this.onChange}
@@ -53,7 +53,7 @@ class KVForm extends FormComponent {
         <Grid item xs={7}>
           <TextField
             id="value"
-            label="Value"
+            label={translate("value")}
             margin="normal"
             value={this.state.object.value || ""}
             onChange={this.onChange}
@@ -62,9 +62,11 @@ class KVForm extends FormComponent {
           />
         </Grid>
         <Grid item xs={1} className={this.props.classes.delete}>
-          {!!!this.props.disabled && <IconButton aria-label="delete" onClick={this.onDelete}>
-            <Delete />
-          </IconButton>}
+          {!!!this.props.disabled && (
+            <IconButton aria-label="delete" onClick={this.onDelete}>
+              <Delete />
+            </IconButton>
+          )}
         </Grid>
       </Grid>
     );

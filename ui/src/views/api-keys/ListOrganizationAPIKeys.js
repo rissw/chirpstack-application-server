@@ -4,7 +4,7 @@ import { withRouter } from "react-router-dom";
 import Grid from "@material-ui/core/Grid";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from "@material-ui/core/IconButton";
 
 import Plus from "mdi-material-ui/Plus";
 import Delete from "mdi-material-ui/Delete";
@@ -15,26 +15,28 @@ import TitleBarButton from "../../components/TitleBarButton";
 import DataTable from "../../components/DataTable";
 import InternalStore from "../../stores/InternalStore";
 
+import { formatMessage as translate } from "devextreme/localization";
 
 class APIKeyRow extends Component {
   onDelete = () => {
-    if (window.confirm("Are you sure you want to delete this api key?")) {
-      InternalStore.deleteAPIKey(this.props.obj.id, resp => {
-        this.props.history.push(`/organizations/${this.props.match.params.organizationID}/api-keys`);
+    if (window.confirm(translate("apiKeyDeleteConfirmation"))) {
+      InternalStore.deleteAPIKey(this.props.obj.id, (resp) => {
+        this.props.history.push(
+          `/organizations/${this.props.match.params.organizationID}/api-keys`
+        );
       });
     }
-  }
+  };
 
   render() {
-    return(
-      <TableRow
-        key={this.props.obj.id}
-        hover
-      >
+    return (
+      <TableRow key={this.props.obj.id} hover>
         <TableCell>{this.props.obj.id}</TableCell>
         <TableCell>{this.props.obj.name}</TableCell>
         <TableCell align="right">
-          <IconButton aria-label="delete"><Delete onClick={this.onDelete} /></IconButton>
+          <IconButton aria-label="delete">
+            <Delete onClick={this.onDelete} />
+          </IconButton>
         </TableCell>
       </TableRow>
     );
@@ -43,40 +45,44 @@ class APIKeyRow extends Component {
 
 APIKeyRow = withRouter(APIKeyRow);
 
-
 class ListOrganizationAPIKeys extends Component {
   getPage = (limit, offset, callbackFunc) => {
-    InternalStore.listAPIKeys({
-      organizationID: this.props.match.params.organizationID,
-      limit: limit,
-      offset: offset,
-    }, callbackFunc);
-  }
+    InternalStore.listAPIKeys(
+      {
+        organizationID: this.props.match.params.organizationID,
+        limit: limit,
+        offset: offset,
+      },
+      callbackFunc
+    );
+  };
 
   getRow = (obj) => {
-    return(<APIKeyRow obj={obj} />);
-  }
+    return <APIKeyRow obj={obj} />;
+  };
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
             <TitleBarButton
-              label="Create"
+              label={translate("create")}
               icon={<Plus />}
               to={`/organizations/${this.props.match.params.organizationID}/api-keys/create`}
             />
           }
         >
-          <TitleBarTitle title="Organization API keys" />
+          <TitleBarTitle
+            title={`${translate("organization")} ${translate("apiKeys")}`}
+          />
         </TitleBar>
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
                 <TableCell>ID</TableCell>
-                <TableCell>Name</TableCell>
+                <TableCell>{translate("name")}</TableCell>
                 <TableCell></TableCell>
               </TableRow>
             }

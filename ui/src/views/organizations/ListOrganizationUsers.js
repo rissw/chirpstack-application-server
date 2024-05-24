@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import Grid from '@material-ui/core/Grid';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import Grid from "@material-ui/core/Grid";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
 import Check from "mdi-material-ui/Check";
 import Close from "mdi-material-ui/Close";
@@ -16,6 +16,11 @@ import DataTable from "../../components/DataTable";
 
 import OrganizationStore from "../../stores/OrganizationStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ListOrganizationUsersJS", key);
+};
 
 class ListOrganizationUsers extends Component {
   constructor() {
@@ -25,7 +30,12 @@ class ListOrganizationUsers extends Component {
   }
 
   getPage(limit, offset, callbackFunc) {
-    OrganizationStore.listUsers(this.props.match.params.organizationID, limit, offset, callbackFunc);
+    OrganizationStore.listUsers(
+      this.props.match.params.organizationID,
+      limit,
+      offset,
+      callbackFunc
+    );
   }
 
   getRow(obj) {
@@ -34,29 +44,30 @@ class ListOrganizationUsers extends Component {
     let devAdmin = null;
 
     if (obj.isAdmin) {
-      orgAdmin = <Check />
+      orgAdmin = <Check />;
     } else {
-      orgAdmin = <Close />
+      orgAdmin = <Close />;
     }
 
     if (obj.isAdmin || obj.isGatewayAdmin) {
-      gwAdmin = <Check />
+      gwAdmin = <Check />;
     } else {
-      gwAdmin = <Close />
+      gwAdmin = <Close />;
     }
 
     if (obj.isAdmin || obj.isDeviceAdmin) {
-      devAdmin = <Check />
+      devAdmin = <Check />;
     } else {
-      devAdmin = <Close />
+      devAdmin = <Close />;
     }
 
-    return(
-      <TableRow
-        key={obj.userID}
-        hover
-      >
-        <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/users/${obj.userID}`}>{obj.email}</TableCellLink>
+    return (
+      <TableRow key={obj.userID} hover>
+        <TableCellLink
+          to={`/organizations/${this.props.match.params.organizationID}/users/${obj.userID}`}
+        >
+          {obj.email}
+        </TableCellLink>
         <TableCell>{orgAdmin}</TableCell>
         <TableCell>{gwAdmin}</TableCell>
         <TableCell>{devAdmin}</TableCell>
@@ -65,28 +76,28 @@ class ListOrganizationUsers extends Component {
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={[
             <TitleBarButton
               key={1}
-              label="Add"
+              label={t("Add")}
               icon={<Plus />}
               to={`/organizations/${this.props.match.params.organizationID}/users/create`}
             />,
           ]}
         >
-          <TitleBarTitle title="Organization users" />
+          <TitleBarTitle title={t("OrganizationUsers")} />
         </TitleBar>
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
-                <TableCell>Email</TableCell>
-                <TableCell>Organization admin</TableCell>
-                <TableCell>Gateway admin</TableCell>
-                <TableCell>Device admin</TableCell>
+                <TableCell>{t("Email")}</TableCell>
+                <TableCell>{t("OrganizationAdmin")}</TableCell>
+                <TableCell>{t("GatewayAdmin")}</TableCell>
+                <TableCell>{t("DeviceAdmin")}</TableCell>
               </TableRow>
             }
             getPage={this.getPage}

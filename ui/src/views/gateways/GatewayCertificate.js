@@ -10,6 +10,11 @@ import moment from "moment";
 
 import GatewayStore from "../../stores/GatewayStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("GatewayCertificateJS", key);
+};
 
 class GatewayCertificate extends Component {
   constructor() {
@@ -28,67 +33,75 @@ class GatewayCertificate extends Component {
       buttonDisabled: true,
     });
 
-    GatewayStore.generateClientCertificate(this.props.match.params.gatewayID, (resp => {
-      this.setState({
-        tlsKey: resp.tlsKey,
-        tlsCert: resp.tlsCert,
-        caCert: resp.caCert,
-        expiresAt: moment(resp.expiresAt).format("lll"),
-      });
-    }));
-  }
+    GatewayStore.generateClientCertificate(
+      this.props.match.params.gatewayID,
+      (resp) => {
+        this.setState({
+          tlsKey: resp.tlsKey,
+          tlsCert: resp.tlsCert,
+          caCert: resp.caCert,
+          expiresAt: moment(resp.expiresAt).format("lll"),
+        });
+      }
+    );
+  };
 
   render() {
-    return(
+    return (
       <Card>
         <CardContent>
-          <Typography gutterBottom>
-            If required by the network, the gateway needs a client certificate in order to connect to the network.
-            This certificate must be configured on the gateway. After generating the certificate, the certificate
-            can only be retrieved once.
-          </Typography>
-          {this.state.tlsCert == null && <Button onClick={this.requestCertificate} disabled={this.state.buttonDisabled}>Generate certificate</Button>}
-          {this.state.tlsCert != null && <form>
-            <TextField
-              id="expiresAt"
-              label="Certificate expires at"
-              margin="normal"
-              value={this.state.expiresAt}
-              helperText="The certificate expires at this date. Make sure to generate and configure a new certificate for your gateway before this expiration date."
-              disabled
-              fullWidth
-            />
-            <TextField
-              id="caCert"
-              label="CA certificate"
-              margin="normal"
-              value={this.state.caCert}
-              rows={10}
-              multiline
-              fullWidth
-              helperText="The CA certificate is to authenticate the certificate of the server. Store this as a text-file on your gateway, e.g. named 'ca.pem'."
-            />
-            <TextField
-              id="tlsCert"
-              label="TLS certificate"
-              margin="normal"
-              value={this.state.tlsCert}
-              rows={10}
-              multiline
-              fullWidth
-              helperText="Store this as a text-file on your gateway, e.g. named 'cert.pem'"
-            />
-            <TextField
-              id="tlsKey"
-              label="TLS key"
-              margin="normal"
-              value={this.state.tlsKey}
-              rows={10}
-              multiline
-              fullWidth
-              helperText="Store this as a text-file on your gateway, e.g. named 'key.pem'"
-            />
-          </form>}
+          <Typography gutterBottom>{t("Info")}</Typography>
+          {this.state.tlsCert == null && (
+            <Button
+              onClick={this.requestCertificate}
+              disabled={this.state.buttonDisabled}
+            >
+              {t("GenerateCertificate")}
+            </Button>
+          )}
+          {this.state.tlsCert != null && (
+            <form>
+              <TextField
+                id="expiresAt"
+                label={t("expiresAtLabel")}
+                margin="normal"
+                value={this.state.expiresAt}
+                helperText={t("expiresAtHelper")}
+                disabled
+                fullWidth
+              />
+              <TextField
+                id="caCert"
+                label={t("caCertLabel")}
+                margin="normal"
+                value={this.state.caCert}
+                rows={10}
+                multiline
+                fullWidth
+                helperText={t("caCertHelper")}
+              />
+              <TextField
+                id="tlsCert"
+                label={t("tlsCertLabel")}
+                margin="normal"
+                value={this.state.tlsCert}
+                rows={10}
+                multiline
+                fullWidth
+                helperText={t("caCertHelper")}
+              />
+              <TextField
+                id="tlsKey"
+                label={t("tlsKeyLabel")}
+                margin="normal"
+                value={this.state.tlsKey}
+                rows={10}
+                multiline
+                fullWidth
+                helperText={t("tlsKeyHelper")}
+              />
+            </form>
+          )}
         </CardContent>
       </Card>
     );

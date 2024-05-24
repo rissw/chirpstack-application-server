@@ -6,7 +6,14 @@ import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 import TextField from "@material-ui/core/TextField";
 import { Delete, Close } from "mdi-material-ui";
-import { Grid, Dialog, DialogTitle, DialogActions, DialogContent, DialogContentText } from "@material-ui/core";
+import {
+  Grid,
+  Dialog,
+  DialogTitle,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+} from "@material-ui/core";
 
 import FormComponent from "../../classes/FormComponent";
 import AESKeyField from "../../components/AESKeyField";
@@ -16,6 +23,12 @@ import DeviceStore from "../../stores/DeviceStore";
 import theme from "../../theme";
 import DeviceAdmin from "../../components/DeviceAdmin";
 import TitleBarButton from "../../components/TitleBarButton";
+
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("DeviceActivationJS", key);
+};
 
 const styles = {
   link: {
@@ -47,20 +60,20 @@ class LW10DeviceActivationForm extends FormComponent {
       <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <DevAddrField
           id="devAddr"
-          label="Device address"
+          label={t("devAddrLabel")}
           margin="normal"
           value={this.state.object.devAddr || ""}
           onChange={this.onChange}
           disabled={this.props.disabled}
           randomFunc={this.getRandomDevAddr}
-          helperText="While any device address can be entered, please note that a LoRaWAN compliant device address consists of an AddrPrefix (derived from the NetID) + NwkAddr."
+          helperText={t("devAddrHelper")}
           fullWidth
           required
           random
         />
         <AESKeyField
           id="nwkSEncKey"
-          label="Network session key (LoRaWAN 1.0)"
+          label={t("nwkSEncKey10Label")}
           margin="normal"
           value={this.state.object.nwkSEncKey || ""}
           onChange={this.onChange}
@@ -71,7 +84,7 @@ class LW10DeviceActivationForm extends FormComponent {
         />
         <AESKeyField
           id="appSKey"
-          label="Application session key (LoRaWAN 1.0)"
+          label={t("appSKey10Label")}
           margin="normal"
           value={this.state.object.appSKey || ""}
           onChange={this.onChange}
@@ -82,7 +95,7 @@ class LW10DeviceActivationForm extends FormComponent {
         />
         <TextField
           id="fCntUp"
-          label="Uplink frame-counter"
+          label={t("fCntUp10Label")}
           margin="normal"
           type="number"
           value={this.state.object.fCntUp || 0}
@@ -93,7 +106,7 @@ class LW10DeviceActivationForm extends FormComponent {
         />
         <TextField
           id="nFCntDown"
-          label="Downlink frame-counter (network)"
+          label={t("nFCntDown10Label")}
           margin="normal"
           type="number"
           value={this.state.object.nFCntDown || 0}
@@ -128,7 +141,7 @@ class LW11DeviceActivationForm extends FormComponent {
       <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <DevAddrField
           id="devAddr"
-          label="Device address"
+          label={t("devAddr")}
           margin="normal"
           value={this.state.object.devAddr || ""}
           onChange={this.onChange}
@@ -140,7 +153,7 @@ class LW11DeviceActivationForm extends FormComponent {
         />
         <AESKeyField
           id="nwkSEncKey"
-          label="Network session encryption key"
+          label={t("nwkSEncKey11Label")}
           margin="normal"
           value={this.state.object.nwkSEncKey || ""}
           onChange={this.onChange}
@@ -151,7 +164,7 @@ class LW11DeviceActivationForm extends FormComponent {
         />
         <AESKeyField
           id="sNwkSIntKey"
-          label="Serving network session integrity key"
+          label={t("sNwkSIntKey11Label")}
           margin="normal"
           value={this.state.object.sNwkSIntKey || ""}
           onChange={this.onChange}
@@ -162,7 +175,7 @@ class LW11DeviceActivationForm extends FormComponent {
         />
         <AESKeyField
           id="fNwkSIntKey"
-          label="Forwarding network session integrity key"
+          label={t("fNwkSIntKey11Label")}
           margin="normal"
           value={this.state.object.fNwkSIntKey || ""}
           onChange={this.onChange}
@@ -173,7 +186,7 @@ class LW11DeviceActivationForm extends FormComponent {
         />
         <AESKeyField
           id="appSKey"
-          label="Application session key"
+          label={t("appSKey11Label")}
           margin="normal"
           value={this.state.object.appSKey || ""}
           onChange={this.onChange}
@@ -184,7 +197,7 @@ class LW11DeviceActivationForm extends FormComponent {
         />
         <TextField
           id="fCntUp"
-          label="Uplink frame-counter"
+          label={t("fCntUp11Label")}
           margin="normal"
           type="number"
           value={this.state.object.fCntUp || 0}
@@ -195,7 +208,7 @@ class LW11DeviceActivationForm extends FormComponent {
         />
         <TextField
           id="nFCntDown"
-          label="Downlink frame-counter (network)"
+          label={t("nFCntDown11Label")}
           margin="normal"
           type="number"
           value={this.state.object.nFCntDown || 0}
@@ -206,7 +219,7 @@ class LW11DeviceActivationForm extends FormComponent {
         />
         <TextField
           id="aFCntDown"
-          label="Downlink frame-counter (application)"
+          label={t("aFCntDown11Label")}
           margin="normal"
           type="number"
           value={this.state.object.aFCntDown || 0}
@@ -260,7 +273,7 @@ class DeviceActivation extends Component {
 
     DeviceStore.activate(act, (resp) => {
       this.props.history.push(
-        `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`,
+        `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`
       );
     });
   }
@@ -272,10 +285,10 @@ class DeviceActivation extends Component {
   };
 
   clearDevNonces() {
-    if (window.confirm("Are you sure you want to clear this device devNonce?")) {
+    if (window.confirm(t("clearConfirmation"))) {
       DeviceStore.clearDevNonces(this.props.match.params.devEUI, (resp) => {
         this.props.history.push(
-          `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${this.props.match.params.devEUI}`,
+          `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${this.props.match.params.devEUI}`
         );
         this.toggleDevNonceDialog();
       });
@@ -289,13 +302,14 @@ class DeviceActivation extends Component {
 
     let submitLabel = null;
     if (!this.props.deviceProfile.supportsJoin) {
-      submitLabel = "(Re)activate device";
+      submitLabel = translate("reactivateDevice");
     }
 
     let showForm = false;
     if (
       !this.props.deviceProfile.supportsJoin ||
-      (this.props.deviceProfile.supportsJoin && this.state.deviceActivation.deviceActivation.devAddr !== undefined)
+      (this.props.deviceProfile.supportsJoin &&
+        this.state.deviceActivation.deviceActivation.devAddr !== undefined)
     ) {
       showForm = true;
     }
@@ -304,41 +318,49 @@ class DeviceActivation extends Component {
       <Grid container spacing={1}>
         <DeviceAdmin organizationID={this.props.match.params.organizationID}>
           <Grid item xs={12} className={this.props.classes.buttons}>
-            <TitleBarButton label="Clear DevNonce" icon={<Delete />} color="secondary" onClick={this.toggleDevNonceDialog} />
+            <TitleBarButton
+              label={t("clearDevNonce")}
+              icon={<Delete />}
+              color="secondary"
+              onClick={this.toggleDevNonceDialog}
+            />
             <Dialog
               open={this.state.dialogOpen}
               onClose={this.toggleDevNonceDialog}
               aria-labelledby="devnonce-dialog-title"
-              aria-describedby="devnonce-dialog-description">
-              <DialogTitle id="devnonce-dialog-title">About DevNonce Clear</DialogTitle>
+              aria-describedby="devnonce-dialog-description"
+            >
+              <DialogTitle id="devnonce-dialog-title">
+                {t("aboutDevNonceClear")}
+              </DialogTitle>
               <DialogContent dividers>
-                <DialogContentText id="devnonce-dialog-description" component="div">
-                  <DialogContentText>
-                    These are clear older <strong>DevNonce</strong> records from device activation records in Network Server.
-                  </DialogContentText>
-                  <strong>Note:</strong>
+                <DialogContentText
+                  id="devnonce-dialog-description"
+                  component="div"
+                >
+                  <DialogContentText>{t("aboutText")}</DialogContentText>
+                  <strong>{t("note")}:</strong>
                   <ul>
-                    <li>
-                      The network server keeps track of a certain number of <strong>DevNonce</strong> values used by the end device in the
-                      past and ignores join requests with any of these <strong>DevNonce</strong> values from that end-device.
-                    </li>
-                    <li>
-                      Using this method we can clear older or already generated device activation records from the database to prevent the
-                      "DevNonce already exists" error in the <strong>OTAA</strong> method.
-                    </li>
-                    <li>
-                      This clears all DevNonce records but keeps the latest <strong>20 records</strong> to maintain{" "}
-                      <strong>device activation status</strong>.
-                    </li>
+                    <li>{t("note1")}</li>
+                    <li>{t("note2")}</li>
+                    <li>{t("note3")}</li>
                   </ul>
-                  <h3 align="center">
-                    Are you sure you want to delete this device devNonce (older Activation records from Network Server)?
-                  </h3>
+                  <h3 align="center">{t("deleteConfirmation")}</h3>
                 </DialogContentText>
               </DialogContent>
               <DialogActions style={{ justifyContent: "center" }}>
-                <TitleBarButton label="YES" icon={<Delete />} color="secondary" onClick={this.clearDevNonces} />
-                <TitleBarButton label="NO" icon={<Close />} color="primary" onClick={this.toggleDevNonceDialog} />
+                <TitleBarButton
+                  label={t("yes")}
+                  icon={<Delete />}
+                  color="secondary"
+                  onClick={this.clearDevNonces}
+                />
+                <TitleBarButton
+                  label={t("no")}
+                  icon={<Close />}
+                  color="primary"
+                  onClick={this.toggleDevNonceDialog}
+                />
               </DialogActions>
             </Dialog>
           </Grid>
@@ -346,27 +368,33 @@ class DeviceActivation extends Component {
         <Grid item xs={12}>
           <Card>
             <CardContent>
-              {showForm && this.props.deviceProfile.macVersion.startsWith("1.0") && (
-                <LW10DeviceActivationForm
-                  submitLabel={submitLabel}
-                  object={this.state.deviceActivation.deviceActivation}
-                  onSubmit={this.onSubmit}
-                  disabled={this.props.deviceProfile.supportsJoin}
-                  match={this.props.match}
-                  deviceProfile={this.props.deviceProfile}
-                />
+              {showForm &&
+                this.props.deviceProfile.macVersion.startsWith("1.0") && (
+                  <LW10DeviceActivationForm
+                    submitLabel={submitLabel}
+                    object={this.state.deviceActivation.deviceActivation}
+                    onSubmit={this.onSubmit}
+                    disabled={this.props.deviceProfile.supportsJoin}
+                    match={this.props.match}
+                    deviceProfile={this.props.deviceProfile}
+                  />
+                )}
+              {showForm &&
+                this.props.deviceProfile.macVersion.startsWith("1.1") && (
+                  <LW11DeviceActivationForm
+                    submitLabel={submitLabel}
+                    object={this.state.deviceActivation.deviceActivation}
+                    onSubmit={this.onSubmit}
+                    disabled={this.props.deviceProfile.supportsJoin}
+                    match={this.props.match}
+                    deviceProfile={this.props.deviceProfile}
+                  />
+                )}
+              {!showForm && (
+                <Typograhy variant="body1">
+                  {t("notActivatedMessage")}
+                </Typograhy>
               )}
-              {showForm && this.props.deviceProfile.macVersion.startsWith("1.1") && (
-                <LW11DeviceActivationForm
-                  submitLabel={submitLabel}
-                  object={this.state.deviceActivation.deviceActivation}
-                  onSubmit={this.onSubmit}
-                  disabled={this.props.deviceProfile.supportsJoin}
-                  match={this.props.match}
-                  deviceProfile={this.props.deviceProfile}
-                />
-              )}
-              {!showForm && <Typograhy variant="body1">This device has not (yet) been activated.</Typograhy>}
             </CardContent>
           </Card>
         </Grid>

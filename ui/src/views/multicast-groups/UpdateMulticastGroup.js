@@ -1,21 +1,25 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import MulticastGroupStore from "../../stores/MulticastGroupStore";
 import MulticastGroupForm from "./MulticastGroupForm";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UpdateMulticastGroupJS", key);
+};
 
 const styles = {
   card: {
     overflow: "visible",
   },
 };
-
 
 class UpdateMulticastGroup extends Component {
   constructor() {
@@ -24,19 +28,21 @@ class UpdateMulticastGroup extends Component {
   }
 
   onSubmit(multicastGroup) {
-    MulticastGroupStore.update(multicastGroup, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${this.props.match.params.multicastGroupID}`);
+    MulticastGroupStore.update(multicastGroup, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${this.props.match.params.multicastGroupID}`
+      );
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card className={this.props.classes.card}>
             <CardContent>
               <MulticastGroupForm
-                submitLabel="Update multicast-group"
+                submitLabel={t("UpdateMulticastGroup")}
                 object={this.props.multicastGroup}
                 onSubmit={this.onSubmit}
                 update={true}

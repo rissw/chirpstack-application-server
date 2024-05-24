@@ -1,15 +1,15 @@
 import React, { Component } from "react";
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, Link } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 
 import TitleBar from "../../components/TitleBar";
@@ -20,13 +20,17 @@ import DeviceProfileStore from "../../stores/DeviceProfileStore";
 import DeviceStore from "../../stores/DeviceStore";
 import DeviceForm from "./DeviceForm";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("CreateDeviceJS", key);
+};
 
 const styles = {
   card: {
     overflow: "visible",
   },
 };
-
 
 class CreateDevice extends Component {
   constructor() {
@@ -40,19 +44,25 @@ class CreateDevice extends Component {
   }
 
   componentDidMount() {
-    ApplicationStore.get(this.props.match.params.applicationID, resp => {
+    ApplicationStore.get(this.props.match.params.applicationID, (resp) => {
       this.setState({
         application: resp,
       });
     });
 
-    DeviceProfileStore.list(0, this.props.match.params.applicationID, 0, 0, resp => {
-      if (resp.totalCount === "0") {
-        this.setState({
-          dpDialog: true,
-        });
+    DeviceProfileStore.list(
+      0,
+      this.props.match.params.applicationID,
+      0,
+      0,
+      (resp) => {
+        if (resp.totalCount === "0") {
+          this.setState({
+            dpDialog: true,
+          });
+        }
       }
-    });
+    );
   }
 
   closeDialog() {
@@ -65,60 +75,73 @@ class CreateDevice extends Component {
     let dev = device;
     dev.applicationID = this.props.match.params.applicationID;
 
-    DeviceStore.create(dev, resp => {
-      DeviceProfileStore.get(dev.deviceProfileID, resp => {
+    DeviceStore.create(dev, (resp) => {
+      DeviceProfileStore.get(dev.deviceProfileID, (resp) => {
         if (resp.deviceProfile.supportsJoin) {
-          this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${dev.devEUI}/keys`);
+          this.props.history.push(
+            `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${dev.devEUI}/keys`
+          );
         } else {
-          this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${dev.devEUI}/activation`);
+          this.props.history.push(
+            `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${dev.devEUI}/activation`
+          );
         }
       });
-
     });
   }
 
   render() {
     if (this.state.application === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
-        <Dialog
-          open={this.state.dpDialog}
-          onClose={this.closeDialog}
-        >
-          <DialogTitle>Add a device-profile?</DialogTitle>
+        <Dialog open={this.state.dpDialog} onClose={this.closeDialog}>
+          <DialogTitle>{t("question")}</DialogTitle>
           <DialogContent>
-            <DialogContentText paragraph>
-              The selected application does not have access to any device-profiles.
-              A device-profile defines the capabilities and boot parameters of a device. You can create multiple device-profiles for different kind of devices.
-            </DialogContentText>
-            <DialogContentText>
-              Would you like to create a device-profile?
-            </DialogContentText>
+            <DialogContentText paragraph>{t("helper")}</DialogContentText>
+            <DialogContentText>{t("submitQuestion")}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" component={Link} to={`/organizations/${this.props.match.params.organizationID}/device-profiles/create`} onClick={this.closeDialog}>Create device-profile</Button>
-            <Button color="primary" onClick={this.closeDialog}>Dismiss</Button>
+            <Button
+              color="primary"
+              component={Link}
+              to={`/organizations/${this.props.match.params.organizationID}/device-profiles/create`}
+              onClick={this.closeDialog}
+            >
+              {t("createDeviceProfile")}
+            </Button>
+            <Button color="primary" onClick={this.closeDialog}>
+              {t("dismiss")}
+            </Button>
           </DialogActions>
         </Dialog>
 
         <TitleBar>
-          <TitleBarTitle title="Applications" to={`/organizations/${this.props.match.params.organizationID}/applications`} />
+          <TitleBarTitle
+            title={t("applications")}
+            to={`/organizations/${this.props.match.params.organizationID}/applications`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title={this.state.application.application.name} to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`} />
+          <TitleBarTitle
+            title={this.state.application.application.name}
+            to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Devices" to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`} />
+          <TitleBarTitle
+            title={t("devices")}
+            to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Create" />
+          <TitleBarTitle title={t("create")} />
         </TitleBar>
 
         <Grid item xs={12}>
           <Card className={this.props.classes.card}>
             <CardContent>
               <DeviceForm
-                submitLabel="Create device"
+                submitLabel={t("submitLabel")}
                 onSubmit={this.onSubmit}
                 match={this.props.match}
               />

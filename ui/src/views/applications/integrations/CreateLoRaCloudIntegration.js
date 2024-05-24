@@ -1,37 +1,48 @@
 import React, { Component } from "react";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardHeader from "@material-ui/core/CardHeader";
 import CardContent from "@material-ui/core/CardContent";
 
 import ApplicationStore from "../../../stores/ApplicationStore";
 import LoRaCloudIntegrationForm from "./LoRaCloudIntegrationForm";
 
+import { translate } from "../../../helpers/translate";
+
+const t = (key) => {
+  return translate("CreateLoRaCloudIntegrationJS", key);
+};
 
 class CreateLoRaCloudIntegration extends Component {
   onSubmit = (integration) => {
     let integr = integration;
     integr.applicationID = this.props.match.params.applicationID;
 
-    ApplicationStore.createLoRaCloudIntegration(integr, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/integrations`);
+    ApplicationStore.createLoRaCloudIntegration(integr, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/integrations`
+      );
     });
-  } 
+  };
 
   render() {
     let obj = {
       das: true,
       dasGNSSPort: 198,
       dasModemPort: 199,
-    }; 
+    };
 
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
-            <CardHeader title="Add Semtech LoRa Cloud&trade; integration" />
+            <CardHeader title={t("Add_Semtech_LoRa_Cloud_integration")} />
             <CardContent>
-              <LoRaCloudIntegrationForm submitLabel="Add integration" onSubmit={this.onSubmit} object={obj} />
+              <LoRaCloudIntegrationForm
+                submitLabel={t("Add_integration")}
+                onSubmit={this.onSubmit}
+                object={obj}
+              />
             </CardContent>
           </Card>
         </Grid>

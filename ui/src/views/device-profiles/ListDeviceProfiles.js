@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import Grid from '@material-ui/core/Grid';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import Grid from "@material-ui/core/Grid";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
 import Plus from "mdi-material-ui/Plus";
 
@@ -14,6 +14,7 @@ import DataTable from "../../components/DataTable";
 import DeviceAdmin from "../../components/DeviceAdmin";
 import DeviceProfileStore from "../../stores/DeviceProfileStore";
 
+import { formatMessage as translate } from "devextreme/localization";
 
 class ListDeviceProfiles extends Component {
   constructor() {
@@ -24,29 +25,38 @@ class ListDeviceProfiles extends Component {
   }
 
   getPage(limit, offset, callbackFunc) {
-    DeviceProfileStore.list(this.props.match.params.organizationID, 0, limit, offset, callbackFunc);
+    DeviceProfileStore.list(
+      this.props.match.params.organizationID,
+      0,
+      limit,
+      offset,
+      callbackFunc
+    );
   }
 
   getRow(obj) {
-    return(
-      <TableRow
-        key={obj.id}
-        hover
-      >
-        <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/device-profiles/${obj.id}`}>{obj.name}</TableCellLink>
+    return (
+      <TableRow key={obj.id} hover>
+        <TableCellLink
+          to={`/organizations/${this.props.match.params.organizationID}/device-profiles/${obj.id}`}
+        >
+          {obj.name}
+        </TableCellLink>
         <TableCell>{obj.networkServerName}</TableCell>
       </TableRow>
     );
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
-            <DeviceAdmin organizationID={this.props.match.params.organizationID}>
+            <DeviceAdmin
+              organizationID={this.props.match.params.organizationID}
+            >
               <TitleBarButton
-                label="Create"
+                label={translate("create")}
                 icon={<Plus />}
                 to={`/organizations/${this.props.match.params.organizationID}/device-profiles/create`}
               />
@@ -59,8 +69,8 @@ class ListDeviceProfiles extends Component {
           <DataTable
             header={
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Network Server</TableCell>
+                <TableCell>{translate("name")}</TableCell>
+                <TableCell>{translate("networkServer")}</TableCell>
               </TableRow>
             }
             getPage={this.getPage}

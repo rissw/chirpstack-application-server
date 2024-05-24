@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import Grid from '@material-ui/core/Grid';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import Grid from "@material-ui/core/Grid";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
 import Plus from "mdi-material-ui/Plus";
 
@@ -13,7 +13,7 @@ import TitleBarButton from "../../components/TitleBarButton";
 import DataTable from "../../components/DataTable";
 
 import NetworkServerStore from "../../stores/NetworkServerStore";
-
+import { formatMessage as translate } from "devextreme/localization";
 
 class ListNetworkServers extends Component {
   getPage(limit, offset, callbackFunc) {
@@ -21,38 +21,37 @@ class ListNetworkServers extends Component {
   }
 
   getRow(obj) {
-    return(
-      <TableRow
-        key={obj.id}
-        hover
-      >
-        <TableCellLink to={`/network-servers/${obj.id}`}>{obj.name}</TableCellLink>
+    return (
+      <TableRow key={obj.id} hover>
+        <TableCellLink to={`/network-servers/${obj.id}`}>
+          {obj.name}
+        </TableCellLink>
         <TableCell>{obj.server}</TableCell>
       </TableRow>
     );
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={[
             <TitleBarButton
               key={1}
               icon={<Plus />}
-              label="Add"
+              label={translate("add")}
               to={`/network-servers/create`}
             />,
           ]}
         >
-          <TitleBarTitle title="Network-servers" />
+          <TitleBarTitle title={translate("networkServers")} />
         </TitleBar>
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>Server</TableCell>
+                <TableCell>{translate("name")}</TableCell>
+                <TableCell>{translate("server")}</TableCell>
               </TableRow>
             }
             getPage={this.getPage}

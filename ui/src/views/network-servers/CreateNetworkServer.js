@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 
 import { CardContent } from "@material-ui/core";
 
@@ -10,7 +10,7 @@ import TitleBar from "../../components/TitleBar";
 import TitleBarTitle from "../../components/TitleBarTitle";
 import NetworkServerForm from "./NetworkServerForm";
 import NetworkServerStore from "../../stores/NetworkServerStore";
-
+import { formatMessage as translate } from "devextreme/localization";
 
 class CreateNetworkServer extends Component {
   constructor() {
@@ -19,24 +19,27 @@ class CreateNetworkServer extends Component {
   }
 
   onSubmit(networkServer) {
-    NetworkServerStore.create(networkServer, resp => {
+    NetworkServerStore.create(networkServer, (resp) => {
       this.props.history.push("/network-servers");
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar>
-          <TitleBarTitle title="Network-servers" to="/network-servers" />
+          <TitleBarTitle
+            title={translate("networkServers")}
+            to="/network-servers"
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Add" />
+          <TitleBarTitle title={translate("add")} />
         </TitleBar>
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <NetworkServerForm
-                submitLabel="Add network-server"
+                submitLabel={translate("addSubmit")}
                 onSubmit={this.onSubmit}
               />
             </CardContent>

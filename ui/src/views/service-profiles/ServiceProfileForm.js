@@ -1,10 +1,10 @@
 import React from "react";
 
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 import FormLabel from "@material-ui/core/FormLabel";
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormGroup from "@material-ui/core/FormGroup";
-import Checkbox from '@material-ui/core/Checkbox';
+import Checkbox from "@material-ui/core/Checkbox";
 import FormControl from "@material-ui/core/FormControl";
 import FormHelperText from "@material-ui/core/FormHelperText";
 
@@ -13,6 +13,11 @@ import Form from "../../components/Form";
 import AutocompleteSelect from "../../components/AutocompleteSelect";
 import NetworkServerStore from "../../stores/NetworkServerStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ServiceProfileFormJS", key);
+};
 
 class ServiceProfileForm extends FormComponent {
   constructor() {
@@ -22,24 +27,29 @@ class ServiceProfileForm extends FormComponent {
   }
 
   getNetworkServerOption(id, callbackFunc) {
-    NetworkServerStore.get(id, resp => {
-      callbackFunc({label: resp.networkServer.name, value: resp.networkServer.id});
+    NetworkServerStore.get(id, (resp) => {
+      callbackFunc({
+        label: resp.networkServer.name,
+        value: resp.networkServer.id,
+      });
     });
   }
 
   getNetworkServerOptions(search, callbackFunc) {
-    NetworkServerStore.list(0, 999, 0, resp => {
-      const options = resp.result.map((ns, i) => {return {label: ns.name, value: ns.id}});
+    NetworkServerStore.list(0, 999, 0, (resp) => {
+      const options = resp.result.map((ns, i) => {
+        return { label: ns.name, value: ns.id };
+      });
       callbackFunc(options);
     });
   }
 
   render() {
     if (this.state.object === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Form
         submitLabel={this.props.submitLabel}
         onSubmit={this.onSubmit}
@@ -47,32 +57,32 @@ class ServiceProfileForm extends FormComponent {
       >
         <TextField
           id="name"
-          label="Service-profile name"
+          label={t("nameLabel")}
           margin="normal"
           value={this.state.object.name || ""}
           onChange={this.onChange}
-          helperText="A name to identify the service-profile."
+          helperText={t("nameHelper")}
           disabled={this.props.disabled}
           required
           fullWidth
         />
-        {!this.props.update && <FormControl fullWidth margin="normal">
-          <FormLabel required>Network-server</FormLabel>
-          <AutocompleteSelect
-            id="networkServerID"
-            label="Network-server"
-            value={this.state.object.networkServerID || null}
-            onChange={this.onChange}
-            getOption={this.getNetworkServerOption}
-            getOptions={this.getNetworkServerOptions}
-          />
-          <FormHelperText>
-            The network-server on which this service-profile will be provisioned. After creating the service-profile, this value can't be changed.
-          </FormHelperText>
-        </FormControl>}
+        {!this.props.update && (
+          <FormControl fullWidth margin="normal">
+            <FormLabel required>Network-server</FormLabel>
+            <AutocompleteSelect
+              id="networkServerID"
+              label={t("networkServerIDLabel")}
+              value={this.state.object.networkServerID || null}
+              onChange={this.onChange}
+              getOption={this.getNetworkServerOption}
+              getOptions={this.getNetworkServerOptions}
+            />
+            <FormHelperText>{t("networkServerIDHelper")}</FormHelperText>
+          </FormControl>
+        )}
         <FormControl fullWidth margin="normal">
           <FormControlLabel
-            label="Add gateway meta-data"
+            label={t("AddGatewayMetadata")}
             control={
               <Checkbox
                 id="addGWMetaData"
@@ -83,13 +93,11 @@ class ServiceProfileForm extends FormComponent {
               />
             }
           />
-          <FormHelperText>
-            GW metadata (RSSI, SNR, GW geoloc., etc.) are added to the packet sent to the application-server.
-          </FormHelperText>
+          <FormHelperText>{t("MetadataHelper")}</FormHelperText>
         </FormControl>
         <FormControl fullWidth margin="normal">
           <FormControlLabel
-            label="Enable network geolocation"
+            label={t("EnableNetworkGeolocation")}
             control={
               <Checkbox
                 id="nwkGeoLoc"
@@ -100,78 +108,76 @@ class ServiceProfileForm extends FormComponent {
               />
             }
           />
-          <FormHelperText>
-            When enabled, the network-server will try to resolve the location of the devices under this service-profile.
-            Please note that you need to have gateways supporting the fine-timestamp feature and that the network-server
-            needs to be configured in order to provide geolocation support.
-          </FormHelperText>
+          <FormHelperText>{t("NetworkGeolocationHelper")}</FormHelperText>
         </FormControl>
         <TextField
           id="devStatusReqFreq"
-          label="Device-status request frequency"
+          label={t("devStatusReqFreqLabel")}
           margin="normal"
           type="number"
           value={this.state.object.devStatusReqFreq || 0}
           onChange={this.onChange}
-          helperText="Frequency to initiate an End-Device status request (request/day). Set to 0 to disable."
+          helperText={t("devStatusReqFreqHelper")}
           disabled={this.props.disabled}
           fullWidth
         />
-        {this.state.object.devStatusReqFreq > 0 && <FormControl fullWidth margin="normal">
-          <FormGroup>
-            <FormControlLabel
-              label="Report device battery level to application-server"
-              control={
-                <Checkbox
-                  id="reportDevStatusBattery"
-                  checked={!!this.state.object.reportDevStatusBattery}
-                  onChange={this.onChange}
-                  disabled={this.props.disabled}
-                  color="primary"
-                />
-              }
-            />
-            <FormControlLabel
-              label="Report device link margin to application-server"
-              control={
-                <Checkbox
-                  id="reportDevStatusMargin"
-                  checked={!!this.state.object.reportDevStatusMargin}
-                  onChange={this.onChange}
-                  disabled={this.props.disabled}
-                  color="primary"
-                />
-              }
-            />
-          </FormGroup>
-        </FormControl>}
+        {this.state.object.devStatusReqFreq > 0 && (
+          <FormControl fullWidth margin="normal">
+            <FormGroup>
+              <FormControlLabel
+                label={t("ReportBatteryLevel")}
+                control={
+                  <Checkbox
+                    id="reportDevStatusBattery"
+                    checked={!!this.state.object.reportDevStatusBattery}
+                    onChange={this.onChange}
+                    disabled={this.props.disabled}
+                    color="primary"
+                  />
+                }
+              />
+              <FormControlLabel
+                label={t("ReportLinkMargin")}
+                control={
+                  <Checkbox
+                    id="reportDevStatusMargin"
+                    checked={!!this.state.object.reportDevStatusMargin}
+                    onChange={this.onChange}
+                    disabled={this.props.disabled}
+                    color="primary"
+                  />
+                }
+              />
+            </FormGroup>
+          </FormControl>
+        )}
         <TextField
           id="drMin"
-          label="Minimum allowed data-rate"
+          label={t("drMinLabel")}
           margin="normal"
           type="number"
           value={this.state.object.drMin || 0}
           onChange={this.onChange}
-          helperText="Minimum allowed data rate. Used for ADR."
+          helperText={t("drMinHelper")}
           disabled={this.props.disabled}
           fullWidth
           required
         />
         <TextField
           id="drMax"
-          label="Maximum allowed data-rate"
+          label={t("drMaxLabel")}
           margin="normal"
           type="number"
           value={this.state.object.drMax || 0}
           onChange={this.onChange}
-          helperText="Maximum allowed data rate. Used for ADR."
+          helperText={t("drMaxHelper")}
           disabled={this.props.disabled}
           fullWidth
           required
         />
         <FormControl fullWidth margin="normal">
           <FormControlLabel
-            label="Private gateways"
+            label={t("PrivateGateways")}
             control={
               <Checkbox
                 id="gwsPrivate"
@@ -182,9 +188,7 @@ class ServiceProfileForm extends FormComponent {
               />
             }
           />
-          <FormHelperText>
-            Gateways under this service-profile are private. This means that these gateways can only be used by devices under the same service-profile.
-          </FormHelperText>
+          <FormHelperText>{t("PrivateGatewaysHelper")}</FormHelperText>
         </FormControl>
       </Form>
     );

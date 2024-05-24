@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import Grid from '@material-ui/core/Grid';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import Grid from "@material-ui/core/Grid";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
 import Check from "mdi-material-ui/Check";
 import Close from "mdi-material-ui/Close";
@@ -16,6 +16,11 @@ import DataTable from "../../components/DataTable";
 
 import UserStore from "../../stores/UserStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ListUsersJS", key);
+};
 
 class ListUsers extends Component {
   getPage(limit, offset, callbackFunc) {
@@ -38,11 +43,8 @@ class ListUsers extends Component {
       active = <Close />;
     }
 
-    return(
-      <TableRow
-        key={obj.id}
-        hover
-      >
+    return (
+      <TableRow key={obj.id} hover>
         <TableCellLink to={`/users/${obj.id}`}>{obj.email}</TableCellLink>
         <TableCell>{active}</TableCell>
         <TableCell>{admin}</TableCell>
@@ -51,28 +53,28 @@ class ListUsers extends Component {
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
-          title="Users"
+          title={t("Users")}
           buttons={[
             <TitleBarButton
               key={1}
-              label="Create"
+              label={t("Create")}
               icon={<Plus />}
               to={`/users/create`}
             />,
           ]}
         >
-          <TitleBarTitle title="Users" />
+          <TitleBarTitle title={t("Users")} />
         </TitleBar>
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
-                <TableCell>Email</TableCell>
-                <TableCell>Active</TableCell>
-                <TableCell>Admin</TableCell>
+                <TableCell>{t("Email")}</TableCell>
+                <TableCell>{t("Active")}</TableCell>
+                <TableCell>{t("Admin")}</TableCell>
               </TableRow>
             }
             getPage={this.getPage}

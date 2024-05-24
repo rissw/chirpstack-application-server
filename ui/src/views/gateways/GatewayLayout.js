@@ -2,9 +2,9 @@ import React, { Component } from "react";
 import { Route, Switch, Link, withRouter } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import Grid from "@material-ui/core/Grid";
+import Tabs from "@material-ui/core/Tabs";
+import Tab from "@material-ui/core/Tab";
 
 import Delete from "mdi-material-ui/Delete";
 
@@ -22,6 +22,11 @@ import GatewayCertificate from "./GatewayCertificate";
 
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("GatewayLayoutJS", key);
+};
 
 const styles = {
   tabs: {
@@ -30,7 +35,6 @@ const styles = {
     overflow: "visible",
   },
 };
-
 
 class GatewayLayout extends Component {
   constructor() {
@@ -46,12 +50,11 @@ class GatewayLayout extends Component {
   }
 
   componentDidMount() {
-    GatewayStore.get(this.props.match.params.gatewayID, resp => {
+    GatewayStore.get(this.props.match.params.gatewayID, (resp) => {
       this.setState({
         gateway: resp,
       });
     });
-
 
     SessionStore.on("change", this.setIsAdmin);
     this.setIsAdmin();
@@ -72,14 +75,20 @@ class GatewayLayout extends Component {
 
   setIsAdmin() {
     this.setState({
-      admin: SessionStore.isAdmin() || SessionStore.isOrganizationGatewayAdmin(this.props.match.params.organizationID),
+      admin:
+        SessionStore.isAdmin() ||
+        SessionStore.isOrganizationGatewayAdmin(
+          this.props.match.params.organizationID
+        ),
     });
   }
 
   deleteGateway() {
-    if (window.confirm("Are you sure you want to delete this gateway?")) {
+    if (window.confirm(t("DeleteGatewayConfirmation"))) {
       GatewayStore.delete(this.props.match.params.gatewayID, () => {
-        this.props.history.push(`/organizations/${this.props.match.params.organizationID}/gateways`);
+        this.props.history.push(
+          `/organizations/${this.props.match.params.organizationID}/gateways`
+        );
       });
     }
   }
@@ -114,17 +123,19 @@ class GatewayLayout extends Component {
 
   render() {
     if (this.state.gateway === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
-            <GatewayAdmin organizationID={this.props.match.params.organizationID}>
+            <GatewayAdmin
+              organizationID={this.props.match.params.organizationID}
+            >
               <TitleBarButton
                 key={1}
-                label="Delete"
+                label={t("Delete")}
                 icon={<Delete />}
                 color="secondary"
                 onClick={this.deleteGateway}
@@ -132,7 +143,10 @@ class GatewayLayout extends Component {
             </GatewayAdmin>
           }
         >
-          <TitleBarTitle to={`/organizations/${this.props.match.params.organizationID}/gateways`} title="Gateways" />
+          <TitleBarTitle
+            to={`/organizations/${this.props.match.params.organizationID}/gateways`}
+            title="Gateways"
+          />
           <TitleBarTitle title="/" />
           <TitleBarTitle title={this.state.gateway.gateway.name} />
         </TitleBar>
@@ -144,26 +158,93 @@ class GatewayLayout extends Component {
             indicatorColor="primary"
             className={this.props.classes.tabs}
           >
-            <Tab label="Gateway details" component={Link} to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}`} />
-            {this.state.admin && <Tab label="Gateway configuration" component={Link} to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}/edit`} />}
-            {this.state.admin && <Tab label="Certificate" component={Link} to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}/certificate`} />}
-            <Tab label="Gateway discovery" disabled={!this.state.gateway.gateway.discoveryEnabled} component={Link} to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}/discovery`} />
             <Tab
-              label="Live LoRaWAN frames"
+              label={t("GatewayDetails")}
+              component={Link}
+              to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}`}
+            />
+            {this.state.admin && (
+              <Tab
+                label={t("GatewayConfiguration")}
+                component={Link}
+                to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}/edit`}
+              />
+            )}
+            {this.state.admin && (
+              <Tab
+                label={t("Certificate")}
+                component={Link}
+                to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}/certificate`}
+              />
+            )}
+            <Tab
+              label={t("GatewayDiscovery")}
+              disabled={!this.state.gateway.gateway.discoveryEnabled}
+              component={Link}
+              to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}/discovery`}
+            />
+            <Tab
+              label={t("LiveLoRaWANFrames")}
               component={Link}
               to={`/organizations/${this.props.match.params.organizationID}/gateways/${this.props.match.params.gatewayID}/frames`}
             />
           </Tabs>
         </Grid>
-        
+
         <Grid item xs={12}>
-        <Switch>
-          <Route exact path={`${this.props.match.path}`} render={props => <GatewayDetails gateway={this.state.gateway.gateway} lastSeenAt={this.state.gateway.lastSeenAt} {...props} />} />
-          <Route exact path={`${this.props.match.path}/edit`} render={props => <UpdateGateway gateway={this.state.gateway.gateway} {...props} />} />
-          <Route exact path={`${this.props.match.path}/certificate`} render={props => <GatewayCertificate gateway={this.state.gateway.gateway} {...props} />} />
-          <Route exact path={`${this.props.match.path}/discovery`} render={props => <GatewayDiscovery gateway={this.state.gateway.gateway} {...props} />} />
-          <Route exact path={`${this.props.match.path}/frames`} render={props => <GatewayFrames gateway={this.state.gateway.gateway} {...props} />} />
-        </Switch>
+          <Switch>
+            <Route
+              exact
+              path={`${this.props.match.path}`}
+              render={(props) => (
+                <GatewayDetails
+                  gateway={this.state.gateway.gateway}
+                  lastSeenAt={this.state.gateway.lastSeenAt}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={`${this.props.match.path}/edit`}
+              render={(props) => (
+                <UpdateGateway
+                  gateway={this.state.gateway.gateway}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={`${this.props.match.path}/certificate`}
+              render={(props) => (
+                <GatewayCertificate
+                  gateway={this.state.gateway.gateway}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={`${this.props.match.path}/discovery`}
+              render={(props) => (
+                <GatewayDiscovery
+                  gateway={this.state.gateway.gateway}
+                  {...props}
+                />
+              )}
+            />
+            <Route
+              exact
+              path={`${this.props.match.path}/frames`}
+              render={(props) => (
+                <GatewayFrames
+                  gateway={this.state.gateway.gateway}
+                  {...props}
+                />
+              )}
+            />
+          </Switch>
         </Grid>
       </Grid>
     );

@@ -4,13 +4,13 @@ import { withStyles } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import Chip from "@material-ui/core/Chip";
 import Grid from "@material-ui/core/Grid";
-import Button from '@material-ui/core/Button';
-import CircularProgress from '@material-ui/core/CircularProgress';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 
 import Play from "mdi-material-ui/Play";
 import Pause from "mdi-material-ui/Pause";
@@ -26,6 +26,11 @@ import LoRaWANFrameLog from "../../components/LoRaWANFrameLog";
 import GatewayStore from "../../stores/GatewayStore";
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("GatewayFramesJS", key);
+};
 
 const styles = {
   buttons: {
@@ -44,7 +49,6 @@ const styles = {
     marginTop: 4 * theme.spacing(1),
   },
 };
-
 
 class GatewayFrames extends Component {
   constructor() {
@@ -66,7 +70,12 @@ class GatewayFrames extends Component {
   }
 
   componentDidMount() {
-    const conn = GatewayStore.getFrameLogsConnection(this.props.gateway.id, () => {}, () => {}, this.onFrame);
+    const conn = GatewayStore.getFrameLogsConnection(
+      this.props.gateway.id,
+      () => {},
+      () => {},
+      this.onFrame
+    );
     this.setState({
       wsConn: conn,
     });
@@ -89,7 +98,10 @@ class GatewayFrames extends Component {
       };
     });
 
-    fileDownload(JSON.stringify(dl, null, 4), `gateway-${this.props.match.params.gatewayID}.json`);
+    fileDownload(
+      JSON.stringify(dl, null, 4),
+      `gateway-${this.props.match.params.gatewayID}.json`
+    );
   }
 
   togglePause() {
@@ -136,7 +148,7 @@ class GatewayFrames extends Component {
     }
 
     if (frame.downlinkFrame !== undefined) {
-      delete frame.downlinkFrame.txInfo['gatewayID'];
+      delete frame.downlinkFrame.txInfo["gatewayID"];
 
       f = {
         id: now.getTime(),
@@ -147,7 +159,10 @@ class GatewayFrames extends Component {
       };
     }
 
-    if (frames.length === 0 || moment(f.publishedAt).isAfter(moment(frames[0].publishedAt))) {
+    if (
+      frames.length === 0 ||
+      moment(f.publishedAt).isAfter(moment(frames[0].publishedAt))
+    ) {
       frames.unshift(f);
       this.setState({
         frames: frames,
@@ -156,9 +171,11 @@ class GatewayFrames extends Component {
   }
 
   render() {
-    const frames = this.state.frames.map((frame, i) => <LoRaWANFrameLog key={frame.id} frame={frame} />);
+    const frames = this.state.frames.map((frame, i) => (
+      <LoRaWANFrameLog key={frame.id} frame={frame} />
+    ));
 
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12} className={this.props.classes.buttons}>
           <Dialog
@@ -167,47 +184,86 @@ class GatewayFrames extends Component {
             aria-labelledby="help-dialog-title"
             aria-describedby="help-dialog-description"
           >
-            <DialogTitle id="help-dialog-title">Help</DialogTitle>
+            <DialogTitle id="help-dialog-title">{t("DialogTitle")}</DialogTitle>
             <DialogContent>
               <DialogContentText id="help-dialog-description">
-                The frames below are the raw (and encrypted) LoRaWAN PHYPayload frames as seen by the gateway(s). This data is intended for debugging only.
+                {t("DialogContentText")}
               </DialogContentText>
             </DialogContent>
             <DialogActions>
-              <Button onClick={this.toggleHelpDialog} color="primary">Close</Button>
+              <Button onClick={this.toggleHelpDialog} color="primary">
+                {t("Close")}
+              </Button>
             </DialogActions>
           </Dialog>
 
-          <Button variant="outlined" className={this.props.classes.button} onClick={this.toggleHelpDialog}>
+          <Button
+            variant="outlined"
+            className={this.props.classes.button}
+            onClick={this.toggleHelpDialog}
+          >
             <HelpCircleOutline className={this.props.classes.icon} />
-            Help
+            {t("Help")}
           </Button>
-          {!this.state.paused && <Button variant="outlined" className={this.props.classes.button} onClick={this.togglePause}>
-            <Pause className={this.props.classes.icon} />
-            Pause
-          </Button>}
-          {this.state.paused && <Button variant="outlined" className={this.props.classes.button} onClick={this.togglePause}>
-            <Play className={this.props.classes.icon} />
-            Resume
-          </Button>}
-          <Button variant="outlined" className={this.props.classes.button} onClick={this.onDownload}>
+          {!this.state.paused && (
+            <Button
+              variant="outlined"
+              className={this.props.classes.button}
+              onClick={this.togglePause}
+            >
+              <Pause className={this.props.classes.icon} />
+              {t("Pause")}
+            </Button>
+          )}
+          {this.state.paused && (
+            <Button
+              variant="outlined"
+              className={this.props.classes.button}
+              onClick={this.togglePause}
+            >
+              <Play className={this.props.classes.icon} />
+              {t("Resume")}
+            </Button>
+          )}
+          <Button
+            variant="outlined"
+            className={this.props.classes.button}
+            onClick={this.onDownload}
+          >
             <Download className={this.props.classes.icon} />
-            Download
+            {t("Download")}
           </Button>
-          <Button variant="outlined" className={this.props.classes.button} color="secondary" onClick={this.onClear}>
+          <Button
+            variant="outlined"
+            className={this.props.classes.button}
+            color="secondary"
+            onClick={this.onClear}
+          >
             <Delete className={this.props.classes.icon} />
-            Clear
+            {t("Clear")}
           </Button>
         </Grid>
         <Grid item xs={12}>
-          {!this.state.connected && <div className={this.props.classes.center}>
-            <Chip
-              color="secondary"
-              label="Not connected to Websocket API"
-              avatar={<Avatar><AlertCircleOutline /></Avatar>}
-            />
-          </div>}
-          {(this.state.connected && frames.length === 0 && !this.state.paused) && <div className={this.props.classes.center}><CircularProgress className={this.props.classes.progress} /></div>}
+          {!this.state.connected && (
+            <div className={this.props.classes.center}>
+              <Chip
+                color="secondary"
+                label={t("NotConnectedToWS")}
+                avatar={
+                  <Avatar>
+                    <AlertCircleOutline />
+                  </Avatar>
+                }
+              />
+            </div>
+          )}
+          {this.state.connected &&
+            frames.length === 0 &&
+            !this.state.paused && (
+              <div className={this.props.classes.center}>
+                <CircularProgress className={this.props.classes.progress} />
+              </div>
+            )}
           {frames.length > 0 && frames}
         </Grid>
       </Grid>

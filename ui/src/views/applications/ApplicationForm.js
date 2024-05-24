@@ -1,13 +1,13 @@
 import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import Typography from '@material-ui/core/Typography';
+import Typography from "@material-ui/core/Typography";
 
-import {Controlled as CodeMirror} from "react-codemirror2";
+import { Controlled as CodeMirror } from "react-codemirror2";
 import "codemirror/mode/javascript/javascript";
 
 import FormComponent from "../../classes/FormComponent";
@@ -15,6 +15,11 @@ import Form from "../../components/Form";
 import AutocompleteSelect from "../../components/AutocompleteSelect";
 import ServiceProfileStore from "../../stores/ServiceProfileStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ApplicationFormJS", key);
+};
 
 const styles = {
   codeMirror: {
@@ -24,7 +29,6 @@ const styles = {
     fontSize: 12,
   },
 };
-
 
 class ApplicationForm extends FormComponent {
   constructor() {
@@ -36,23 +40,34 @@ class ApplicationForm extends FormComponent {
   }
 
   getServiceProfileOption(id, callbackFunc) {
-    ServiceProfileStore.get(id, resp => {
-      callbackFunc({label: resp.serviceProfile.name, value: resp.serviceProfile.id});
+    ServiceProfileStore.get(id, (resp) => {
+      callbackFunc({
+        label: resp.serviceProfile.name,
+        value: resp.serviceProfile.id,
+      });
     });
   }
 
   getServiceProfileOptions(search, callbackFunc) {
-    ServiceProfileStore.list(this.props.match.params.organizationID, 0, 999, 0, resp => {
-      const options = resp.result.map((sp, i) => {return {label: sp.name, value: sp.id}});
-      callbackFunc(options);
-    });
+    ServiceProfileStore.list(
+      this.props.match.params.organizationID,
+      0,
+      999,
+      0,
+      (resp) => {
+        const options = resp.result.map((sp, i) => {
+          return { label: sp.name, value: sp.id };
+        });
+        callbackFunc(options);
+      }
+    );
   }
 
   getPayloadCodecOptions(search, callbackFunc) {
     const payloadCodecOptions = [
-      {value: "", label: "None"},
-      {value: "CAYENNE_LPP", label: "Cayenne LPP"},
-      {value: "CUSTOM_JS", label: "Custom JavaScript codec functions"},
+      { value: "", label: t("None") },
+      { value: "CAYENNE_LPP", label: t("CayenneLPP") },
+      { value: "CUSTOM_JS", label: t("CustomJS") },
     ];
 
     callbackFunc(payloadCodecOptions);
@@ -68,7 +83,7 @@ class ApplicationForm extends FormComponent {
 
   render() {
     if (this.state.object === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
     const codeMirrorOptions = {
@@ -76,7 +91,7 @@ class ApplicationForm extends FormComponent {
       mode: "javascript",
       theme: "default",
     };
-    
+
     let payloadEncoderScript = this.state.object.payloadEncoderScript;
     let payloadDecoderScript = this.state.object.payloadDecoderScript;
 
@@ -100,90 +115,106 @@ function Decode(fPort, bytes) {
 }`;
     }
 
-    return(
-      <Form
-        submitLabel={this.props.submitLabel}
-        onSubmit={this.onSubmit}
-      >
+    return (
+      <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <TextField
           id="name"
-          label="Application name"
+          label={t("nameLabel")}
           margin="normal"
           value={this.state.object.name || ""}
           onChange={this.onChange}
-          helperText="The name may only contain words, numbers and dashes."
+          helperText={t("nameHelper")}
           fullWidth
           required
         />
         <TextField
           id="description"
-          label="Application description"
+          label={t("descriptionLabel")}
           margin="normal"
           value={this.state.object.description || ""}
           onChange={this.onChange}
           fullWidth
           required
         />
-        {!this.props.update && <FormControl fullWidth margin="normal">
-          <FormLabel className={this.props.classes.formLabel} required>Service-profile</FormLabel>
-          <AutocompleteSelect
-            id="serviceProfileID"
-            label="Select service-profile"
-            value={this.state.object.serviceProfileID || ""}
-            onChange={this.onChange}
-            getOption={this.getServiceProfileOption}
-            getOptions={this.getServiceProfileOptions}
-          />
-          <FormHelperText>
-            The service-profile to which this application will be attached. Note that you can't change this value after the application has been created.
-          </FormHelperText>
-        </FormControl>}
-        {this.state.object.payloadCodec !== "" && this.state.object.payloadCodec !== undefined && <div>
+        {!this.props.update && (
           <FormControl fullWidth margin="normal">
-            <FormLabel className={this.props.classes.formLabel}>Payload codec</FormLabel>
+            <FormLabel className={this.props.classes.formLabel} required>
+              {t("ServiceProfile")}
+            </FormLabel>
             <AutocompleteSelect
-              id="payloadCodec"
-              label="Select payload codec"
-              value={this.state.object.payloadCodec || ""}
+              id="serviceProfileID"
+              label={t("SelectServiceProfile")}
+              value={this.state.object.serviceProfileID || ""}
               onChange={this.onChange}
-              getOptions={this.getPayloadCodecOptions}
+              getOption={this.getServiceProfileOption}
+              getOptions={this.getServiceProfileOptions}
             />
-            <FormHelperText>
-              By defining a payload codec, ChirpStack Application Server can encode and decode the binary device payload for you. 
-              <strong>Important note</strong>: the payload fields have moved to the device-profile. For backward-compatibility and migration, existing codec settings are still visible.
-              Codec settings on the device-profile have priority over the application codec settings.
-            </FormHelperText>
+            <FormHelperText>{t("SelectServiceProfileHelper")}</FormHelperText>
           </FormControl>
-          {this.state.object.payloadCodec === "CUSTOM_JS" && <FormControl fullWidth margin="normal">
-            <CodeMirror
-              value={payloadDecoderScript}
-              options={codeMirrorOptions}
-              onBeforeChange={this.onCodeChange.bind(this, 'payloadDecoderScript')}
-              className={this.props.classes.codeMirror}
-            />
-            <FormHelperText>
-              The function must have the signature <strong>function Decode(fPort, bytes)</strong> and must return an object.
-              ChirpStack Application Server will convert this object to JSON.
-            </FormHelperText>
-          </FormControl>}
-          {this.state.object.payloadCodec === "CUSTOM_JS" && <FormControl fullWidth margin="normal">
-            <CodeMirror
-              value={payloadEncoderScript}
-              options={codeMirrorOptions}
-              onBeforeChange={this.onCodeChange.bind(this, 'payloadEncoderScript')}
-              className={this.props.classes.codeMirror}
-            />
-            <FormHelperText>
-              The function must have the signature <strong>function Encode(fPort, obj)</strong> and must return an array
-              of bytes.
-            </FormHelperText>
-          </FormControl>}
-        </div>}
-        {this.state.object.payloadCodec === "" && <FormControl fullWidth margin="normal">
-          <Typography variant="body1">
-            Note: The payload codec fields have moved to the device-profile.
-          </Typography>
-        </FormControl>}
+        )}
+        {this.state.object.payloadCodec !== "" &&
+          this.state.object.payloadCodec !== undefined && (
+            <div>
+              <FormControl fullWidth margin="normal">
+                <FormLabel className={this.props.classes.formLabel}>
+                  {t("PayloadCodec")}
+                </FormLabel>
+                <AutocompleteSelect
+                  id="payloadCodec"
+                  label={t("SelectPayloadCodec")}
+                  value={this.state.object.payloadCodec || ""}
+                  onChange={this.onChange}
+                  getOptions={this.getPayloadCodecOptions}
+                />
+                <FormHelperText>
+                  {t("SelectPayloadCodecHelper1")}
+                  <strong>{t("ImportantNote")}</strong>:{" "}
+                  {t("SelectPayloadCodecHelper2")}
+                </FormHelperText>
+              </FormControl>
+              {this.state.object.payloadCodec === "CUSTOM_JS" && (
+                <FormControl fullWidth margin="normal">
+                  <CodeMirror
+                    value={payloadDecoderScript}
+                    options={codeMirrorOptions}
+                    onBeforeChange={this.onCodeChange.bind(
+                      this,
+                      "payloadDecoderScript"
+                    )}
+                    className={this.props.classes.codeMirror}
+                  />
+                  <FormHelperText>
+                    {t("FMustHave")}{" "}
+                    <strong>function Decode(fPort, bytes)</strong>{" "}
+                    {t("DecodeMustReturns")}
+                  </FormHelperText>
+                </FormControl>
+              )}
+              {this.state.object.payloadCodec === "CUSTOM_JS" && (
+                <FormControl fullWidth margin="normal">
+                  <CodeMirror
+                    value={payloadEncoderScript}
+                    options={codeMirrorOptions}
+                    onBeforeChange={this.onCodeChange.bind(
+                      this,
+                      "payloadEncoderScript"
+                    )}
+                    className={this.props.classes.codeMirror}
+                  />
+                  <FormHelperText>
+                    {t("FMustHave")}{" "}
+                    <strong>function Encode(fPort, obj)</strong>{" "}
+                    {t("EncodeMustReturn")}
+                  </FormHelperText>
+                </FormControl>
+              )}
+            </div>
+          )}
+        {this.state.object.payloadCodec === "" && (
+          <FormControl fullWidth margin="normal">
+            <Typography variant="body1">{t("PayloadCodecNote")}</Typography>
+          </FormControl>
+        )}
       </Form>
     );
   }

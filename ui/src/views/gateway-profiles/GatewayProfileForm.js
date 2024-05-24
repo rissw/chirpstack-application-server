@@ -1,14 +1,14 @@
 import React, { Component } from "react";
 
-import { withStyles } from '@material-ui/core/styles';
+import { withStyles } from "@material-ui/core/styles";
 import FormControlOrig from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import TextField from '@material-ui/core/TextField';
-import InputLabel from '@material-ui/core/InputLabel';
-import Select from '@material-ui/core/Select';
-import MenuItem from '@material-ui/core/MenuItem';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
+import TextField from "@material-ui/core/TextField";
+import InputLabel from "@material-ui/core/InputLabel";
+import Select from "@material-ui/core/Select";
+import MenuItem from "@material-ui/core/MenuItem";
+import Button from "@material-ui/core/Button";
+import Grid from "@material-ui/core/Grid";
 
 import FormComponent from "../../classes/FormComponent";
 import Form from "../../components/Form";
@@ -19,6 +19,11 @@ import NetworkServerStore from "../../stores/NetworkServerStore";
 
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("GatewayProfileFormJS", key);
+};
 
 const styles = {
   a: {
@@ -28,7 +33,6 @@ const styles = {
     fontSize: 12,
   },
 };
-
 
 class ExtraChannel extends Component {
   constructor() {
@@ -48,10 +52,10 @@ class ExtraChannel extends Component {
       field = e.target.id;
     }
 
-    if(field === "spreadingFactorsStr") {
+    if (field === "spreadingFactorsStr") {
       let sfStr = e.target.value.split(",");
       channel["spreadingFactors"] = sfStr.map((sf, i) => parseInt(sf, 10));
-    } 
+    }
 
     if (e.target.type === "number") {
       channel[field] = parseInt(e.target.value, 10);
@@ -75,18 +79,28 @@ class ExtraChannel extends Component {
       spreadingFactorsStr = this.props.channel.spreadingFactors.join(", ");
     }
 
-    return(
+    return (
       <FormControl
         label={
           <span>
-            Extra channel {this.props.i + 1} (<a href="#delete" onClick={this.onDelete} className={this.props.classes.a}>delete</a>)
+            {t("Extra channel")} {this.props.i + 1} (
+            <a
+              href="#delete"
+              onClick={this.onDelete}
+              className={this.props.classes.a}
+            >
+              {t("delete")}
+            </a>
+            )
           </span>
         }
       >
         <Grid container spacing={4}>
           <Grid item xs={6}>
             <FormControl>
-              <InputLabel htmlFor="modulation" required>Modulation</InputLabel>
+              <InputLabel htmlFor="modulation" required>
+                {t("Modulation")}
+              </InputLabel>
               <Select
                 value={this.props.channel.modulation || ""}
                 onChange={this.onChange}
@@ -94,14 +108,16 @@ class ExtraChannel extends Component {
                   name: "modulation",
                 }}
               >
-                <MenuItem value="LORA">LoRa</MenuItem>
-                <MenuItem value="FSK">FSK</MenuItem>
+                <MenuItem value="LORA">{t("LoRa")}</MenuItem>
+                <MenuItem value="FSK">{t("FSK")}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={6}>
             <FormControl>
-              <InputLabel htmlFor="bandwidth" required>bandwidth (kHz)</InputLabel>
+              <InputLabel htmlFor="bandwidth" required>
+                {t("bandwidth")} ({t("kHz")})
+              </InputLabel>
               <Select
                 value={this.props.channel.bandwidth || ""}
                 onChange={this.onChange}
@@ -109,16 +125,16 @@ class ExtraChannel extends Component {
                   name: "bandwidth",
                 }}
               >
-                <MenuItem value={125}>125 kHz</MenuItem>
-                <MenuItem value={250}>250 kHz</MenuItem>
-                <MenuItem value={500}>500 kHz</MenuItem>
+                <MenuItem value={125}>125 ({t("kHz")})</MenuItem>
+                <MenuItem value={250}>250 ({t("kHz")})</MenuItem>
+                <MenuItem value={500}>500 ({t("kHz")})</MenuItem>
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={6}>
             <TextField
               id="frequency"
-              label="Frequency (Hz)"
+              label={`${t("Frequency")} (${t("Hz")})`}
               type="number"
               margin="normal"
               value={this.props.channel.frequency || ""}
@@ -127,35 +143,39 @@ class ExtraChannel extends Component {
               fullWidth
             />
           </Grid>
-          {this.props.channel.modulation === "LORA" && <Grid item xs={6}>
-            <TextField
-              id="spreadingFactorsStr"
-              label="Spreading-factors"
-              margin="normal"
-              value={spreadingFactorsStr}
-              onChange={this.onChange}
-              placeholder="7, 8, 9, 10, 11, 12"
-              helperText="When defining multiple spreading-factors, the channel will be configured as a multi-SF channel on the gateway."
-              inputProps={{
-                pattern: "[0-9]+(,[\\s]*[0-9]+)*",
-              }}
-              required
-              fullWidth
-            />
-          </Grid>}
-          {this.props.channel.modulation === "FSK" && <Grid item xs={6}>
-            <TextField
-              id="bitrate"
-              label="Bitrate"
-              type="number"
-              margin="normal"
-              value={this.props.channel.bitrate || ""}
-              onChange={this.onChange}
-              placeholder="50000"
-              required
-              fullWidth
-            />
-          </Grid>}
+          {this.props.channel.modulation === "LORA" && (
+            <Grid item xs={6}>
+              <TextField
+                id="spreadingFactorsStr"
+                label={t("SpreadingFactors")}
+                margin="normal"
+                value={spreadingFactorsStr}
+                onChange={this.onChange}
+                placeholder="7, 8, 9, 10, 11, 12"
+                helperText={t("SpreadingFactorsHelper")}
+                inputProps={{
+                  pattern: "[0-9]+(,[\\s]*[0-9]+)*",
+                }}
+                required
+                fullWidth
+              />
+            </Grid>
+          )}
+          {this.props.channel.modulation === "FSK" && (
+            <Grid item xs={6}>
+              <TextField
+                id="bitrate"
+                label={t("Bitrate")}
+                type="number"
+                margin="normal"
+                value={this.props.channel.bitrate || ""}
+                onChange={this.onChange}
+                placeholder="50000"
+                required
+                fullWidth
+              />
+            </Grid>
+          )}
         </Grid>
       </FormControl>
     );
@@ -163,7 +183,6 @@ class ExtraChannel extends Component {
 }
 
 ExtraChannel = withStyles(styles)(ExtraChannel);
-
 
 class GatewayProfileForm extends FormComponent {
   constructor() {
@@ -177,7 +196,11 @@ class GatewayProfileForm extends FormComponent {
   componentDidMount() {
     super.componentDidMount();
 
-    if (this.props.object !== undefined && this.props.object.channels !== undefined && this.props.object.channelsStr === undefined) {
+    if (
+      this.props.object !== undefined &&
+      this.props.object.channels !== undefined &&
+      this.props.object.channelsStr === undefined
+    ) {
       let object = this.props.object;
       object.channelsStr = object.channels.join(", ");
       this.setState({
@@ -190,7 +213,11 @@ class GatewayProfileForm extends FormComponent {
     if (prevProps.object !== this.props.object) {
       let object = this.props.object;
 
-      if (object !== undefined && object.channels !== undefined && object.channelsStr === undefined) {
+      if (
+        object !== undefined &&
+        object.channels !== undefined &&
+        object.channelsStr === undefined
+      ) {
         object.channelsStr = object.channels.join(", ");
       }
 
@@ -205,7 +232,7 @@ class GatewayProfileForm extends FormComponent {
 
     let object = this.state.object;
 
-    if(e.target.id === "channelsStr") {
+    if (e.target.id === "channelsStr") {
       let channelsStr = e.target.value.split(",");
       object["channels"] = channelsStr.map((c, i) => parseInt(c, 10));
     }
@@ -218,9 +245,9 @@ class GatewayProfileForm extends FormComponent {
   addExtraChannel() {
     let object = this.state.object;
     if (object.extraChannels === undefined) {
-      object.extraChannels = [{modulation: "LORA"}];
+      object.extraChannels = [{ modulation: "LORA" }];
     } else {
-      object.extraChannels.push({modulation: "LORA"});
+      object.extraChannels.push({ modulation: "LORA" });
     }
 
     this.setState({
@@ -246,59 +273,71 @@ class GatewayProfileForm extends FormComponent {
   }
 
   getNetworkServerOption(id, callbackFunc) {
-    NetworkServerStore.get(id, resp => {
-      callbackFunc({label: resp.name, value: resp.id});
+    NetworkServerStore.get(id, (resp) => {
+      callbackFunc({ label: resp.name, value: resp.id });
     });
   }
 
   getNetworkServerOptions(search, callbackFunc) {
-    NetworkServerStore.list(0, 999, 0, resp => {
-      const options = resp.result.map((ns, i) => {return {label: ns.name, value: ns.id}});
+    NetworkServerStore.list(0, 999, 0, (resp) => {
+      const options = resp.result.map((ns, i) => {
+        return { label: ns.name, value: ns.id };
+      });
       callbackFunc(options);
     });
   }
 
   render() {
     if (this.state.object === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
     let extraChannels = [];
 
     if (this.state.object.extraChannels !== undefined) {
-      extraChannels = this.state.object.extraChannels.map((ec, i) => <ExtraChannel key={i} channel={ec} i={i} onDelete={() => this.deleteExtraChannel(i)} onChange={ec => this.updateExtraChannel(i, ec)} />);
+      extraChannels = this.state.object.extraChannels.map((ec, i) => (
+        <ExtraChannel
+          key={i}
+          channel={ec}
+          i={i}
+          onDelete={() => this.deleteExtraChannel(i)}
+          onChange={(ec) => this.updateExtraChannel(i, ec)}
+        />
+      ));
     }
 
-    return(
+    return (
       <Form
         submitLabel={this.props.submitLabel}
         onSubmit={this.onSubmit}
-        extraButtons={<Button onClick={this.addExtraChannel}>Add extra channel</Button>}
+        extraButtons={
+          <Button onClick={this.addExtraChannel}>Add extra channel</Button>
+        }
       >
         <TextField
           id="name"
-          label="Name"
+          label={t("Name")}
           margin="normal"
           value={this.state.object.name || ""}
           onChange={this.onChange}
-          helperText="A short name identifying the gateway-profile."
+          helperText={t("NameHelper")}
           required
           fullWidth
         />
         <DurationField
           id="statsInterval"
-          label="Stats interval (seconds)"
-          helperText="The stats interval in which the gateway reports its statistics. The recommended value is 30 seconds."
+          label={`${t("StatsInterval")} (${t("seconds")})`}
+          helperText={t("StatsIntervalHelper")}
           value={this.state.object.statsInterval}
           onChange={this.onChange}
         />
         <TextField
           id="channelsStr"
-          label="Enabled channels"
+          label={t("EnabledChannels")}
           margin="normal"
           value={this.state.object.channelsStr || ""}
           onChange={this.onChange}
-          helperText="The channels active in this gateway-profile as specified in the LoRaWAN Regional Parameters specification. Separate channels by comma, e.g. 0, 1, 2. Extra channels must not be included in this list."
+          helperText={t("EnabledChannelsHelper")}
           placeholder="0, 1, 2"
           inputProps={{
             pattern: "[0-9]+(,[\\s]*[0-9]+)*",
@@ -306,17 +345,21 @@ class GatewayProfileForm extends FormComponent {
           required
           fullWidth
         />
-        {!this.props.update && <FormControlOrig margin="normal" fullWidth>
-          <FormLabel className={this.props.classes.formLabel} required>Network-server</FormLabel>
-          <AutocompleteSelect
-            id="networkServerID"
-            label="Select network-server"
-            value={this.state.object.networkServerID || ""}
-            onChange={this.onChange}
-            getOption={this.getNetworkServerOption}
-            getOptions={this.getNetworkServerOptions}
-          />
-        </FormControlOrig>}
+        {!this.props.update && (
+          <FormControlOrig margin="normal" fullWidth>
+            <FormLabel className={this.props.classes.formLabel} required>
+              {t("NetworkServer")}
+            </FormLabel>
+            <AutocompleteSelect
+              id="networkServerID"
+              label={t("SelectNetworkServer")}
+              value={this.state.object.networkServerID || ""}
+              onChange={this.onChange}
+              getOption={this.getNetworkServerOption}
+              getOptions={this.getNetworkServerOptions}
+            />
+          </FormControlOrig>
+        )}
         {extraChannels}
       </Form>
     );

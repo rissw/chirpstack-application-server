@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 
-import Grid from '@material-ui/core/Grid';
-import TableCell from '@material-ui/core/TableCell';
-import TableRow from '@material-ui/core/TableRow';
+import Grid from "@material-ui/core/Grid";
+import TableCell from "@material-ui/core/TableCell";
+import TableRow from "@material-ui/core/TableRow";
 
 import Plus from "mdi-material-ui/Plus";
 
@@ -14,6 +14,11 @@ import Admin from "../../components/Admin";
 import DataTable from "../../components/DataTable";
 import ServiceProfileStore from "../../stores/ServiceProfileStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ListServiceProfilesJS", key);
+};
 
 class ListServiceProfiles extends Component {
   constructor() {
@@ -24,16 +29,23 @@ class ListServiceProfiles extends Component {
   }
 
   getPage(limit, offset, callbackFunc) {
-    ServiceProfileStore.list(this.props.match.params.organizationID, 0, limit, offset, callbackFunc);
+    ServiceProfileStore.list(
+      this.props.match.params.organizationID,
+      0,
+      limit,
+      offset,
+      callbackFunc
+    );
   }
 
   getRow(obj) {
-    return(
-      <TableRow
-        key={obj.id}
-        hover
-      >
-        <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/service-profiles/${obj.id}`}>{obj.name}</TableCellLink>
+    return (
+      <TableRow key={obj.id} hover>
+        <TableCellLink
+          to={`/organizations/${this.props.match.params.organizationID}/service-profiles/${obj.id}`}
+        >
+          {obj.name}
+        </TableCellLink>
         <TableCell>{obj.id}</TableCell>
         <TableCell>{obj.networkServerName}</TableCell>
       </TableRow>
@@ -41,28 +53,28 @@ class ListServiceProfiles extends Component {
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
             <Admin>
               <TitleBarButton
-                label="Create"
+                label={t("Create")}
                 icon={<Plus />}
                 to={`/organizations/${this.props.match.params.organizationID}/service-profiles/create`}
               />
             </Admin>
           }
         >
-          <TitleBarTitle title="Service-profiles" />
+          <TitleBarTitle title={t("ServiceProfiles")} />
         </TitleBar>
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>ID</TableCell>
-                <TableCell>Network Server</TableCell>
+                <TableCell>{t("Name")}</TableCell>
+                <TableCell>{t("ID")}</TableCell>
+                <TableCell>{t("NetworkServer")}</TableCell>
               </TableRow>
             }
             getPage={this.getPage}

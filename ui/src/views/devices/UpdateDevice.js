@@ -1,21 +1,25 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
 import { withStyles } from "@material-ui/core/styles";
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import DeviceStore from "../../stores/DeviceStore";
 import DeviceForm from "./DeviceForm";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UpdateDeviceJS", key);
+};
 
 const styles = {
   card: {
     overflow: "visible",
   },
 };
-
 
 class UpdateDevice extends Component {
   constructor() {
@@ -24,19 +28,21 @@ class UpdateDevice extends Component {
   }
 
   onSubmit(device) {
-    DeviceStore.update(device, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${this.props.match.params.devEUI}`);
+    DeviceStore.update(device, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${this.props.match.params.devEUI}`
+      );
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card className={this.props.classes.card}>
             <CardContent>
               <DeviceForm
-                submitLabel="Update device"
+                submitLabel={t("UpdateDevice")}
                 object={this.props.device}
                 onSubmit={this.onSubmit}
                 match={this.props.match}

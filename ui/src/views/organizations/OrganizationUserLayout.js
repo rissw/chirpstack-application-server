@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 
 import Delete from "mdi-material-ui/Delete";
 import Account from "mdi-material-ui/Account";
@@ -13,6 +13,11 @@ import SessionStore from "../../stores/SessionStore";
 import OrganizationStore from "../../stores/OrganizationStore";
 import UpdateOrganizationUser from "./UpdateOrganizationUser";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("OrganizationUserLayoutJS", key);
+};
 
 class OrganizationUserLayout extends Component {
   constructor() {
@@ -25,11 +30,15 @@ class OrganizationUserLayout extends Component {
   }
 
   componentDidMount() {
-    OrganizationStore.getUser(this.props.match.params.organizationID, this.props.match.params.userID, resp => {
-      this.setState({
-        organizationUser: resp,
-      });
-    });
+    OrganizationStore.getUser(
+      this.props.match.params.organizationID,
+      this.props.match.params.userID,
+      (resp) => {
+        this.setState({
+          organizationUser: resp,
+        });
+      }
+    );
 
     SessionStore.on("change", this.setIsAdmin);
     this.setIsAdmin();
@@ -46,30 +55,38 @@ class OrganizationUserLayout extends Component {
   }
 
   deleteOrganizationUser() {
-    if (window.confirm("Are you sure you want to remove this organization user (this does not remove the user itself)?")) {
-      OrganizationStore.deleteUser(this.props.match.params.organizationID, this.props.match.params.userID, resp => {
-        this.props.history.push(`/organizations/${this.props.match.params.organizationID}/users`);
-      });
+    if (window.confirm(t("DeleteConfirmation"))) {
+      OrganizationStore.deleteUser(
+        this.props.match.params.organizationID,
+        this.props.match.params.userID,
+        (resp) => {
+          this.props.history.push(
+            `/organizations/${this.props.match.params.organizationID}/users`
+          );
+        }
+      );
     }
   }
 
   render() {
     if (this.state.organizationUser === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
             <div>
-              {this.state.admin && <TitleBarButton
-                label="Goto user" 
-                icon={<Account />}
-                to={`/users/${this.state.organizationUser.organizationUser.userID}`}
-              />}
+              {this.state.admin && (
+                <TitleBarButton
+                  label={t("GotoUser")}
+                  icon={<Account />}
+                  to={`/users/${this.state.organizationUser.organizationUser.userID}`}
+                />
+              )}
               <TitleBarButton
-                label="Delete"
+                label={t("Delete")}
                 icon={<Delete />}
                 color="secondary"
                 onClick={this.deleteOrganizationUser}
@@ -77,13 +94,20 @@ class OrganizationUserLayout extends Component {
             </div>
           }
         >
-          <TitleBarTitle to={`/organizations/${this.props.match.params.organizationID}/users`} title="Organization users" />
+          <TitleBarTitle
+            to={`/organizations/${this.props.match.params.organizationID}/users`}
+            title={t("OrganizationUsers")}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title={this.state.organizationUser.organizationUser.email} />
+          <TitleBarTitle
+            title={this.state.organizationUser.organizationUser.email}
+          />
         </TitleBar>
 
         <Grid item xs={12}>
-          <UpdateOrganizationUser organizationUser={this.state.organizationUser.organizationUser} />
+          <UpdateOrganizationUser
+            organizationUser={this.state.organizationUser.organizationUser}
+          />
         </Grid>
       </Grid>
     );

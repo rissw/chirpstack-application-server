@@ -1,11 +1,11 @@
 import React, { Component } from "react";
 import { Link, withRouter } from "react-router-dom";
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 
 import SessionStore from "../stores/SessionStore";
@@ -13,6 +13,7 @@ import NetworkServerStore from "../stores/NetworkServerStore";
 import ServiceProfileStore from "../stores/ServiceProfileStore";
 import DeviceProfileStore from "../stores/DeviceProfileStore";
 
+import { formatMessage as translate } from "devextreme/localization";
 
 class SetupHelper extends Component {
   constructor() {
@@ -63,25 +64,41 @@ class SetupHelper extends Component {
       return;
     }
 
-    if (!!localStorage.getItem("spDialogDismiss" + SessionStore.getOrganizationID())) {
+    if (
+      !!localStorage.getItem(
+        "spDialogDismiss" + SessionStore.getOrganizationID()
+      )
+    ) {
       callbackFunc();
       return;
     }
 
-    if (!SessionStore.isAdmin() && !SessionStore.isOrganizationAdmin(SessionStore.getOrganizationID())) {
+    if (
+      !SessionStore.isAdmin() &&
+      !SessionStore.isOrganizationAdmin(SessionStore.getOrganizationID())
+    ) {
       callbackFunc();
       return;
     }
 
-    ServiceProfileStore.list(SessionStore.getOrganizationID(), 0, 0, 0, resp => {
-      if (resp.totalCount === "0" && !(this.state.nsDialog || this.state.dpDialog)) {
-        this.setState({
-          spDialog: true,
-        });
-      } else {
-        callbackFunc();
+    ServiceProfileStore.list(
+      SessionStore.getOrganizationID(),
+      0,
+      0,
+      0,
+      (resp) => {
+        if (
+          resp.totalCount === "0" &&
+          !(this.state.nsDialog || this.state.dpDialog)
+        ) {
+          this.setState({
+            spDialog: true,
+          });
+        } else {
+          callbackFunc();
+        }
       }
-    });
+    );
   }
 
   testDeviceProfile(callbackFunc) {
@@ -90,25 +107,41 @@ class SetupHelper extends Component {
       return;
     }
 
-    if (!!localStorage.getItem("dpDialogDismiss" + SessionStore.getOrganizationID())) {
+    if (
+      !!localStorage.getItem(
+        "dpDialogDismiss" + SessionStore.getOrganizationID()
+      )
+    ) {
       callbackFunc();
       return;
     }
 
-    if (!SessionStore.isAdmin() && !SessionStore.isOrganizationAdmin(SessionStore.getOrganizationID())) {
+    if (
+      !SessionStore.isAdmin() &&
+      !SessionStore.isOrganizationAdmin(SessionStore.getOrganizationID())
+    ) {
       callbackFunc();
       return;
     }
 
-    DeviceProfileStore.list(SessionStore.getOrganizationID(), 0, 0, 0, resp => {
-      if (resp.totalCount === "0" && !(this.state.nsDialog || this.state.dpDialog)) {
-        this.setState({
-          dpDialog: true,
-        });
-      } else {
-        callbackFunc();
+    DeviceProfileStore.list(
+      SessionStore.getOrganizationID(),
+      0,
+      0,
+      0,
+      (resp) => {
+        if (
+          resp.totalCount === "0" &&
+          !(this.state.nsDialog || this.state.dpDialog)
+        ) {
+          this.setState({
+            dpDialog: true,
+          });
+        } else {
+          callbackFunc();
+        }
       }
-    });
+    );
   }
 
   testNetworkServer() {
@@ -116,7 +149,7 @@ class SetupHelper extends Component {
       return;
     }
 
-    NetworkServerStore.list(0, 0, 0, resp => {
+    NetworkServerStore.list(0, 0, 0, (resp) => {
       if (resp.totalCount === 0) {
         this.setState({
           nsDialog: true,
@@ -132,7 +165,10 @@ class SetupHelper extends Component {
     if (name === "nsDialog") {
       localStorage.setItem(name + "Dismiss", true);
     } else if (SessionStore.getOrganizationID() !== null) {
-      localStorage.setItem(name + "Dismiss" + SessionStore.getOrganizationID(), true);
+      localStorage.setItem(
+        name + "Dismiss" + SessionStore.getOrganizationID(),
+        true
+      );
     }
 
     this.setState(state);
@@ -141,25 +177,36 @@ class SetupHelper extends Component {
   render() {
     const orgID = SessionStore.getOrganizationID();
 
-    return(
+    return (
       <div>
         <Dialog
           open={this.state.nsDialog}
           onClose={this.toggleDialog.bind(this, "nsDialog")}
         >
-          <DialogTitle>Add a network-server?</DialogTitle>
+          <DialogTitle>{translate("addNetServerQ")}</DialogTitle>
           <DialogContent>
             <DialogContentText paragraph>
-              ChirpStack Application Server isn't connected to a ChirpStack Network Server network-server.
-              Did you know that ChirpStack Application Server can connect to multiple ChirpStack Network Server instances, e.g. to support multiple regions?
+              {translate("addNetServerHelperInfo")}
             </DialogContentText>
             <DialogContentText>
-              Would you like to connect to a network-server now?
+              {translate("wouldYouLikeToConnectQ")}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" component={Link} to="/network-servers/create" onClick={this.toggleDialog.bind(this, "nsDialog")}>Add network-server</Button>
-            <Button color="primary" onClick={this.toggleDialog.bind(this, "nsDialog")}>Dismiss</Button>
+            <Button
+              color="primary"
+              component={Link}
+              to="/network-servers/create"
+              onClick={this.toggleDialog.bind(this, "nsDialog")}
+            >
+              {translate("addSubmit")}
+            </Button>
+            <Button
+              color="primary"
+              onClick={this.toggleDialog.bind(this, "nsDialog")}
+            >
+              {translate("dismiss")}
+            </Button>
           </DialogActions>
         </Dialog>
 
@@ -167,19 +214,30 @@ class SetupHelper extends Component {
           open={this.state.spDialog}
           onClose={this.toggleDialog.bind(this, "spDialog")}
         >
-          <DialogTitle>Add a service-profile?</DialogTitle>
+          <DialogTitle>{translate("addServiceProfileQ")}</DialogTitle>
           <DialogContent>
             <DialogContentText paragraph>
-              The selected organization does not have a service-profile yet.
-              A service-profile connects an organization to a network-server and defines the features that an organization can use on this network-server.
+              {translate("addServiceProfileHelperInfo")}
             </DialogContentText>
             <DialogContentText>
-              Would you like to create a service-profile?
+              {translate("wouldYouLikeToCreateServiceProfileQ")}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" component={Link} to={`/organizations/${orgID}/service-profiles/create`} onClick={this.toggleDialog.bind(this, "spDialog")}>Create service-profile</Button>
-            <Button color="primary" onClick={this.toggleDialog.bind(this, "spDialog")}>Dismiss</Button>
+            <Button
+              color="primary"
+              component={Link}
+              to={`/organizations/${orgID}/service-profiles/create`}
+              onClick={this.toggleDialog.bind(this, "spDialog")}
+            >
+              {translate("createServiceProfile")}
+            </Button>
+            <Button
+              color="primary"
+              onClick={this.toggleDialog.bind(this, "spDialog")}
+            >
+              {translate("dismiss")}
+            </Button>
           </DialogActions>
         </Dialog>
 
@@ -187,19 +245,30 @@ class SetupHelper extends Component {
           open={this.state.dpDialog}
           onClose={this.toggleDialog.bind(this, "dpDialog")}
         >
-          <DialogTitle>Add a device-profile?</DialogTitle>
+          <DialogTitle>{translate("addDeviceProfileQ")}</DialogTitle>
           <DialogContent>
             <DialogContentText paragraph>
-              The selected organization does not have a device-profile yet.
-              A device-profile defines the capabilities and boot parameters of a device. You can create multiple device-profiles for different kind of devices.
+              {translate("addDeviceProfileHelperInfo")}
             </DialogContentText>
             <DialogContentText>
-              Would you like to create a device-profile?
+              {translate("wouldYouLikeToCreateDeviceProfileQ")}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" component={Link} to={`/organizations/${orgID}/device-profiles/create`} onClick={this.toggleDialog.bind(this, "dpDialog")}>Create device-profile</Button>
-            <Button color="primary" onClick={this.toggleDialog.bind(this, "dpDialog")}>Dismiss</Button>
+            <Button
+              color="primary"
+              component={Link}
+              to={`/organizations/${orgID}/device-profiles/create`}
+              onClick={this.toggleDialog.bind(this, "dpDialog")}
+            >
+              {translate("createDeviceProfile")}
+            </Button>
+            <Button
+              color="primary"
+              onClick={this.toggleDialog.bind(this, "dpDialog")}
+            >
+              {translate("dismiss")}
+            </Button>
           </DialogActions>
         </Dialog>
       </div>

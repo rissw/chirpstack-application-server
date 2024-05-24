@@ -1,13 +1,13 @@
 import React, { Component } from "react";
 
 import TextField from "@material-ui/core/TextField";
-import InputAdornment from '@material-ui/core/InputAdornment';
-import IconButton from '@material-ui/core/IconButton';
+import InputAdornment from "@material-ui/core/InputAdornment";
+import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
-import Tooltip from '@material-ui/core/Tooltip';
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import Fade from '@material-ui/core/Fade';
+import Tooltip from "@material-ui/core/Tooltip";
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import Fade from "@material-ui/core/Fade";
 
 import Eye from "mdi-material-ui/Eye";
 import EyeOff from "mdi-material-ui/EyeOff";
@@ -15,7 +15,8 @@ import Refresh from "mdi-material-ui/Refresh";
 import Copy from "mdi-material-ui/ContentCopy";
 
 import MaskedInput from "react-text-mask";
-import {successNotify, errorHandler } from "../stores/helpers";
+import { successNotify, errorHandler } from "../stores/helpers";
+import { formatMessage as translate } from "devextreme/localization";
 
 function CopyMenu(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -33,31 +34,42 @@ function CopyMenu(props) {
     const bytes = props.value.match(/[A-Fa-f0-9]{2}/g);
 
     if (bytes !== null && navigator.clipboard !== undefined) {
-        navigator.clipboard.writeText(bytes.join("").toUpperCase()).then(successNotify("Copied to clipboard")).catch(errorHandler);
+      navigator.clipboard
+        .writeText(bytes.join("").toUpperCase())
+        .then(successNotify("Copied to clipboard"))
+        .catch(errorHandler);
     }
-    handleClose()
+    handleClose();
   }
   function copyToClipboardHexArray() {
     const bytes = props.value.match(/[A-Fa-f0-9]{2}/g);
 
     if (bytes !== null && navigator.clipboard !== undefined) {
-      navigator.clipboard.writeText(bytes.join(", ").toUpperCase().replace(/[A-Fa-f0-9]{2}/g, "0x$&")).then(successNotify("Copied to clipboard")).catch(errorHandler);
+      navigator.clipboard
+        .writeText(
+          bytes
+            .join(", ")
+            .toUpperCase()
+            .replace(/[A-Fa-f0-9]{2}/g, "0x$&")
+        )
+        .then(successNotify("Copied to clipboard"))
+        .catch(errorHandler);
     }
-    handleClose()
+    handleClose();
   }
 
   return (
     <div>
-      <Tooltip title="Click to copy">
+      <Tooltip title={translate("clickToCopy")}>
         <IconButton
-              aria-controls="fade-menu"
-              aria-haspopup="true"
-              onClick={handleClick}
-              aria-label="Toggle key visibility"
-              >
-              <Copy />
-          </IconButton>
-        </Tooltip>
+          aria-controls="fade-menu"
+          aria-haspopup="true"
+          onClick={handleClick}
+          aria-label="Toggle key visibility"
+        >
+          <Copy />
+        </IconButton>
+      </Tooltip>
       <Menu
         id="fade-menu"
         anchorEl={anchorEl}
@@ -66,8 +78,10 @@ function CopyMenu(props) {
         onClose={handleClose}
         TransitionComponent={Fade}
       >
-        <MenuItem onClick={copyToClipboard}>Hex String</MenuItem>
-        <MenuItem onClick={copyToClipboardHexArray}>Hex Array</MenuItem>
+        <MenuItem onClick={copyToClipboard}>{translate("hexString")}</MenuItem>
+        <MenuItem onClick={copyToClipboardHexArray}>
+          {translate("hexArray")}
+        </MenuItem>
       </Menu>
     </div>
   );
@@ -77,7 +91,7 @@ class AESKeyHEXMask extends Component {
   render() {
     const { inputRef, ...other } = this.props;
 
-    return(
+    return (
       <MaskedInput
         {...other}
         ref={(ref) => {
@@ -86,49 +100,49 @@ class AESKeyHEXMask extends Component {
         mask={[
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
-          ' ',
+          " ",
           /[A-Fa-f0-9]/,
           /[A-Fa-f0-9]/,
         ]}
@@ -136,7 +150,6 @@ class AESKeyHEXMask extends Component {
     );
   }
 }
-
 
 class AESKeyField extends Component {
   constructor() {
@@ -153,7 +166,7 @@ class AESKeyField extends Component {
     this.setState({
       showKey: !this.state.showKey,
     });
-  }
+  };
 
   toggleByteOrder = () => {
     this.setState({
@@ -166,14 +179,14 @@ class AESKeyField extends Component {
         value: bytes.reverse().join(" "),
       });
     }
-  }
+  };
 
   randomKey = () => {
     let cryptoObj = window.crypto || window.msCrypto;
     let b = new Uint8Array(16);
     cryptoObj.getRandomValues(b);
 
-    let key = Buffer.from(b).toString('hex');
+    let key = Buffer.from(b).toString("hex");
     this.setState({
       value: key,
     });
@@ -184,7 +197,7 @@ class AESKeyField extends Component {
       str = bytes.reverse().join("");
     } else if (bytes !== null) {
       str = bytes.join("");
-    } 
+    }
 
     this.props.onChange({
       target: {
@@ -193,7 +206,7 @@ class AESKeyField extends Component {
         id: this.props.id,
       },
     });
-  }
+  };
 
   onChange = (e) => {
     this.setState({
@@ -207,7 +220,7 @@ class AESKeyField extends Component {
       str = bytes.reverse().join("");
     } else if (bytes !== null) {
       str = bytes.join("");
-    } 
+    }
 
     this.props.onChange({
       target: {
@@ -216,7 +229,7 @@ class AESKeyField extends Component {
         id: this.props.id,
       },
     });
-  }
+  };
 
   componentDidMount() {
     this.setState({
@@ -226,39 +239,44 @@ class AESKeyField extends Component {
   }
 
   render() {
-    return(
+    return (
       <TextField
         type={this.state.showKey ? "text" : "password"}
         InputProps={{
           inputComponent: AESKeyHEXMask,
-          endAdornment: <InputAdornment position="end">
-            {this.state.showKey && <Tooltip title="Toggle the byte order of the input. Some devices use LSB.">
-              <Button
-                aria-label="Toggle byte order"
-                onClick={this.toggleByteOrder}
-              >
-                {this.state.msb ? "MSB": "LSB"}
-              </Button>
-            </Tooltip>}
-            {this.props.random && this.state.showKey && !this.props.disabled && <Tooltip title="Generate random key.">
+          endAdornment: (
+            <InputAdornment position="end">
+              {this.state.showKey && (
+                <Tooltip title={translate("toggleByteOrder")}>
+                  <Button
+                    aria-label="Toggle byte order"
+                    onClick={this.toggleByteOrder}
+                  >
+                    {this.state.msb ? "MSB" : "LSB"}
+                  </Button>
+                </Tooltip>
+              )}
+              {this.props.random &&
+                this.state.showKey &&
+                !this.props.disabled && (
+                  <Tooltip title={translate("generateRandomKey")}>
+                    <IconButton
+                      aria-label="Generate random key"
+                      onClick={this.randomKey}
+                    >
+                      <Refresh />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              {this.state.showKey && <CopyMenu value={this.state.value} />}
               <IconButton
-                aria-label="Generate random key"
-                onClick={this.randomKey}
+                aria-label="Toggle key visibility"
+                onClick={this.toggleShowPassword}
               >
-                <Refresh />
+                {this.state.showKey ? <EyeOff /> : <Eye />}
               </IconButton>
-             </Tooltip>}
-            {this.state.showKey &&
-              <CopyMenu
-                value={this.state.value}
-              />}
-            <IconButton
-              aria-label="Toggle key visibility"
-              onClick={this.toggleShowPassword}
-            >
-              {this.state.showKey ? <EyeOff /> : <Eye />}
-            </IconButton>
-          </InputAdornment>
+            </InputAdornment>
+          ),
         }}
         {...this.props}
         onChange={this.onChange}

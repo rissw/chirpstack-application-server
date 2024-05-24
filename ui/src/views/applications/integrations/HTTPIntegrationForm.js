@@ -4,9 +4,9 @@ import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 import FormHelperText from "@material-ui/core/FormHelperText";
-import IconButton from '@material-ui/core/IconButton';
+import IconButton from "@material-ui/core/IconButton";
 import Button from "@material-ui/core/Button";
 
 import Delete from "mdi-material-ui/Delete";
@@ -16,6 +16,11 @@ import Form from "../../../components/Form";
 import AutocompleteSelect from "../../../components/AutocompleteSelect";
 import theme from "../../../theme";
 
+import { translate } from "../../../helpers/translate";
+
+const t = (key) => {
+  return translate("HTTPIntegrationFormJS", key);
+};
 
 const styles = {
   delete: {
@@ -26,7 +31,6 @@ const styles = {
   },
 };
 
-
 class HTTPIntegrationHeaderForm extends FormComponent {
   onChange(e) {
     super.onChange(e);
@@ -36,19 +40,19 @@ class HTTPIntegrationHeaderForm extends FormComponent {
   onDelete = (e) => {
     e.preventDefault();
     this.props.onDelete(this.props.index);
-  }
+  };
 
   render() {
     if (this.state.object === undefined) {
       return null;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={4}>
           <TextField
             id="key"
-            label="Header name"
+            label={t("HeaderName")}
             margin="normal"
             value={this.state.object.key || ""}
             onChange={this.onChange}
@@ -58,7 +62,7 @@ class HTTPIntegrationHeaderForm extends FormComponent {
         <Grid item xs={7}>
           <TextField
             id="value"
-            label="Header value"
+            label={t("HeaderValue")}
             margin="normal"
             value={this.state.object.value || ""}
             onChange={this.onChange}
@@ -71,20 +75,18 @@ class HTTPIntegrationHeaderForm extends FormComponent {
           </IconButton>
         </Grid>
       </Grid>
-    );    
+    );
   }
 }
 
-
 HTTPIntegrationHeaderForm = withStyles(styles)(HTTPIntegrationHeaderForm);
-
 
 class HTTPIntegrationForm extends FormComponent {
   addHeader = (e) => {
     e.preventDefault();
 
     let object = this.state.object;
-    if(object.headers === undefined) {
+    if (object.headers === undefined) {
       object.headers = [{}];
     } else {
       object.headers.push({});
@@ -93,7 +95,7 @@ class HTTPIntegrationForm extends FormComponent {
     this.setState({
       object: object,
     });
-  }
+  };
 
   onDeleteHeader = (index) => {
     let object = this.state.object;
@@ -102,7 +104,7 @@ class HTTPIntegrationForm extends FormComponent {
     this.setState({
       object: object,
     });
-  }
+  };
 
   onChangeHeader = (index, header) => {
     let object = this.state.object;
@@ -110,17 +112,17 @@ class HTTPIntegrationForm extends FormComponent {
     this.setState({
       object: object,
     });
-  }
+  };
 
   getMarshalerOptions = (search, callbackFunc) => {
     const marshalerOptions = [
-      {value: "JSON", label: "JSON"},
-      {value: "PROTOBUF", label: "Protocol Buffers"},
-      {value: "JSON_V3", label: "JSON (legacy, will be deprecated)"},
+      { value: "JSON", label: t("JSON") },
+      { value: "PROTOBUF", label: t("ProtocolBuffers") },
+      { value: "JSON_V3", label: t("JSONLegacy") },
     ];
 
     callbackFunc(marshalerOptions);
-  }
+  };
 
   render() {
     if (this.state.object === undefined) {
@@ -129,124 +131,149 @@ class HTTPIntegrationForm extends FormComponent {
 
     let headers = [];
     if (this.state.object.headers !== undefined) {
-      headers = this.state.object.headers.map((h, i) => <HTTPIntegrationHeaderForm key={i} index={i} object={h} onChange={this.onChangeHeader} onDelete={this.onDeleteHeader} />);
+      headers = this.state.object.headers.map((h, i) => (
+        <HTTPIntegrationHeaderForm
+          key={i}
+          index={i}
+          object={h}
+          onChange={this.onChangeHeader}
+          onDelete={this.onDeleteHeader}
+        />
+      ));
     }
 
-    return(
+    return (
       <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <FormControl fullWidth margin="normal">
-          <FormLabel required>Payload marshaler</FormLabel>
+          <FormLabel required>{t("PayloadMarshaler")}</FormLabel>
           <AutocompleteSelect
             id="marshaler"
-            label="Select payload marshaler"
+            label={t("marshalerLabel")}
             value={this.state.object.marshaler || ""}
             onChange={this.onChange}
             getOptions={this.getMarshalerOptions}
           />
-          <FormHelperText>This defines how the payload will be encoded.</FormHelperText>
+          <FormHelperText>{t("marshalerHelper")}</FormHelperText>
         </FormControl>
         <FormControl fullWidth margin="normal">
-          <FormLabel>Headers</FormLabel>
+          <FormLabel>{t("Headers")}</FormLabel>
           {headers}
         </FormControl>
-        <Button variant="outlined" onClick={this.addHeader}>Add header</Button>
+        <Button variant="outlined" onClick={this.addHeader}>
+          {t("AddHeader")}
+        </Button>
         <FormControl fullWidth margin="normal">
-          <FormLabel>Endpoints</FormLabel>
+          <FormLabel>{t("Endpoints")}</FormLabel>
           <TextField
             id="eventEndpointURL"
-            label="Endpoint URL(s) for events"
+            label={t("eventEndpointURLLabel")}
             placeholder="http://example.com/events"
-            helperText="ChirpStack will make a POST request to this URL(s) with 'event' as query parameter. Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
+            helperText={t("eventEndpointURLHelper")}
             value={this.state.object.eventEndpointURL || ""}
             onChange={this.onChange}
             margin="normal"
             fullWidth
           />
-          {!!this.state.object.uplinkDataURL && <TextField
-            id="uplinkDataURL"
-            label="Uplink data URL(s)"
-            placeholder="http://example.com/uplink"
-            helperText="Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
-            value={this.state.object.uplinkDataURL || ""}
-            onChange={this.onChange}
-            margin="normal"
-            fullWidth
-          />}
-          {!!this.state.object.joinNotificationURL && <TextField
-            id="joinNotificationURL"
-            label="Join notification URL(s)"
-            placeholder="http://example.com/join"
-            helperText="Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
-            value={this.state.object.joinNotificationURL || ""}
-            onChange={this.onChange}
-            margin="normal"
-            fullWidth
-          />}
-          {!!this.state.object.statusNotificationURL && <TextField
-            id="statusNotificationURL"
-            label="Device-status notification URL(s)"
-            placeholder="http://example.com/status"
-            helperText="Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
-            value={this.state.object.statusNotificationURL || ""}
-            onChange={this.onChange}
-            margin="normal"
-            fullWidth
-          />}
-          {!!this.state.object.locationNotificationURL && <TextField
-            id="locationNotificationURL"
-            label="Location notification URL(s)"
-            placeholder="http://example.com/location"
-            helperText="Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
-            value={this.state.object.locationNotificationURL || ""}
-            onChange={this.onChange}
-            margin="normal"
-            fullWidth
-          />}
-          {!!this.state.object.ackNotificationURL && <TextField
-            id="ackNotificationURL"
-            label="ACK notification URL(s)"
-            placeholder="http://example.com/ack"
-            helperText="Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
-            value={this.state.object.ackNotificationURL || ""}
-            onChange={this.onChange}
-            margin="normal"
-            fullWidth
-          />}
-          {!!this.state.object.txAckNotificationURL && <TextField
-            id="txAckNotificationURL"
-            label="TX ACK notification URL(s)"
-            placeholder="http://example.com/txack"
-            helperText="This notification is sent when the downlink was acknowledged by the LoRa gateway for transmission. Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
-            value={this.state.object.txAckNotificationURL || ""}
-            onChange={this.onChange}
-            margin="normal"
-            fullWidth
-          />}
-          {!!this.state.object.integrationNotificationURL && <TextField
-            id="integrationNotificationURL"
-            label="Integration notification URL(s)"
-            placeholder="http://example.com/integration"
-            helperText="This notification can by sent by configured integrations to send custom payloads. Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
-            value={this.state.object.integrationNotificationURL || ""}
-            onChange={this.onChange}
-            margin="normal"
-            fullWidth
-          />}
-          {!!this.state.object.errorNotificationURL && <TextField
-            id="errorNotificationURL"
-            label="Error notification URL(s)"
-            placeholder="http://example.com/error"
-            helperText="Multiple URLs can be defined as a comma separated list. Whitespace will be automatically removed."
-            value={this.state.object.errorNotificationURL || ""}
-            onChange={this.onChange}
-            margin="normal"
-            fullWidth
-          />}
+          {!!this.state.object.uplinkDataURL && (
+            <TextField
+              id="uplinkDataURL"
+              label={t("uplinkDataURLLabel")}
+              placeholder="http://example.com/uplink"
+              helperText={t("uplinkDataURLHelper")}
+              value={this.state.object.uplinkDataURL || ""}
+              onChange={this.onChange}
+              margin="normal"
+              fullWidth
+            />
+          )}
+          {!!this.state.object.joinNotificationURL && (
+            <TextField
+              id="joinNotificationURL"
+              label={t("joinNotificationURLLabel")}
+              placeholder="http://example.com/join"
+              helperText={t("joinNotificationURLHelper")}
+              value={this.state.object.joinNotificationURL || ""}
+              onChange={this.onChange}
+              margin="normal"
+              fullWidth
+            />
+          )}
+          {!!this.state.object.statusNotificationURL && (
+            <TextField
+              id="statusNotificationURL"
+              label={t("statusNotificationURLLabel")}
+              placeholder="http://example.com/status"
+              helperText={t("statusNotificationURLHelper")}
+              value={this.state.object.statusNotificationURL || ""}
+              onChange={this.onChange}
+              margin="normal"
+              fullWidth
+            />
+          )}
+          {!!this.state.object.locationNotificationURL && (
+            <TextField
+              id="locationNotificationURL"
+              label={t("locationNotificationURLLabel")}
+              placeholder="http://example.com/location"
+              helperText={t("locationNotificationURLHelper")}
+              value={this.state.object.locationNotificationURL || ""}
+              onChange={this.onChange}
+              margin="normal"
+              fullWidth
+            />
+          )}
+          {!!this.state.object.ackNotificationURL && (
+            <TextField
+              id="ackNotificationURL"
+              label={t("ackNotificationURLLabel")}
+              placeholder="http://example.com/ack"
+              helperText={t("ackNotificationURLHelper")}
+              value={this.state.object.ackNotificationURL || ""}
+              onChange={this.onChange}
+              margin="normal"
+              fullWidth
+            />
+          )}
+          {!!this.state.object.txAckNotificationURL && (
+            <TextField
+              id="txAckNotificationURL"
+              label={t("txAckNotificationURLLabel")}
+              placeholder="http://example.com/txack"
+              helperText={t("txAckNotificationURLHelper")}
+              value={this.state.object.txAckNotificationURL || ""}
+              onChange={this.onChange}
+              margin="normal"
+              fullWidth
+            />
+          )}
+          {!!this.state.object.integrationNotificationURL && (
+            <TextField
+              id="integrationNotificationURL"
+              label={t("integrationNotificationURLLabel")}
+              placeholder="http://example.com/integration"
+              helperText={t("integrationNotificationURLHelper")}
+              value={this.state.object.integrationNotificationURL || ""}
+              onChange={this.onChange}
+              margin="normal"
+              fullWidth
+            />
+          )}
+          {!!this.state.object.errorNotificationURL && (
+            <TextField
+              id="errorNotificationURL"
+              label={t("errorNotificationURLLabel")}
+              placeholder="http://example.com/error"
+              helperText={t("errorNotificationURLHelper")}
+              value={this.state.object.errorNotificationURL || ""}
+              onChange={this.onChange}
+              margin="normal"
+              fullWidth
+            />
+          )}
         </FormControl>
       </Form>
     );
   }
 }
-
 
 export default HTTPIntegrationForm;

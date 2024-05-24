@@ -1,17 +1,17 @@
 import React, { Component } from "react";
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, Link } from "react-router-dom";
 
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
 import { withStyles } from "@material-ui/core/styles";
 import { IconButton } from "@material-ui/core";
-import MenuItem from '@material-ui/core/MenuItem';
-import Menu from '@material-ui/core/Menu';
+import MenuItem from "@material-ui/core/MenuItem";
+import Menu from "@material-ui/core/Menu";
 import Input from "@material-ui/core/Input";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import blue from "@material-ui/core/colors/blue";
-import Avatar from '@material-ui/core/Avatar';
-import Chip from '@material-ui/core/Chip';
+import Avatar from "@material-ui/core/Avatar";
+import Chip from "@material-ui/core/Chip";
 
 import MenuIcon from "mdi-material-ui/Menu";
 import Backburger from "mdi-material-ui/Backburger";
@@ -22,7 +22,8 @@ import HelpCicle from "mdi-material-ui/HelpCircle";
 import InternalStore from "../stores/InternalStore";
 import SessionStore from "../stores/SessionStore";
 import theme from "../theme";
-
+import { locale, formatMessage as translate } from "devextreme/localization";
+import Logo from "../images/Logo";
 
 const styles = {
   appBar: {
@@ -66,7 +67,6 @@ const styles = {
   },
 };
 
-
 class TopNav extends Component {
   constructor() {
     super();
@@ -82,13 +82,13 @@ class TopNav extends Component {
     this.setState({
       menuAnchor: e.currentTarget,
     });
-  }
+  };
 
   onMenuClose = () => {
     this.setState({
       menuAnchor: null,
     });
-  }
+  };
 
   onLogout = () => {
     if (this.state.oidcEnabled === true) {
@@ -98,7 +98,7 @@ class TopNav extends Component {
         });
       } else {
         SessionStore.logout(true, () => {
-            this.props.history.push("/login");
+          this.props.history.push("/login");
         });
       }
     } else {
@@ -106,30 +106,32 @@ class TopNav extends Component {
         this.props.history.push("/login");
       });
     }
-  }
+  };
 
   handleDrawerToggle = () => {
     this.props.setDrawerOpen(!this.props.drawerOpen);
-  }
+  };
 
   onSearchChange = (e) => {
     this.setState({
       search: e.target.value,
     });
-  }
+  };
 
   onSearchSubmit = (e) => {
     e.preventDefault();
-    this.props.history.push(`/search?search=${encodeURIComponent(this.state.search)}`);
-  }
+    this.props.history.push(
+      `/search?search=${encodeURIComponent(this.state.search)}`
+    );
+  };
 
   componentDidMount() {
-    InternalStore.settings(resp => {
+    InternalStore.settings((resp) => {
       this.setState({
         oidcEnabled: resp.openidConnect.enabled,
         logoutURL: resp.openidConnect.logoutURL,
       });
-    })
+    });
   }
 
   render() {
@@ -140,9 +142,17 @@ class TopNav extends Component {
       drawerIcon = <Backburger />;
     }
 
+    const lanItem = localStorage.getItem("language");
+    const language = lanItem ? lanItem : "en";
     const open = Boolean(this.state.menuAnchor);
 
-    return(
+    const selectLanguage = (lang) => {
+      localStorage.setItem("language", lang);
+      locale(lang);
+      window.location.reload();
+    };
+
+    return (
       <AppBar className={this.props.classes.appBar}>
         <Toolbar>
           <IconButton
@@ -155,12 +165,59 @@ class TopNav extends Component {
           </IconButton>
 
           <div className={this.props.classes.flex}>
-            <img src="/logo/logo.png" className={this.props.classes.logo} alt="ChirpStack.io" />
+            {/* <img
+              src="/logo/logo.png"
+              className={this.props.classes.logo}
+              alt="ChirpStack.io"
+            /> */}
+            <Logo width="180" height="32" color="white" />
+          </div>
+
+          <div style={{ display: "flex", gap: "8px", marginRight: "8px" }}>
+            <button
+              onClick={() => selectLanguage("kz")}
+              style={{
+                backgroundColor: "transparent",
+                border: "none",
+                outline: "none",
+                cursor: "pointer",
+                color: "white",
+                fontWeight: language !== "kz" ? "normal" : "bold",
+              }}
+            >
+              KZ
+            </button>
+            <button
+              onClick={() => selectLanguage("ru")}
+              style={{
+                backgroundColor: "transparent",
+                border: "none",
+                outline: "none",
+                cursor: "pointer",
+                color: "white",
+                fontWeight: language !== "ru" ? "normal" : "bold",
+              }}
+            >
+              RU
+            </button>
+            <button
+              onClick={() => selectLanguage("en")}
+              style={{
+                backgroundColor: "transparent",
+                border: "none",
+                outline: "none",
+                cursor: "pointer",
+                color: "white",
+                fontWeight: language !== "en" ? "normal" : "bold",
+              }}
+            >
+              EN
+            </button>
           </div>
 
           <form onSubmit={this.onSearchSubmit}>
             <Input
-              placeholder="Search organization, application, gateway or device"
+              placeholder={translate("searchPlaceholder")}
               className={this.props.classes.search}
               disableUnderline={true}
               value={this.state.search || ""}
@@ -173,11 +230,14 @@ class TopNav extends Component {
             />
           </form>
 
-          <a href="https://www.chirpstack.io/application-server/" target="chirpstack-doc">
+          {/* <a
+            href="https://www.chirpstack.io/application-server/"
+            target="chirpstack-doc"
+          >
             <IconButton className={this.props.classes.iconButton}>
               <HelpCicle />
             </IconButton>
-          </a>
+          </a> */}
 
           <Chip
             avatar={
@@ -206,7 +266,14 @@ class TopNav extends Component {
             open={open}
             onClose={this.onMenuClose}
           >
-            {!this.state.oidcEnabled && <MenuItem component={Link} to={`/users/${this.props.user.id}/password`}>Change password</MenuItem>}
+            {!this.state.oidcEnabled && (
+              <MenuItem
+                component={Link}
+                to={`/users/${this.props.user.id}/password`}
+              >
+                Change password
+              </MenuItem>
+            )}
             <MenuItem onClick={this.onLogout}>Logout</MenuItem>
           </Menu>
         </Toolbar>

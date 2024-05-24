@@ -1,12 +1,18 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import { CardContent } from "@material-ui/core";
 
 import UserStore from "../../stores/UserStore";
 import UserForm from "./UserForm";
+
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UpdateUserJS", key);
+};
 
 class UpdateUser extends Component {
   constructor() {
@@ -15,19 +21,19 @@ class UpdateUser extends Component {
   }
 
   onSubmit(user) {
-    UserStore.update(user, resp => {
+    UserStore.update(user, (resp) => {
       this.props.history.push("/users");
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <UserForm
-                submitLabel="Update user"
+                submitLabel={t("UpdateUser")}
                 object={this.props.user}
                 onSubmit={this.onSubmit}
               />

@@ -1,59 +1,58 @@
 import React from "react";
 
-import Typography from '@material-ui/core/Typography';
-import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormHelperText from '@material-ui/core/FormHelperText';
-import Checkbox from '@material-ui/core/Checkbox';
+import Typography from "@material-ui/core/Typography";
+import TextField from "@material-ui/core/TextField";
+import FormControlLabel from "@material-ui/core/FormControlLabel";
+import FormControl from "@material-ui/core/FormControl";
+import FormHelperText from "@material-ui/core/FormHelperText";
+import Checkbox from "@material-ui/core/Checkbox";
 
 import FormComponent from "../../classes/FormComponent";
 import Form from "../../components/Form";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("OrganizationUserFormJS", key);
+};
 
 class OrganizationUserForm extends FormComponent {
   render() {
     if (this.state.object === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
-      <Form
-        submitLabel={this.props.submitLabel}
-        onSubmit={this.onSubmit}
-      >
-          <TextField
-            label="Email"
-            id="email"
-            margin="normal"
-            value={this.state.object.email || ""}
-            onChange={this.onChange}
-            required
-            fullWidth
-            disabled={this.props.update}
+    return (
+      <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
+        <TextField
+          label={t("Email")}
+          id="email"
+          margin="normal"
+          value={this.state.object.email || ""}
+          onChange={this.onChange}
+          required
+          fullWidth
+          disabled={this.props.update}
+        />
+        <Typography variant="body1">{t("PermissionsHelper")}</Typography>
+        <FormControl fullWidth margin="normal">
+          <FormControlLabel
+            label={t("UserIsOrganizationAdmin")}
+            control={
+              <Checkbox
+                id="isAdmin"
+                checked={!!this.state.object.isAdmin}
+                onChange={this.onChange}
+                color="primary"
+              />
+            }
           />
-          <Typography variant="body1">
-            An user without additional permissions will be able to see all
-            resources under this organization and will be able to send and
-            receive device payloads.
-          </Typography>
+          <FormHelperText>{t("OrganizationAdminHelper")}</FormHelperText>
+        </FormControl>
+        {!!!this.state.object.isAdmin && (
           <FormControl fullWidth margin="normal">
             <FormControlLabel
-              label="User is organization admin"
-              control={
-                <Checkbox
-                  id="isAdmin"
-                  checked={!!this.state.object.isAdmin}
-                  onChange={this.onChange}
-                  color="primary"
-                />
-              }
-            />
-            <FormHelperText>An organization admin user is able to add and modify resources part of the organization.</FormHelperText>
-          </FormControl>
-          {!!!this.state.object.isAdmin && <FormControl fullWidth margin="normal">
-            <FormControlLabel
-              label="User is device admin"
+              label={t("UserIsDeviceAdmin")}
               control={
                 <Checkbox
                   id="isDeviceAdmin"
@@ -63,11 +62,13 @@ class OrganizationUserForm extends FormComponent {
                 />
               }
             />
-            <FormHelperText>A device admin user is able to add and modify resources part of the organization that are related to devices.</FormHelperText>
-          </FormControl>}
-          {!!!this.state.object.isAdmin && <FormControl fullWidth margin="normal">
+            <FormHelperText>{t("DeviceAdminHelper")}</FormHelperText>
+          </FormControl>
+        )}
+        {!!!this.state.object.isAdmin && (
+          <FormControl fullWidth margin="normal">
             <FormControlLabel
-              label="User is gateway admin"
+              label={t("UserIsGatewayAdmin")}
               control={
                 <Checkbox
                   id="isGatewayAdmin"
@@ -77,8 +78,9 @@ class OrganizationUserForm extends FormComponent {
                 />
               }
             />
-            <FormHelperText>A gateway admin user is able to add and modify gateways part of the organization.</FormHelperText>
-          </FormControl>}
+            <FormHelperText>{t("GatewayAdminHelper")}</FormHelperText>
+          </FormControl>
+        )}
       </Form>
     );
   }

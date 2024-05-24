@@ -1,29 +1,32 @@
 import React, { Component } from "react";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import TitleBar from "../../components/TitleBar";
 import TitleBarTitle from "../../components/TitleBarTitle";
 import APIKeyForm from "./APIKeyForm";
 
-
+import { formatMessage as translate } from "devextreme/localization";
 class CreateOrganizationAPIKey extends Component {
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar>
-          <TitleBarTitle title="Organization API keys" to={`/organizations/${this.props.match.params.organizationID}/api-keys`} />
+          <TitleBarTitle
+            title={`${translate("organization")} ${translate("apiKeys")}`}
+            to={`/organizations/${this.props.match.params.organizationID}/api-keys`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Create" />
+          <TitleBarTitle title={translate("create")} />
         </TitleBar>
 
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <APIKeyForm
-                submitLabel="Create API key"
+                submitLabel={translate("createApiKey")}
                 onSubmit={this.onSubmit}
                 organizationID={this.props.match.params.organizationID}
               />

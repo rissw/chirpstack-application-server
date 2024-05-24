@@ -1,7 +1,7 @@
 import React from "react";
 
 import { withStyles } from "@material-ui/core/styles";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
 import FormHelperText from "@material-ui/core/FormHelperText";
@@ -13,6 +13,11 @@ import Form from "../../components/Form";
 import AutocompleteSelect from "../../components/AutocompleteSelect";
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("MulticastGroupFormJS", key);
+};
 
 const styles = {
   formLabel: {
@@ -23,29 +28,27 @@ const styles = {
   },
 };
 
-
 class MulticastGroupForm extends FormComponent {
   getRandomKey(len) {
     let cryptoObj = window.crypto || window.msCrypto;
     let b = new Uint8Array(len);
     cryptoObj.getRandomValues(b);
 
-    return Buffer.from(b).toString('hex');
+    return Buffer.from(b).toString("hex");
   }
 
   getRandomMcAddr = (cb) => {
     cb(this.getRandomKey(4));
-  }
+  };
 
   getRandomSessionKey = (cb) => {
     cb(this.getRandomKey(16));
-  }
-
+  };
 
   getGroupTypeOptions(search, callbackFunc) {
     const options = [
-      {value: "CLASS_B", label: "Class-B"},
-      {value: "CLASS_C", label: "Class-C"},
+      { value: "CLASS_B", label: t("ClassB") },
+      { value: "CLASS_C", label: t("ClassC") },
     ];
 
     callbackFunc(options);
@@ -53,14 +56,14 @@ class MulticastGroupForm extends FormComponent {
 
   getPingSlotPeriodOptions(search, callbackFunc) {
     const pingSlotPeriodOptions = [
-      {value: 32 * 1, label: "every second"},
-      {value: 32 * 2, label: "every 2 seconds"},
-      {value: 32 * 4, label: "every 4 seconds"},
-      {value: 32 * 8, label: "every 8 seconds"},
-      {value: 32 * 16, label: "every 16 seconds"},
-      {value: 32 * 32, label: "every 32 seconds"},
-      {value: 32 * 64, label: "every 64 seconds"},
-      {value: 32 * 128, label: "every 128 seconds"},
+      { value: 32 * 1, label: `${t("every")} ${t("second")}` },
+      { value: 32 * 2, label: `${t("every")} ${t("2seconds")}` },
+      { value: 32 * 4, label: `${t("every")} ${t("4seconds")}` },
+      { value: 32 * 8, label: `${t("every")} ${t("8seconds")}` },
+      { value: 32 * 16, label: `${t("every")} ${t("16seconds")}` },
+      { value: 32 * 32, label: `${t("every")} ${t("32seconds")}` },
+      { value: 32 * 64, label: `${t("every")} ${t("64seconds")}` },
+      { value: 32 * 128, label: `${t("every")} ${t("128seconds")}` },
     ];
 
     callbackFunc(pingSlotPeriodOptions);
@@ -71,24 +74,21 @@ class MulticastGroupForm extends FormComponent {
       return null;
     }
 
-    return(
-      <Form
-        submitLabel={this.props.submitLabel}
-        onSubmit={this.onSubmit}
-      >
+    return (
+      <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <TextField
           id="name"
-          label="Multicast-group name"
+          label={t("nameLabel")}
           margin="normal"
           value={this.state.object.name || ""}
           onChange={this.onChange}
-          helperText="The name of the multicast-group."
+          helperText={t("nameHelper")}
           fullWidth
           required
         />
         <DevAddrField
           id="mcAddr"
-          label="Multicast address"
+          label={t("mcAddrLabel")}
           margin="normal"
           value={this.state.object.mcAddr || ""}
           onChange={this.onChange}
@@ -100,7 +100,7 @@ class MulticastGroupForm extends FormComponent {
         />
         <AESKeyField
           id="mcNwkSKey"
-          label="Multicast network session key"
+          label={t("mcNwkSKeyLabel")}
           margin="normal"
           value={this.state.object.mcNwkSKey || ""}
           onChange={this.onChange}
@@ -111,7 +111,7 @@ class MulticastGroupForm extends FormComponent {
         />
         <AESKeyField
           id="mcAppSKey"
-          label="Multicast application session key"
+          label={t("mcAppSKeyLabel")}
           margin="normal"
           value={this.state.object.mcAppSKey || ""}
           onChange={this.onChange}
@@ -122,7 +122,7 @@ class MulticastGroupForm extends FormComponent {
         />
         <TextField
           id="fCnt"
-          label="Frame-counter"
+          label={t("fCntLabel")}
           margin="normal"
           type="number"
           value={this.state.object.fCnt || 0}
@@ -132,8 +132,8 @@ class MulticastGroupForm extends FormComponent {
         />
         <TextField
           id="dr"
-          label="Data-rate"
-          helperText="The data-rate to use when transmitting the multicast frames. Please refer to the LoRaWAN Regional Parameters specification for valid values."
+          label={t("drLabel")}
+          helperText={"drHelper"}
           margin="normal"
           type="number"
           value={this.state.object.dr || 0}
@@ -143,8 +143,8 @@ class MulticastGroupForm extends FormComponent {
         />
         <TextField
           id="frequency"
-          label="Frequency (Hz)"
-          helperText="The frequency to use when transmitting the multicast frames. Please refer to the LoRaWAN Regional Parameters specification for valid values."
+          label={`${t("frequencyLabel")} (${t("Hz")})`}
+          helperText={t("frequencyHelper")}
           margin="normal"
           type="number"
           value={this.state.object.frequency || 0}
@@ -153,31 +153,37 @@ class MulticastGroupForm extends FormComponent {
           fullWidth
         />
         <FormControl fullWidth margin="normal">
-          <FormLabel className={this.props.classes.formLabel} required>Multicast-group type</FormLabel>
+          <FormLabel className={this.props.classes.formLabel} required>
+            {t("MulticastGroupType")}
+          </FormLabel>
           <AutocompleteSelect
             id="groupType"
-            label="Select multicast-group type"
+            label={t("SelectMulticastGroupType")}
             value={this.state.object.groupType || ""}
             onChange={this.onChange}
             getOptions={this.getGroupTypeOptions}
             required
           />
-          <FormHelperText>
-            The multicast-group type defines the way how multicast frames are scheduled by the network-server.
-          </FormHelperText>
+          <FormHelperText>{t("MulticastGroupTypeInfo")}</FormHelperText>
         </FormControl>
-        {this.state.object.groupType === "CLASS_B" && <FormControl fullWidth margin="normal">
-          <FormLabel className={this.props.classes.formLabel} required>Class-B ping-slot periodicity</FormLabel>
-          <AutocompleteSelect
-            id="pingSlotPeriod"
-            label="Select Class-B ping-slot periodicity"
-            value={this.state.object.pingSlotPeriod || ""}
-            onChange={this.onChange}
-            getOptions={this.getPingSlotPeriodOptions}
-            required
-          />
-          <FormHelperText>Class-B ping-slot periodicity.</FormHelperText>
-        </FormControl>}
+        {this.state.object.groupType === "CLASS_B" && (
+          <FormControl fullWidth margin="normal">
+            <FormLabel className={this.props.classes.formLabel} required>
+              {t("ClassB")} {t("pingSlotPeriodicity")}
+            </FormLabel>
+            <AutocompleteSelect
+              id="pingSlotPeriod"
+              label={t("SelectClassBPingSlotPeriodicity")}
+              value={this.state.object.pingSlotPeriod || ""}
+              onChange={this.onChange}
+              getOptions={this.getPingSlotPeriodOptions}
+              required
+            />
+            <FormHelperText>
+              {t("ClassB")} {t("pingSlotPeriodicity")}.
+            </FormHelperText>
+          </FormControl>
+        )}
       </Form>
     );
   }

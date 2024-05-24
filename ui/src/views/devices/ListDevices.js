@@ -5,16 +5,16 @@ import { withStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import TableCell from "@material-ui/core/TableCell";
 import TableRow from "@material-ui/core/TableRow";
-import Button from '@material-ui/core/Button';
+import Button from "@material-ui/core/Button";
 import Checkbox from "@material-ui/core/Checkbox";
-import Menu from '@material-ui/core/Menu';
-import MenuItem from '@material-ui/core/MenuItem';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import Select from '@material-ui/core/Select';
+import Menu from "@material-ui/core/Menu";
+import MenuItem from "@material-ui/core/MenuItem";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import Select from "@material-ui/core/Select";
 
 import moment from "moment";
 import Plus from "mdi-material-ui/Plus";
@@ -27,6 +27,11 @@ import DeviceStore from "../../stores/DeviceStore";
 import MulticastGroupStore from "../../stores/MulticastGroupStore";
 import theme from "../../theme";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ListDevicesJS", key);
+};
 
 const styles = {
   select: {
@@ -43,7 +48,6 @@ const styles = {
     marginRight: theme.spacing(1),
   },
 };
-
 
 class ListDevices extends Component {
   constructor() {
@@ -62,11 +66,19 @@ class ListDevices extends Component {
   }
 
   componentDidMount() {
-    MulticastGroupStore.list("", this.props.match.params.applicationID, "", "", 999, 0, resp => {
-      this.setState({
-        multicastGroups: resp.result,
-      });
-    });
+    MulticastGroupStore.list(
+      "",
+      this.props.match.params.applicationID,
+      "",
+      "",
+      999,
+      0,
+      (resp) => {
+        this.setState({
+          multicastGroups: resp.result,
+        });
+      }
+    );
   }
 
   onCheckboxChange = (e) => {
@@ -77,37 +89,40 @@ class ListDevices extends Component {
     } else {
       delete selected[e.target.id];
     }
-    
+
     this.setState({
       selected: selected,
     });
-  }
+  };
 
   getPage(limit, offset, callbackFunc) {
-    DeviceStore.list({
-      applicationID: this.props.match.params.applicationID,
-      limit: limit,
-      offset: offset,
-    }, callbackFunc);
+    DeviceStore.list(
+      {
+        applicationID: this.props.match.params.applicationID,
+        limit: limit,
+        offset: offset,
+      },
+      callbackFunc
+    );
   }
 
   onSelectedMenuOpen = (e) => {
     this.setState({
       selectedMenuAnchor: e.currentTarget,
     });
-  }
+  };
 
   onSelectedMenuClose = () => {
     this.setState({
       selectedMenuAnchor: null,
     });
-  }
+  };
 
   onMulticastDialogClose = () => {
     this.setState({
       multicastDialogOpen: false,
     });
-  }
+  };
 
   openMulticastDialog = () => {
     this.onSelectedMenuClose();
@@ -116,19 +131,19 @@ class ListDevices extends Component {
       multicastDialogOpen: true,
       selectedMulticastGroup: "",
     });
-  }
-  
+  };
+
   onMulticastGroupSelectChange = (e) => {
     this.setState({
       selectedMulticastGroup: e.target.value,
     });
-  }
+  };
 
   closeMulticastDialog = () => {
     this.setState({
       multicastDialogOpen: false,
     });
-  }
+  };
 
   addSelectedDevicesToMulticastGroup = () => {
     this.closeMulticastDialog();
@@ -138,10 +153,14 @@ class ListDevices extends Component {
       selected: {},
     });
 
-    for (const [key, ] of Object.entries(selected)) {
-      MulticastGroupStore.addDevice(this.state.selectedMulticastGroup, key, resp => {});
+    for (const [key] of Object.entries(selected)) {
+      MulticastGroupStore.addDevice(
+        this.state.selectedMulticastGroup,
+        key,
+        (resp) => {}
+      );
     }
-  }
+  };
 
   getRow(obj) {
     let lastseen = "n/a";
@@ -152,23 +171,26 @@ class ListDevices extends Component {
       lastseen = moment(obj.lastSeenAt).fromNow();
     }
 
-    if (!obj.deviceStatusExternalPowerSource && !obj.deviceStatusBatteryLevelUnavailable) {
-      battery = `${obj.deviceStatusBatteryLevel}%`
+    if (
+      !obj.deviceStatusExternalPowerSource &&
+      !obj.deviceStatusBatteryLevelUnavailable
+    ) {
+      battery = `${obj.deviceStatusBatteryLevel}%`;
     }
 
     if (obj.deviceStatusExternalPowerSource) {
       battery = <PowerPlug />;
     }
 
-    if (obj.deviceStatusMargin !== undefined && obj.deviceStatusMargin !== 256) {
+    if (
+      obj.deviceStatusMargin !== undefined &&
+      obj.deviceStatusMargin !== 256
+    ) {
       margin = `${obj.deviceStatusMargin} dB`;
     }
 
-    return(
-      <TableRow
-        key={obj.devEUI}
-        hover
-      >
+    return (
+      <TableRow key={obj.devEUI} hover>
         <TableCell className={this.props.classes.select}>
           <DeviceAdmin organizationID={this.props.match.params.organizationID}>
             <Checkbox
@@ -179,9 +201,17 @@ class ListDevices extends Component {
           </DeviceAdmin>
         </TableCell>
         <TableCell>{lastseen}</TableCell>
-        <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${obj.devEUI}`}>{obj.name}</TableCellLink>
+        <TableCellLink
+          to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${obj.devEUI}`}
+        >
+          {obj.name}
+        </TableCellLink>
         <TableCell>{obj.devEUI}</TableCell>
-          <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/device-profiles/${obj.deviceProfileID}`}>{obj.deviceProfileName}</TableCellLink>
+        <TableCellLink
+          to={`/organizations/${this.props.match.params.organizationID}/device-profiles/${obj.deviceProfileID}`}
+        >
+          {obj.deviceProfileName}
+        </TableCellLink>
         <TableCell>{margin}</TableCell>
         <TableCell>{battery}</TableCell>
       </TableRow>
@@ -189,31 +219,57 @@ class ListDevices extends Component {
   }
 
   render() {
-    const multicastGroupOptions = this.state.multicastGroups.map((mg, i) => <MenuItem value={mg.id}>{ mg.name }</MenuItem>); 
+    const multicastGroupOptions = this.state.multicastGroups.map((mg, i) => (
+      <MenuItem value={mg.id}>{mg.name}</MenuItem>
+    ));
 
-    return(
+    return (
       <Grid container spacing={4}>
-        <Dialog open={this.state.multicastDialogOpen} onClose={this.onMulticastDialogClose}>
-          <DialogTitle>Add devices to multicast-group</DialogTitle>
+        <Dialog
+          open={this.state.multicastDialogOpen}
+          onClose={this.onMulticastDialogClose}
+        >
+          <DialogTitle>{t("DialogTitle")}</DialogTitle>
           <DialogContent>
-            <DialogContentText>Select the multicast-group to which the devices must be added:</DialogContentText>
-            <Select fullWidth value={this.state.selectedMulticastGroup} onChange={this.onMulticastGroupSelectChange}>
+            <DialogContentText>{t("DialogContentText")}</DialogContentText>
+            <Select
+              fullWidth
+              value={this.state.selectedMulticastGroup}
+              onChange={this.onMulticastGroupSelectChange}
+            >
               {multicastGroupOptions}
             </Select>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" onClick={this.closeMulticastDialog}>Cancel</Button>
-            <Button color="primary" onClick={this.addSelectedDevicesToMulticastGroup}>Add</Button>
+            <Button color="primary" onClick={this.closeMulticastDialog}>
+              {t("Cancel")}
+            </Button>
+            <Button
+              color="primary"
+              onClick={this.addSelectedDevicesToMulticastGroup}
+            >
+              {t("Add")}
+            </Button>
           </DialogActions>
         </Dialog>
         <DeviceAdmin organizationID={this.props.match.params.organizationID}>
           <Grid item xs={12} className={this.props.classes.buttons}>
-            <Button variant="outlined" className={this.props.classes.button} component={Link} to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/create`}>
+            <Button
+              variant="outlined"
+              className={this.props.classes.button}
+              component={Link}
+              to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/create`}
+            >
               <Plus className={this.props.classes.icon} />
-              Create
+              {t("Create")}
             </Button>
-            <Button variant="outlined" disabled={Object.keys(this.state.selected).length=== 0} className={this.props.classes.button} onClick={this.onSelectedMenuOpen}>
-              Selected devices
+            <Button
+              variant="outlined"
+              disabled={Object.keys(this.state.selected).length === 0}
+              className={this.props.classes.button}
+              onClick={this.onSelectedMenuOpen}
+            >
+              {t("SelectedDevices")}
             </Button>
             <Menu
               id="selected-menu"
@@ -222,7 +278,9 @@ class ListDevices extends Component {
               open={!!this.state.selectedMenuAnchor}
               onClose={this.onSelectedMenuClose}
             >
-              <MenuItem onClick={this.openMulticastDialog}>Add to multicast group</MenuItem>
+              <MenuItem onClick={this.openMulticastDialog}>
+                {t("AddToMulticastGroup")}
+              </MenuItem>
             </Menu>
           </Grid>
         </DeviceAdmin>
@@ -231,15 +289,14 @@ class ListDevices extends Component {
             header={
               <TableRow>
                 <TableCell></TableCell>
-                <TableCell>Last seen</TableCell>
-                <TableCell>Device name</TableCell>
-                <TableCell>Device EUI</TableCell>
-                <TableCell>Device profile</TableCell>
-                <TableCell>Link margin</TableCell>
-                <TableCell>Battery</TableCell>
+                <TableCell>{t("LastSeen")}</TableCell>
+                <TableCell>{t("DeviceName")}</TableCell>
+                <TableCell>{t("DeviceEUI")}</TableCell>
+                <TableCell>{t("DeviceProfile")}</TableCell>
+                <TableCell>{t("LinkMargin")}</TableCell>
+                <TableCell>{t("Battery")}</TableCell>
               </TableRow>
             }
-
             getPage={this.getPage}
             getRow={this.getRow}
           />

@@ -1,14 +1,14 @@
 import React, { Component } from "react";
-import { withRouter, Link } from 'react-router-dom';
+import { withRouter, Link } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogContentText from '@material-ui/core/DialogContentText';
-import DialogTitle from '@material-ui/core/DialogTitle';
+import Dialog from "@material-ui/core/Dialog";
+import DialogActions from "@material-ui/core/DialogActions";
+import DialogContent from "@material-ui/core/DialogContent";
+import DialogContentText from "@material-ui/core/DialogContentText";
+import DialogTitle from "@material-ui/core/DialogTitle";
 import Button from "@material-ui/core/Button";
 
 import TitleBar from "../../components/TitleBar";
@@ -18,6 +18,11 @@ import ServiceProfileForm from "./ServiceProfileForm";
 import ServiceProfileStore from "../../stores/ServiceProfileStore";
 import NetworkServerStore from "../../stores/NetworkServerStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("CreateServiceProfileJS", key);
+};
 
 class CreateServiceProfile extends Component {
   constructor() {
@@ -30,7 +35,7 @@ class CreateServiceProfile extends Component {
   }
 
   componentDidMount() {
-    NetworkServerStore.list(0, 0, 0, resp => {
+    NetworkServerStore.list(0, 0, 0, (resp) => {
       if (resp.totalCount === "0") {
         this.setState({
           nsDialog: true,
@@ -49,45 +54,53 @@ class CreateServiceProfile extends Component {
     let sp = serviceProfile;
     sp.organizationID = this.props.match.params.organizationID;
 
-    ServiceProfileStore.create(sp, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}/service-profiles`);
+    ServiceProfileStore.create(sp, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}/service-profiles`
+      );
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
-        <Dialog
-          open={this.state.nsDialog}
-          onClose={this.closeDialog}
-        >
-          <DialogTitle>Add a network-server?</DialogTitle>
+        <Dialog open={this.state.nsDialog} onClose={this.closeDialog}>
+          <DialogTitle>{t("DialogTitle")}</DialogTitle>
           <DialogContent>
             <DialogContentText paragraph>
-              ChirpStack Application Server isn't connected to a ChirpStack Network Server network-server.
-              Did you know that ChirpStack Application Server can connect to multiple ChirpStack Network Server instances, e.g. to support multiple regions?
+              {t("DialogContentText1")}
             </DialogContentText>
-            <DialogContentText>
-              Would you like to connect to a network-server now?
-            </DialogContentText>
+            <DialogContentText>{t("DialogContentText2")}</DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button color="primary" component={Link} to="/network-servers/create" onClick={this.closeDialog}>Add network-server</Button>
-            <Button color="primary" onClick={this.closeDialog}>Dismiss</Button>
+            <Button
+              color="primary"
+              component={Link}
+              to="/network-servers/create"
+              onClick={this.closeDialog}
+            >
+              {t("AddNetworkServer")}
+            </Button>
+            <Button color="primary" onClick={this.closeDialog}>
+              {t("Dismiss")}
+            </Button>
           </DialogActions>
         </Dialog>
 
         <TitleBar>
-          <TitleBarTitle title="Service-profiles" to={`/organizations/${this.props.match.params.organizationID}/service-profiles`} />
+          <TitleBarTitle
+            title={t("ServiceProfiles")}
+            to={`/organizations/${this.props.match.params.organizationID}/service-profiles`}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title="Create" />
+          <TitleBarTitle title={t("Create")} />
         </TitleBar>
 
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <ServiceProfileForm
-                submitLabel="Create service-profile"
+                submitLabel={t("CreateServiceProfile")}
                 onSubmit={this.onSubmit}
                 match={this.props.match}
               />

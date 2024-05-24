@@ -14,6 +14,11 @@ import DataTable from "../../components/DataTable";
 import Admin from "../../components/Admin";
 import ApplicationStore from "../../stores/ApplicationStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ListApplicationsJS", key);
+};
 
 class ListApplications extends Component {
   constructor() {
@@ -23,47 +28,58 @@ class ListApplications extends Component {
   }
 
   getPage(limit, offset, callbackFunc) {
-    ApplicationStore.list("", this.props.match.params.organizationID, limit, offset, callbackFunc);
+    ApplicationStore.list(
+      "",
+      this.props.match.params.organizationID,
+      limit,
+      offset,
+      callbackFunc
+    );
   }
 
   getRow(obj) {
-    return(
-      <TableRow
-        key={obj.id}
-        hover
-      >
+    return (
+      <TableRow key={obj.id} hover>
         <TableCell>{obj.id}</TableCell>
-        <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/applications/${obj.id}`}>{obj.name}</TableCellLink>
-        <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/service-profiles/${obj.serviceProfileID}`}>{obj.serviceProfileName}</TableCellLink>
+        <TableCellLink
+          to={`/organizations/${this.props.match.params.organizationID}/applications/${obj.id}`}
+        >
+          {obj.name}
+        </TableCellLink>
+        <TableCellLink
+          to={`/organizations/${this.props.match.params.organizationID}/service-profiles/${obj.serviceProfileID}`}
+        >
+          {obj.serviceProfileName}
+        </TableCellLink>
         <TableCell>{obj.description}</TableCell>
       </TableRow>
     );
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
             <Admin organizationID={this.props.match.params.organizationID}>
               <TitleBarButton
-                label="Create"
+                label={t("Create")}
                 icon={<Plus />}
                 to={`/organizations/${this.props.match.params.organizationID}/applications/create`}
               />
             </Admin>
           }
         >
-          <TitleBarTitle title="Applications" />
+          <TitleBarTitle title={t("Applications")} />
         </TitleBar>
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
-                <TableCell>ID</TableCell>
-                <TableCell>Name</TableCell>
-                <TableCell>Service-profile</TableCell>
-                <TableCell>Description</TableCell>
+                <TableCell>{t("ID")}</TableCell>
+                <TableCell>{t("Name")}</TableCell>
+                <TableCell>{t("ServiceProfile")}</TableCell>
+                <TableCell>{t("Description")}</TableCell>
               </TableRow>
             }
             getPage={this.getPage}

@@ -1,13 +1,18 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import { CardContent } from "@material-ui/core";
 
 import GatewayProfileStore from "../../stores/GatewayProfileStore";
 import GatewayProfileForm from "./GatewayProfileForm";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UpdateGatewayProfileJS", key);
+};
 
 class UpdateGatewayProfile extends Component {
   constructor() {
@@ -17,19 +22,19 @@ class UpdateGatewayProfile extends Component {
   }
 
   onSubmit(gatewayProfile) {
-    GatewayProfileStore.update(gatewayProfile, resp => {
+    GatewayProfileStore.update(gatewayProfile, (resp) => {
       this.props.history.push("/gateway-profiles");
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <GatewayProfileForm
-                submitLabel="Update gateway-profile"
+                submitLabel={t("UpdateGatewayProfile")}
                 object={this.props.gatewayProfile}
                 onSubmit={this.onSubmit}
                 update={true}

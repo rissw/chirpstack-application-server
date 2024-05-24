@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
+import Grid from "@material-ui/core/Grid";
 
 import Delete from "mdi-material-ui/Delete";
 
@@ -13,6 +13,11 @@ import ServiceProfileStore from "../../stores/ServiceProfileStore";
 import SessionStore from "../../stores/SessionStore";
 import UpdateServiceProfile from "./UpdateServiceProfile";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ServiceProfileLayoutJS", key);
+};
 
 class ServiceProfileLayout extends Component {
   constructor() {
@@ -25,11 +30,14 @@ class ServiceProfileLayout extends Component {
   }
 
   componentDidMount() {
-    ServiceProfileStore.get(this.props.match.params.serviceProfileID, resp => {
-      this.setState({
-        serviceProfile: resp,
-      });
-    });
+    ServiceProfileStore.get(
+      this.props.match.params.serviceProfileID,
+      (resp) => {
+        this.setState({
+          serviceProfile: resp,
+        });
+      }
+    );
 
     SessionStore.on("change", this.setIsAdmin);
     this.setIsAdmin();
@@ -46,26 +54,31 @@ class ServiceProfileLayout extends Component {
   }
 
   deleteServiceProfile() {
-    if (window.confirm("Are you sure you want to delete this service-profile?")) {
-      ServiceProfileStore.delete(this.props.match.params.serviceProfileID, resp => {
-        this.props.history.push(`/organizations/${this.props.match.params.organizationID}/service-profiles`);
-      });
+    if (window.confirm(t("DeleteConfirmation"))) {
+      ServiceProfileStore.delete(
+        this.props.match.params.serviceProfileID,
+        (resp) => {
+          this.props.history.push(
+            `/organizations/${this.props.match.params.organizationID}/service-profiles`
+          );
+        }
+      );
     }
   }
 
   render() {
     if (this.state.serviceProfile === undefined) {
-      return(<div></div>);
+      return <div></div>;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
             <Admin>
               <TitleBarButton
                 key={1}
-                label="Delete"
+                label={t("Delete")}
                 icon={<Delete />}
                 color="secondary"
                 onClick={this.deleteServiceProfile}
@@ -73,13 +86,21 @@ class ServiceProfileLayout extends Component {
             </Admin>
           }
         >
-          <TitleBarTitle to={`/organizations/${this.props.match.params.organizationID}/service-profiles`} title="Service-profiles" />
+          <TitleBarTitle
+            to={`/organizations/${this.props.match.params.organizationID}/service-profiles`}
+            title={t("ServiceProfiles")}
+          />
           <TitleBarTitle title="/" />
-          <TitleBarTitle title={this.state.serviceProfile.serviceProfile.name} />
+          <TitleBarTitle
+            title={this.state.serviceProfile.serviceProfile.name}
+          />
         </TitleBar>
 
         <Grid item xs={12}>
-          <UpdateServiceProfile serviceProfile={this.state.serviceProfile.serviceProfile} admin={this.state.admin} />
+          <UpdateServiceProfile
+            serviceProfile={this.state.serviceProfile.serviceProfile}
+            admin={this.state.admin}
+          />
         </Grid>
       </Grid>
     );

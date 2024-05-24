@@ -13,6 +13,11 @@ import DataTable from "../../components/DataTable";
 import DeviceAdmin from "../../components/DeviceAdmin";
 import MulticastGroupStore from "../../stores/MulticastGroupStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("ListMulticastGroupsJS", key);
+};
 
 class ListMulticastGroups extends Component {
   constructor() {
@@ -22,42 +27,52 @@ class ListMulticastGroups extends Component {
   }
 
   getPage(limit, offset, callbackFunc) {
-    MulticastGroupStore.list("", this.props.match.params.applicationID, "", "", limit, offset, callbackFunc);
+    MulticastGroupStore.list(
+      "",
+      this.props.match.params.applicationID,
+      "",
+      "",
+      limit,
+      offset,
+      callbackFunc
+    );
   }
 
   getRow(obj) {
-    return(
-      <TableRow
-        key={obj.id}
-        hover
-      >
-        <TableCellLink to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${obj.id}`}>{obj.name}</TableCellLink>
+    return (
+      <TableRow key={obj.id} hover>
+        <TableCellLink
+          to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/${obj.id}`}
+        >
+          {obj.name}
+        </TableCellLink>
         <TableCell>{obj.id}</TableCell>
       </TableRow>
     );
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <TitleBar
           buttons={
-            <DeviceAdmin organizationID={this.props.match.params.organizationID}>
+            <DeviceAdmin
+              organizationID={this.props.match.params.organizationID}
+            >
               <TitleBarButton
-                label="Create"
+                label={t("Create")}
                 icon={<Plus />}
                 to={`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/multicast-groups/create`}
               />
             </DeviceAdmin>
           }
-        >
-        </TitleBar>
+        ></TitleBar>
         <Grid item xs={12}>
           <DataTable
             header={
               <TableRow>
-                <TableCell>Name</TableCell>
-                <TableCell>ID</TableCell>
+                <TableCell>{t("Name")}</TableCell>
+                <TableCell>{t("ID")}</TableCell>
               </TableRow>
             }
             getPage={this.getPage}

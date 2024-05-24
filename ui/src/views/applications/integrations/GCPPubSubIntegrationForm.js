@@ -2,47 +2,52 @@ import React from "react";
 
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 import FormHelperText from "@material-ui/core/FormHelperText";
 
 import FormComponent from "../../../classes/FormComponent";
 import Form from "../../../components/Form";
 import AutocompleteSelect from "../../../components/AutocompleteSelect";
 
+import { translate } from "../../../helpers/translate";
+
+const t = (key) => {
+  return translate("GCPPubSubIntegrationFormJS", key);
+};
 
 class GCPPubSubIntegrationForm extends FormComponent {
   getMarshalerOptions = (search, callbackFunc) => {
     const marshalerOptions = [
-      {value: "JSON", label: "JSON"},
-      {value: "PROTOBUF", label: "Protocol Buffers"},
-      {value: "JSON_V3", label: "JSON (legacy, will be deprecated)"},
+      { value: "JSON", label: t("JSON") },
+      { value: "PROTOBUF", label: t("ProtocolBuffers") },
+      { value: "JSON_V3", label: t("JSONLegacy") },
     ];
 
     callbackFunc(marshalerOptions);
-  }
+  };
 
   render() {
     if (this.state.object === undefined) {
       return null;
     }
 
-    return(
+    return (
       <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <FormControl fullWidth margin="normal">
-          <FormLabel required>Payload marshaler</FormLabel>
+          <FormLabel required>{t("PayloadMarshaler")}</FormLabel>
           <AutocompleteSelect
             id="marshaler"
-            label="Select payload marshaler"
+            label={t("marshalerLabel")}
             value={this.state.object.marshaler || ""}
             onChange={this.onChange}
             getOptions={this.getMarshalerOptions}
             required
           />
-          <FormHelperText>This defines how the payload will be encoded.</FormHelperText>
+          <FormHelperText>{t("marshalerHelper")}</FormHelperText>
         </FormControl>
         <TextField
           id="projectID"
-          label="GCP project ID"
+          label={t("projectIDLabel")}
           value={this.state.object.projectID || ""}
           onChange={this.onChange}
           margin="normal"
@@ -51,7 +56,7 @@ class GCPPubSubIntegrationForm extends FormComponent {
         />
         <TextField
           id="topicName"
-          label="GCP Pub/Sub topic name"
+          label={t("topicNameLabel")}
           value={this.state.object.topicName || ""}
           onChange={this.onChange}
           margin="normal"
@@ -60,12 +65,12 @@ class GCPPubSubIntegrationForm extends FormComponent {
         />
         <TextField
           id="credentialsFile"
-          label="GCP Service account credentials file"
+          label={t("credentialsFileLabel")}
           value={this.state.object.credentialsFile || ""}
           onChange={this.onChange}
           margin="normal"
           rows={10}
-          helperText="Under IAM create a Service account with 'Pub/Sub Publisher' role, then put the content of the JSON key in this field."
+          helperText={t("credentialsFileHelper")}
           fullWidth
           multiline
           required
@@ -74,6 +79,5 @@ class GCPPubSubIntegrationForm extends FormComponent {
     );
   }
 }
-
 
 export default GCPPubSubIntegrationForm;

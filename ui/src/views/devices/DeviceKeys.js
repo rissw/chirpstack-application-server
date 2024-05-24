@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import FormComponent from "../../classes/FormComponent";
@@ -10,6 +10,11 @@ import Form from "../../components/Form";
 import AESKeyField from "../../components/AESKeyField";
 import DeviceStore from "../../stores/DeviceStore";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("DeviceKeysJS", key);
+};
 
 class LW11DeviceKeysForm extends FormComponent {
   render() {
@@ -18,15 +23,12 @@ class LW11DeviceKeysForm extends FormComponent {
       object = this.props.object;
     }
 
-    return(
-      <Form
-        submitLabel={this.props.submitLabel}
-        onSubmit={this.onSubmit}
-      >
+    return (
+      <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <AESKeyField
           id="nwkKey"
-          label="Network key (LoRaWAN 1.1)"
-          helperText="For LoRaWAN 1.1 devices. In case your device does not support LoRaWAN 1.1, update the device-profile first."
+          label={t("nwkKey11Label")}
+          helperText={t("nwkKey11Helper")}
           onChange={this.onChange}
           value={object.nwkKey || ""}
           margin="normal"
@@ -36,8 +38,8 @@ class LW11DeviceKeysForm extends FormComponent {
         />
         <AESKeyField
           id="appKey"
-          label="Application key (LoRaWAN 1.1)"
-          helperText="For LoRaWAN 1.1 devices. In case your device does not support LoRaWAN 1.1, update the device-profile first."
+          label={t("appKey11Label")}
+          helperText={t("appKey11Helper")}
           onChange={this.onChange}
           value={object.appKey || ""}
           margin="normal"
@@ -57,15 +59,12 @@ class LW10DeviceKeysForm extends FormComponent {
       object = this.props.object;
     }
 
-    return(
-      <Form
-        submitLabel={this.props.submitLabel}
-        onSubmit={this.onSubmit}
-      >
+    return (
+      <Form submitLabel={this.props.submitLabel} onSubmit={this.onSubmit}>
         <AESKeyField
           id="nwkKey"
-          label="Application key"
-          helperText="For LoRaWAN 1.0 devices. In case your device supports LoRaWAN 1.1, update the device-profile first."
+          label={t("nwkKey10Label")}
+          helperText={t("nwkKey10Helper")}
           onChange={this.onChange}
           value={object.nwkKey || ""}
           margin="normal"
@@ -78,7 +77,6 @@ class LW10DeviceKeysForm extends FormComponent {
   }
 }
 
-
 class DeviceKeys extends Component {
   constructor() {
     super();
@@ -89,7 +87,7 @@ class DeviceKeys extends Component {
   }
 
   componentDidMount() {
-    DeviceStore.getKeys(this.props.match.params.devEUI, resp => {
+    DeviceStore.getKeys(this.props.match.params.devEUI, (resp) => {
       if (resp === null) {
         this.setState({
           deviceKeys: {
@@ -107,14 +105,18 @@ class DeviceKeys extends Component {
 
   onSubmit(deviceKeys) {
     if (this.state.update) {
-      DeviceStore.updateKeys(deviceKeys, resp => {
-        this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${this.props.match.params.devEUI}`);
+      DeviceStore.updateKeys(deviceKeys, (resp) => {
+        this.props.history.push(
+          `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${this.props.match.params.devEUI}`
+        );
       });
     } else {
       let keys = deviceKeys;
       keys.devEUI = this.props.match.params.devEUI;
-      DeviceStore.createKeys(keys, resp => {
-        this.props.history.push(`/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${this.props.match.params.devEUI}`);
+      DeviceStore.createKeys(keys, (resp) => {
+        this.props.history.push(
+          `/organizations/${this.props.match.params.organizationID}/applications/${this.props.match.params.applicationID}/devices/${this.props.match.params.devEUI}`
+        );
       });
     }
   }
@@ -124,21 +126,25 @@ class DeviceKeys extends Component {
       return null;
     }
 
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
             <CardContent>
-              {this.props.deviceProfile.macVersion.startsWith("1.0") && <LW10DeviceKeysForm
-                submitLabel="Set device-keys"
-                onSubmit={this.onSubmit}
-                object={this.state.deviceKeys.deviceKeys}
-              />}
-              {this.props.deviceProfile.macVersion.startsWith("1.1") && <LW11DeviceKeysForm
-                submitLabel="Set device-keys"
-                onSubmit={this.onSubmit}
-                object={this.state.deviceKeys.deviceKeys}
-              />}
+              {this.props.deviceProfile.macVersion.startsWith("1.0") && (
+                <LW10DeviceKeysForm
+                  submitLabel={t("SetDeviceKeys")}
+                  onSubmit={this.onSubmit}
+                  object={this.state.deviceKeys.deviceKeys}
+                />
+              )}
+              {this.props.deviceProfile.macVersion.startsWith("1.1") && (
+                <LW11DeviceKeysForm
+                  submitLabel={t("SetDeviceKeys")}
+                  onSubmit={this.onSubmit}
+                  object={this.state.deviceKeys.deviceKeys}
+                />
+              )}
             </CardContent>
           </Card>
         </Grid>

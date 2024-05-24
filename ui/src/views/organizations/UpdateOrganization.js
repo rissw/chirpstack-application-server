@@ -1,13 +1,18 @@
 import React, { Component } from "react";
-import { withRouter } from 'react-router-dom';
+import { withRouter } from "react-router-dom";
 
-import Grid from '@material-ui/core/Grid';
-import Card from '@material-ui/core/Card';
+import Grid from "@material-ui/core/Grid";
+import Card from "@material-ui/core/Card";
 import CardContent from "@material-ui/core/CardContent";
 
 import OrganzationStore from "../../stores/OrganizationStore";
 import OrganizationForm from "./OrganizationForm";
 
+import { translate } from "../../helpers/translate";
+
+const t = (key) => {
+  return translate("UpdateOrganizationJS", key);
+};
 
 class UpdateOrganization extends Component {
   constructor() {
@@ -16,19 +21,21 @@ class UpdateOrganization extends Component {
   }
 
   onSubmit(organization) {
-    OrganzationStore.update(organization, resp => {
-      this.props.history.push(`/organizations/${this.props.match.params.organizationID}`);
+    OrganzationStore.update(organization, (resp) => {
+      this.props.history.push(
+        `/organizations/${this.props.match.params.organizationID}`
+      );
     });
   }
 
   render() {
-    return(
+    return (
       <Grid container spacing={4}>
         <Grid item xs={12}>
           <Card>
             <CardContent>
               <OrganizationForm
-                submitLabel="Update organization"
+                submitLabel={t("UpdateOrganization")}
                 object={this.props.organization}
                 onSubmit={this.onSubmit}
                 disabled={!this.props.admin}
