@@ -37,7 +37,7 @@ grpc_default_resolver_scheme="{{ .General.GRPCDefaultResolverScheme }}"
 #
 # Besides using an URL (e.g. 'postgres://user:password@hostname/database?sslmode=disable')
 # it is also possible to use the following format:
-# 'user=chirpstack_as dbname=chirpstack_as sslmode=disable'.
+# 'user=lorawan_as dbname=lorawan_as sslmode=disable'.
 #
 # The following connection parameters are supported:
 #
@@ -64,8 +64,8 @@ dsn="{{ .PostgreSQL.DSN }}"
 # Automatically apply database migrations.
 #
 # It is possible to apply the database-migrations by hand
-# (see https://github.com/brocaar/chirpstack-application-server/tree/master/internal/storage/migrations)
-# or let ChirpStack Application Server migrate to the latest state automatically, by using
+# (see https://github.com/brocaar/lorawan-application-server/tree/master/internal/storage/migrations)
+# or let Lorawan Application Server migrate to the latest state automatically, by using
 # this setting. Make sure that you always make a backup when upgrading Lora
 # App Server and / or applying migrations.
 automigrate={{ .PostgreSQL.Automigrate }}
@@ -141,7 +141,7 @@ key_prefix="{{ .Redis.KeyPrefix }}"
 # Application-server identifier.
 #
 # Random UUID defining the id of the application-server installation (used by
-# ChirpStack Network Server as routing-profile id).
+# Lorawan Network Server as routing-profile id).
 # For now it is recommended to not change this id.
 id="{{ .ApplicationServer.ID }}"
 
@@ -160,7 +160,7 @@ id="{{ .ApplicationServer.ID }}"
     # Registration enabled.
     #
     # Enabling this will automatically register the user when it is not yet present
-    # in the ChirpStack Application Server database. There is no
+    # in the Lorawan Application Server database. There is no
     # registration form as the user information is automatically received using the
     # OpenID Connect provided information.
     # The user will not be associated with any organization, but in order to
@@ -173,9 +173,9 @@ id="{{ .ApplicationServer.ID }}"
     # This (optional) endpoint will be called on the registration of the user and
     # can implement the association of the user with an organization, create a new
     # organization, ...
-    # ChirpStack Application Server will make a HTTP POST call to this endpoint,
+    # Lorawan Application Server will make a HTTP POST call to this endpoint,
     # with the following URL parameters:
-    # - user_id, of the newly created user in ChirpStack Application Server.
+    # - user_id, of the newly created user in Lorawan Application Server.
     # - oidc_claims, the claims returned by the OpenID Connect "UserInfo" call, JSON-encoded. Use this to find additional information, like the users organization.
     registration_callback_url="{{ .ApplicationServer.UserAuthentication.OpenIDConnect.RegistrationCallbackURL }}"
 
@@ -192,13 +192,13 @@ id="{{ .ApplicationServer.ID }}"
 
     # Redirect URL.
     #
-    # This must contain the ChirpStack Application Server web-interface hostname
+    # This must contain the Lorawan Application Server web-interface hostname
     # with '/auth/oidc/callback' path, e.g. https://example.com/auth/oidc/callback.
     redirect_url="{{ .ApplicationServer.UserAuthentication.OpenIDConnect.RedirectURL }}"
 
     # Logout URL.
     #
-    # When set, ChirpStack Application Server will redirect to this URL instead
+    # When set, Lorawan Application Server will redirect to this URL instead
     # of redirecting to the login page.
     logout_url="{{ .ApplicationServer.UserAuthentication.OpenIDConnect.LogoutURL }}"
 
@@ -332,7 +332,7 @@ id="{{ .ApplicationServer.ID }}"
 
     # CA certificate and key file (optional).
     #
-    # When setting the CA certificate and key file options, ChirpStack Application Server
+    # When setting the CA certificate and key file options, Lorawan Application Server
     # will generate client certificates which can be used by the end-application for
     # authentication and authorization with the MQTT broker. The Common Name of the
     # certificate will be set to the application ID.
@@ -460,7 +460,7 @@ id="{{ .ApplicationServer.ID }}"
 
   # Settings for the "internal api"
   #
-  # This is the API used by ChirpStack Network Server to communicate with ChirpStack Application Server
+  # This is the API used by Lorawan Network Server to communicate with Lorawan Application Server
   # and should not be exposed to the end-user.
   [application_server.api]
   # ip:port to bind the api server
@@ -477,9 +477,9 @@ id="{{ .ApplicationServer.ID }}"
 
   # Public ip:port of the application-server API.
   #
-  # This is used by ChirpStack Network Server to connect to ChirpStack Application Server. When running
-  # ChirpStack Application Server on a different host than ChirpStack Network Server, make sure to set
-  # this to the host:ip on which ChirpStack Network Server can reach ChirpStack Application Server.
+  # This is used by Lorawan Network Server to connect to Lorawan Application Server. When running
+  # Lorawan Application Server on a different host than Lorawan Network Server, make sure to set
+  # this to the host:ip on which Lorawan Network Server can reach Lorawan Application Server.
   # The port must be equal to the port configured by the 'bind' flag
   # above.
   public_host="{{ .ApplicationServer.API.PublicHost }}"
@@ -523,8 +523,8 @@ id="{{ .ApplicationServer.ID }}"
 
 # Join-server configuration.
 #
-# ChirpStack Application Server implements a (subset) of the join-api specified by the
-# LoRaWAN Backend Interfaces specification. This API is used by ChirpStack Network Server
+# Lorawan Application Server implements a (subset) of the join-api specified by the
+# LoRaWAN Backend Interfaces specification. This API is used by Lorawan Network Server
 # to handle join-requests.
 [join_server]
 # ip:port to bind the join-server api interface to
@@ -552,7 +552,7 @@ tls_key="{{ .JoinServer.TLSKey }}"
 # The KEK mechanism is used to encrypt the session-keys sent from the
 # join-server to the network-server.
 #
-# The ChirpStack Application Server join-server will use the NetID of the requesting
+# The Lorawan Application Server join-server will use the NetID of the requesting
 # network-server as the KEK label. When no such label exists in the set,
 # the session-keys will be sent unencrypted (which can be fine for
 # private networks).
@@ -615,7 +615,7 @@ timezone="{{ .Metrics.Timezone }}"
 
   # Metrics stored in Prometheus.
   #
-  # These metrics expose information about the state of the ChirpStack Network Server
+  # These metrics expose information about the state of the Lorawan Network Server
   # instance.
   [metrics.prometheus]
   # Enable Prometheus metrics endpoint.
@@ -666,7 +666,7 @@ timezone="{{ .Metrics.Timezone }}"
 
   # Per device event-log max history.
   #
-  # When set to > 0, ChirpStack Application Server will log events per device
+  # When set to > 0, Lorawan Application Server will log events per device
   # to a Redis Stream. This feature is used by the web-interface.
   per_device_event_log_max_history={{ .Monitoring.PerDeviceEventLogMaxHistory }}
 
@@ -674,7 +674,7 @@ timezone="{{ .Metrics.Timezone }}"
 
 var configCmd = &cobra.Command{
 	Use:   "configfile",
-	Short: "Print the LoRa Application Server configuration file",
+	Short: "Print the Lorawan Application Server configuration file",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		t := template.Must(template.New("config").Parse(configTemplate))
 		err := t.Execute(os.Stdout, config.C)

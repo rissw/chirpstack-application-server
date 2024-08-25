@@ -57,7 +57,7 @@ func run(cmd *cobra.Command, args []string) error {
 	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 	log.WithField("signal", <-sigChan).Info("signal received")
 	go func() {
-		log.Warning("stopping chirpstack-application-server")
+		log.Warning("stopping lorawan-application-server")
 		// todo: handle graceful shutdown?
 		exitChan <- struct{}{}
 	}()
@@ -83,8 +83,7 @@ func setGRPCResolver() error {
 func printStartMessage() error {
 	log.WithFields(log.Fields{
 		"version": version,
-		"docs":    "https://www.chirpstack.io/",
-	}).Info("starting ChirpStack Application Server")
+	}).Info("starting Lorawan Application Server")
 	return nil
 }
 
