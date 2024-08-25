@@ -52,7 +52,7 @@ func (ts *IntegrationV1TestSuite) SetupSuite() {
 
 	conf := Config{
 		Endpoint:            ts.Server.URL + "/write",
-		DB:                  "chirpstack",
+		DB:                  "lorawan",
 		Username:            "user",
 		Password:            "password",
 		RetentionPolicyName: "DEFAULT",
@@ -97,7 +97,7 @@ device_status_margin,application_name=test-app,dev_eui=0102030405060708,device_n
 			req := <-ts.Requests
 			assert.Equal("/write", req.URL.Path)
 			assert.Equal(url.Values{
-				"db":        []string{"chirpstack"},
+				"db":        []string{"lorawan"},
 				"precision": []string{"s"},
 				"rp":        []string{"DEFAULT"},
 			}, req.URL.Query())
@@ -315,7 +315,7 @@ device_uplink,application_name=test-app,dev_eui=0102030405060708,device_name=tes
 			req := <-ts.Requests
 			assert.Equal("/write", req.URL.Path)
 			assert.Equal(url.Values{
-				"db":        []string{"chirpstack"},
+				"db":        []string{"lorawan"},
 				"precision": []string{"s"},
 				"rp":        []string{"DEFAULT"},
 			}, req.URL.Query())

@@ -20,12 +20,12 @@ func GetConfig() config.Config {
 
 	var c config.Config
 
-	c.PostgreSQL.DSN = "postgres://localhost/chirpstack_as_test?sslmode=disable"
+	c.PostgreSQL.DSN = "postgres://localhost/lorawan_as_test?sslmode=disable"
 	c.Redis.Servers = []string{"localhost:6379"}
 	c.ApplicationServer.Integration.MQTT.Server = "tcp://localhost:1883"
 	c.ApplicationServer.ID = "6d5db27e-4ce2-4b2b-b5d7-91f069397978"
 	c.ApplicationServer.Integration.AMQP.EventRoutingKeyTemplate = "application.{{ .ApplicationID }}.device.{{ .DevEUI }}.event.{{ .EventType }}"
-	c.ApplicationServer.Integration.Kafka.Topic = "chirpstack_as"
+	c.ApplicationServer.Integration.Kafka.Topic = "lorawan_as"
 	c.ApplicationServer.Integration.Kafka.EventKeyTemplate = "application.{{ .ApplicationID }}.device.{{ .DevEUI }}.event.{{ .EventType }}"
 
 	if v := os.Getenv("TEST_POSTGRES_DSN"); v != "" {

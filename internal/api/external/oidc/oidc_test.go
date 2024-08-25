@@ -20,9 +20,9 @@ func TestNewAuthenticator(t *testing.T) {
 	t.Run("Claims Unmarshalling", func(t *testing.T) {
 		emailVerifiedAsString := `
 		{
-			"sub": "chirpstack-oidc",
+			"sub": "lorawan-oidc",
 			"name": "brocaar",
-			"email": "chirpstack@chirpstack.io",
+			"email": "lorawan@lorawan.io",
 			"email_verified": "true",
 			"user_info_claims": {
 				"some_key": "some_value",
@@ -38,9 +38,9 @@ func TestNewAuthenticator(t *testing.T) {
 
 		emailVerifiedAsBool := `
 		{
-			"sub": "chirpstack-oidc",
+			"sub": "lorawan-oidc",
 			"name": "brocaar",
-			"email": "chirpstack@chirpstack.io",
+			"email": "lorawan@lorawan.io",
 			"email_verified": true,
 			"user_info_claims": {
 				"some_key": "some_value",
@@ -54,9 +54,9 @@ func TestNewAuthenticator(t *testing.T) {
 		assert.Equal(true, userBool.EmailVerified, "bool parsing should return true")
 
 		emailVerifiedMissing := `{
-			"sub": "chirpstack-oidc",
+			"sub": "lorawan-oidc",
 			"name": "brocaar",
-			"email": "chirpstack@chirpstack.io",
+			"email": "lorawan@lorawan.io",
 			"user_info_claims": {
 				"some_key": "some_value",
 				"some_other": "another_value"

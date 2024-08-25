@@ -3,7 +3,6 @@ package main
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"log"
 	"os"
 	"path"
@@ -38,14 +37,11 @@ func main() {
 		Paths:       make(map[string]interface{}),
 		Definitions: make(map[string]interface{}),
 	}
-	swagger.Info.Title = "ChirpStack Application Server REST API"
+	swagger.Info.Title = "Lorawan Application Server REST API"
 	swagger.Info.Version = apiVersion
-	swagger.Info.Description = `
-For more information about the usage of the ChirpStack Application Server (REST) API, see
-[https://www.chirpstack.io/application-server/api/](https://www.chirpstack.io/application-server/api/).
-`
+	swagger.Info.Description = `Lorawan Application Server REST API`
 
-	fileInfos, err := ioutil.ReadDir(os.Args[1])
+	fileInfos, err := os.ReadDir(os.Args[1])
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -54,7 +50,7 @@ For more information about the usage of the ChirpStack Application Server (REST)
 			continue
 		}
 
-		b, err := ioutil.ReadFile(path.Join(os.Args[1], fileInfo.Name()))
+		b, err := os.ReadFile(path.Join(os.Args[1], fileInfo.Name()))
 		if err != nil {
 			log.Fatal(err)
 		}
