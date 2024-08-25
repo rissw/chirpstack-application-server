@@ -2,8 +2,6 @@
 # with a MQTT broker. Many options and defaults have been omitted for
 # simplicity.
 #
-# See https://www.chirpstack.io/application-server/install/config/ for a full
-# configuration example and documentation.
 
 
 # PostgreSQL settings.
@@ -14,7 +12,7 @@
 #
 # Besides using an URL (e.g. 'postgres://user:password@hostname/database?sslmode=disable')
 # it is also possible to use the following format:
-# 'user=chirpstack_as dbname=chirpstack_as sslmode=disable'.
+# 'user=lorawan_as dbname=lorawan_as sslmode=disable'.
 #
 # The following connection parameters are supported:
 #
@@ -36,7 +34,7 @@
 # * require - Always SSL (skip verification)
 # * verify-ca - Always SSL (verify that the certificate presented by the server was signed by a trusted CA)
 # * verify-full - Always SSL (verify that the certification presented by the server was signed by a trusted CA and the server host name matches the one in the certificate)
-dsn="postgres://localhost/chirpstack_as?sslmode=disable"
+dsn="postgres://localhost/lorawan_as?sslmode=disable"
 
 
 # Redis settings
@@ -90,7 +88,7 @@ url="redis://localhost:6379"
 
     # Settings for the "internal api"
     #
-    # This is the API used by ChirpStack Network Server to communicate with ChirpStack Application Server
+    # This is the API used by Lorawan Network Server to communicate with Lorawan Application Server
     # and should not be exposed to the end-user.
     [application_server.api]
     # ip:port to bind the api server
@@ -98,9 +96,9 @@ url="redis://localhost:6379"
 
     # Public ip:port of the application-server API.
     #
-    # This is used by ChirpStack Network Server to connect to ChirpStack Application Server. When running
-    # ChirpStack Application Server on a different host than ChirpStack Network Server, make sure to set
-    # this to the host:ip on which ChirpStack Network Server can reach ChirpStack Application Server.
+    # This is used by Lorawan Network Server to connect to Lorawan Application Server. When running
+    # Lorawan Application Server on a different host than Lorawan Network Server, make sure to set
+    # this to the host:ip on which Lorawan Network Server can reach Lorawan Application Server.
     # The port must be equal to the port configured by the 'bind' flag
     # above.
     public_host="localhost:8001"
@@ -126,8 +124,8 @@ url="redis://localhost:6379"
 
 # Join-server configuration.
 #
-# ChirpStack Application Server implements a (subset) of the join-api specified by the
-# LoRaWAN Backend Interfaces specification. This API is used by ChirpStack Network Server
+# Lorawan Application Server implements a (subset) of the join-api specified by the
+# LoRaWAN Backend Interfaces specification. This API is used by Lorawan Network Server
 # to handle join-requests.
 [join_server]
 # ip:port to bind the join-server api interface to

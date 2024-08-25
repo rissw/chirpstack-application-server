@@ -1,16 +1,16 @@
 #!/usr/bin/env bash
 ### BEGIN INIT INFO
-# Provides:          chirpstack-application-server
+# Provides:          lorawan-application-server
 # Required-Start:    $all
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: ChirpStack Application Server
+# Short-Description: Lorawan Application Server
 ### END INIT INFO
 
 
-NAME=chirpstack-application-server
-DESC="ChirpStack Application Server"
+NAME=lorawan-application-server
+DESC="Lorawan Application Server"
 DAEMON_USER=appserver
 DAEMON_GROUP=appserver
 DAEMON=/usr/bin/$NAME
