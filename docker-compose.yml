@@ -1,12 +1,12 @@
 version: "2"
 services:
-  chirpstack-application-server:
+  lorawan-application-server:
     build: 
       context: .
       dockerfile: Dockerfile-devel
     volumes:
-      - ./:/chirpstack-application-server
-      # - ../chirpstack-api:/chirpstack-api
+      - ./:/lorawan-application-server
+      # - ../lorawan-api:/lorawan-api
     links:
       - postgres
       - redis
@@ -15,8 +15,8 @@ services:
       - zookeeper
       - kafka
     environment:
-      - TEST_POSTGRES_DSN=postgres://chirpstack_as:chirpstack_as@postgres/chirpstack_as?sslmode=disable
-      - TEST_POSTGRES_INTEGRATION_DSN=postgres://chirpstack_integration:chirpstack_integration@postgres/chirpstack_integration?sslmode=disable
+      - TEST_POSTGRES_DSN=postgres://lorawan_as:lorawan_as@postgres/lorawan_as?sslmode=disable
+      - TEST_POSTGRES_INTEGRATION_DSN=postgres://lorawan_integration:lorawan_integration@postgres/lorawan_integration?sslmode=disable
       - TEST_REDIS_SERVERS=redis:6379
       - TEST_MQTT_SERVER=tcp://mosquitto:1883
       - TEST_RABBITMQ_URL=amqp://guest:guest@rabbitmq:5672/

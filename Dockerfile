@@ -1,6 +1,6 @@
 FROM golang:1.19.3-alpine3.16 AS development
 
-ENV PROJECT_PATH=/chirpstack-application-server
+ENV PROJECT_PATH=/lorawan-application-server
 ENV PATH=$PATH:$PROJECT_PATH/build
 ENV CGO_ENABLED=0
 ENV GO_EXTRA_BUILD_ARGS="-a -installsuffix cgo"
@@ -17,6 +17,6 @@ RUN make
 FROM alpine:3.17.0 AS production
 
 RUN apk --no-cache add ca-certificates
-COPY --from=development /chirpstack-application-server/build/chirpstack-application-server /usr/bin/chirpstack-application-server
+COPY --from=development /lorawan-application-server/build/lorawan-application-server /usr/bin/lorawan-application-server
 USER nobody:nogroup
-ENTRYPOINT ["/usr/bin/chirpstack-application-server"]
+ENTRYPOINT ["/usr/bin/lorawan-application-server"]
