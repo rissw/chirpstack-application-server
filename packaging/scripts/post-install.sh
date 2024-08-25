@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 OLD_NAME=lora-app-server
-NAME=chirpstack-application-server
+NAME=lorawan-application-server
 BIN_DIR=/usr/bin
-SCRIPT_DIR=/usr/lib/chirpstack-application-server/scripts
-LOG_DIR=/var/log/chirpstack-application-server
+SCRIPT_DIR=/usr/lib/lorawan-application-server/scripts
+LOG_DIR=/var/log/lorawan-application-server
 DAEMON_USER=appserver
 DAEMON_GROUP=appserver
 
