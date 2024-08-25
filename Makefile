@@ -4,7 +4,7 @@ API_VERSION := $(shell go list -m -f '{{ .Version }}' github.com/brocaar/chirpst
 
 build: ui/build static/swagger/api.swagger.json
 	mkdir -p build
-	go build $(GO_EXTRA_BUILD_ARGS) -ldflags "-s -w -X main.version=$(VERSION)" -o build/chirpstack-application-server cmd/chirpstack-application-server/main.go
+	go build $(GO_EXTRA_BUILD_ARGS) -ldflags "-s -w -X main.version=$(VERSION)" -o build/lorawan-application-server cmd/lorawan-application-server/main.go
 
 clean:
 	@echo "Cleaning up workspace"
@@ -23,6 +23,15 @@ test: statics
 	@go test -p 1 -v -cover ./... -coverprofile coverage.out
 
 dist: statics
+	@goreleaser
+	mkdir -p dist/upload/tar
+	mkdir -p dist/upload/deb
+	mkdir -p dist/upload/rpm
+	mv dist/*.tar.gz dist/upload/tar
+	mv dist/*.deb dist/upload/deb
+	mv dist/*.rpm dist/upload/rpm
+
+dist_no_static: 
 	@goreleaser
 	mkdir -p dist/upload/tar
 	mkdir -p dist/upload/deb
@@ -72,5 +81,5 @@ ui-requirements:
 	@cd ui && npm install
 
 serve: build
-	@echo "Starting ChirpStack Application Server"
-	./build/chirpstack-application-server
+	@echo "Starting Lorawan Application Server"
+	./build/lorawan-application-server
