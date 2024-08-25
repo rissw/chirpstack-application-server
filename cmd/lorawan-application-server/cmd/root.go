@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"bytes"
-	"io/ioutil"
 	"os"
 	"reflect"
 	"strings"
@@ -20,12 +19,10 @@ var cfgFile string
 var version string
 
 var rootCmd = &cobra.Command{
-	Use:   "chirpstack-application-server",
-	Short: "ChirpStack Application Server",
-	Long: `ChirpStack Application Server is an open-source Application Server, part of the ChirpStack LoRaWAN Network Server stack.
-	> documentation & support: https://www.chirpstack.io/application-server
-	> source & copyright information: https://github.com/brocaar/chirpstack-application-server`,
-	RunE: run,
+	Use:   "lorawan-application-server",
+	Short: "Lorawan Application Server",
+	Long:  `Lorawan Application Server is an open-source Application Server, part of the LoRaWAN Network Server stack`,
+	RunE:  run,
 }
 
 func init() {
@@ -39,7 +36,7 @@ func init() {
 	// defaults
 	viper.SetDefault("general.grpc_default_resolver_scheme", "passthrough")
 	viper.SetDefault("general.password_hash_iterations", 100000)
-	viper.SetDefault("postgresql.dsn", "postgres://localhost/chirpstack_as?sslmode=disable")
+	viper.SetDefault("postgresql.dsn", "postgres://localhost/lorawan_as?sslmode=disable")
 	viper.SetDefault("postgresql.automigrate", true)
 	viper.SetDefault("postgresql.max_idle_connections", 2)
 	viper.SetDefault("redis.servers", []string{"localhost:6379"})
@@ -56,7 +53,7 @@ func init() {
 	viper.SetDefault("application_server.integration.mqtt.command_topic_template", "application/{{ .ApplicationID }}/device/{{ .DevEUI }}/command/{{ .CommandType }}")
 	viper.SetDefault("application_server.integration.mqtt.client.client_cert_lifetime", time.Hour*24*365)
 	viper.SetDefault("application_server.integration.kafka.brokers", []string{"localhost:9092"})
-	viper.SetDefault("application_server.integration.kafka.topic", "chirpstack_as")
+	viper.SetDefault("application_server.integration.kafka.topic", "lorawan_as")
 	viper.SetDefault("application_server.integration.kafka.event_key_template", "application.{{ .ApplicationID }}.device.{{ .DevEUI }}.event.{{ .EventType }}")
 	viper.SetDefault("application_server.integration.kafka.mechanism", "plain")
 	viper.SetDefault("application_server.integration.kafka.algorithm", "SHA-512")
@@ -90,7 +87,7 @@ func Execute(v string) {
 
 func initConfig() {
 	if cfgFile != "" {
-		b, err := ioutil.ReadFile(cfgFile)
+		b, err := os.ReadFile(cfgFile)
 		if err != nil {
 			log.WithError(err).WithField("config", cfgFile).Fatal("error loading config file")
 		}
@@ -99,14 +96,14 @@ func initConfig() {
 			log.WithError(err).WithField("config", cfgFile).Fatal("error loading config file")
 		}
 	} else {
-		viper.SetConfigName("chirpstack-application-server")
+		viper.SetConfigName("lorawan-application-server")
 		viper.AddConfigPath(".")
-		viper.AddConfigPath("$HOME/.config/chirpstack-application-server")
-		viper.AddConfigPath("/etc/chirpstack-application-server")
+		viper.AddConfigPath("$HOME/.config/lorawan-application-server")
+		viper.AddConfigPath("/etc/lorawan-application-server")
 		if err := viper.ReadInConfig(); err != nil {
 			switch err.(type) {
 			case viper.ConfigFileNotFoundError:
-				log.Warning("No configuration file found, using defaults. See: https://www.chirpstack.io/application-server/install/config/")
+				log.Warning("No configuration file found, using defaults. ")
 			default:
 				log.WithError(err).Fatal("read configuration file error")
 			}

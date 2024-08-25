@@ -3,10 +3,9 @@ package main
 import (
 	"time"
 
+	"github.com/brocaar/chirpstack-application-server/cmd/lorawan-application-server/cmd"
 	log "github.com/sirupsen/logrus"
 	"google.golang.org/grpc/grpclog"
-
-	"github.com/brocaar/chirpstack-application-server/cmd/chirpstack-application-server/cmd"
 )
 
 // grpcLogger implements a wrapper around the logrus Logger to make it
