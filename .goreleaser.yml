@@ -1,8 +1,8 @@
-project_name: chirpstack-application-server
+project_name: lorawan-application-server
 
 builds:
-  - main: cmd/chirpstack-application-server/main.go
-    binary: chirpstack-application-server
+  - main: cmd/lorawan-application-server/main.go
+    binary: lorawan-application-server
     goos:
       - windows
       - darwin
@@ -24,21 +24,21 @@ release:
   disable: true
 
 nfpm:
-  vendor: ChirpStack
-  homepage: https://www.loraserver.io/
-  maintainer: Orne Brocaar <info@brocaar.com>
-  description: ChirpStack Application Server
+  vendor: Lorawan 
+  homepage: https://www.lorawan.io/
+  maintainer: somebody <me@somebody.com>
+  description: Lorawan Application Server
   license: MIT
   formats:
     - deb
     - rpm
   bindir: /usr/bin
   files:
-    "packaging/files/chirpstack-application-server.rotate": "/etc/logrotate.d/chirpstack-application-server"
-    "packaging/files/chirpstack-application-server.init": "/usr/lib/chirpstack-application-server/scripts/chirpstack-application-server.init"
-    "packaging/files/chirpstack-application-server.service": "/usr/lib/chirpstack-application-server/scripts/chirpstack-application-server.service"
+    "packaging/files/lorawan-application-server.rotate": "/etc/logrotate.d/lorawan-application-server"
+    "packaging/files/lorawan-application-server.init": "/usr/lib/lorawan-application-server/scripts/lorawan-application-server.init"
+    "packaging/files/lorawan-application-server.service": "/usr/lib/lorawan-application-server/scripts/lorawan-application-server.service"
   config_files:
-    "packaging/files/chirpstack-application-server.toml": "/etc/chirpstack-application-server/chirpstack-application-server.toml"
+    "packaging/files/lorawan-application-server.toml": "/etc/lorawan-application-server/lorawan-application-server.toml"
   scripts:
     preinstall: "packaging/scripts/pre-install.sh"
     postinstall: "packaging/scripts/post-install.sh"
